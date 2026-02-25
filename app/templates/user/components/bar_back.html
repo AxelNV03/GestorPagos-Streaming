@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    {# Cargar dinámicamente archivos CSS de User #}
+    {% for css_file in os.listdir('app/static/css/user') %}
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/user/' + css_file) }}">
+    {% endfor %}
+    {% block head %}{% endblock %}
+    
+    <style>
+        /* ─── BARRA DE REGRESO ÚNICA ─── */
+        .bb-navbar {
+            width: 100%;
+            background-color: #0d0d0d;
+            display: flex;
+            align-items: center;
+            padding: 21px 20px; /* Misma medida que tu navbar original */
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            box-sizing: border-box;
+        }
+
+        .bb-btn-return {
+            color: #ffffff !important;
+            font-size: 1.3rem; /* El tamaño que pediste */
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 1;
+            transition: opacity 0.2s ease;
+            /* Ajuste para que no se vea "trepada" */
+            -webkit-text-stroke: 1.0px #ffffff; /* Añade un "borde" del mismo color */
+            padding-top: 2px;
+        }
+
+        .bb-btn-return:active {
+            opacity: 0.5;
+        }
+
+        /* 💻 RESPONSIVE PC */
+        @media (min-width: 930px) {
+            .bb-navbar {
+                padding: 29px 40px; /* Para igualar los 85px de alto */
+            }
+            .bb-btn-return {
+                font-size: 1.5rem;
+            }
+        }
+
+        .bb-main-content {
+            padding: 20px;
+            color: white;
+        }
+    </style>
+</head>
+<body style="background-color: #000; margin: 0; font-family: sans-serif;">
+
+    <nav class="bb-navbar">
+        <a href="{{ url_for('user.dashboard') }}" class="bb-btn-return">
+            <i class="bi bi-chevron-left"></i>
+        </a>
+    </nav>
+
+    <main class="bb-main-content">
+        {% block main_content %}{% endblock %}
+    </main>
+
+</body>
+</html>

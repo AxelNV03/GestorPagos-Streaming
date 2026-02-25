@@ -1,0 +1,54 @@
+{% extends 'user/components/bar_back.html' %}
+{% block main_content %}
+
+
+
+<div class="facturacion-container">
+    <div class="facturacion-header">
+        <h3>Historial de facturación</h3>
+    </div>
+
+    <table class="billing-table">
+        <tbody>
+            {% for pago in data.pagos %}
+            <tr class="billing-row">
+                <td class="col-main">
+                    <div class="date-text">{{ pago.fecha_pago }}</div>
+                    <div class="status-subtext">
+                        {% if pago.estado|lower == 'pendiente' %}
+                            En revisión
+                        {% else %}
+                            {{ pago.estado }}
+                        {% endif %}
+                    </div>
+                </td>
+                <td class="col-amount">${{ pago.monto }}</td>
+                <td class="col-link">
+                    {% if pago.ruta_archivo %}
+                        <a href="{{ url_for('user.ver_recibo', id=pago.id) }}">Recibo</a>
+                    {% else %}
+                        <span class="no-receipt">Pendiente</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="3" class="empty-state">
+                    <div class="empty-icon">📂</div>
+                    <p>Aún no tienes pagos registrados</p>
+                    <small>Tus recibos aparecerán aquí una vez que los subas.</small>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+
+
+    <a href="{{ url_for('user.dashboard') }}" class="btn-back-menu">
+    <i class="bi bi-arrow-left"></i>
+    Regresar al menú
+</a>
+
+{% endblock %}

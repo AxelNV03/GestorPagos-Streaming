@@ -1,0 +1,53 @@
+<!-- Modal de carga de comprobante -->
+<div id="upMgrModal" class="up-mgr-overlay">
+    <div class="up-mgr-card">
+        <div class="up-mgr-header">
+            <span style="font-weight: 700; color: #334155;">Subir Comprobante</span>
+            <button onclick="closeUpMgr()" style="background:none; border:none; cursor:pointer; font-size:20px;">&times;</button>
+        </div>
+
+
+        <form action="{{ url_for('admin.subir_comprobante') }}" method="POST" enctype="multipart/form-data">
+            <div class="up-mgr-info-box">
+                <div>
+                    <span class="up-mgr-label">Usuario</span>
+                    <span class="up-mgr-value" id="up-mgr-user">---</span>
+                </div>
+                <div style="text-align: right;">
+                    <span class="up-mgr-label">Monto mensual</span>
+                    <span class="up-mgr-value" style="color: #020700;">$<span id="up-mgr-amount">0.00</span></span>
+                </div>
+            </div>
+
+            <div class="up-mgr-body">
+                <input type="hidden" name="id_cobro" id="up-mgr-id">
+                <input type="hidden" name="usuario_id" id="up-mgr-user-id"> 
+                <label class="up-mgr-label" style="margin-bottom: 8px;">Archivo de imagen</label>
+                <input type="file" name="comprobante" class="up-mgr-input" accept="image/*" required>
+            </div>
+
+            <div class="up-mgr-body">
+                <label class="up-mgr-label" style="margin-top: 15px; margin-bottom: 8px;">Nota u observación (Opcional)</label>
+                <textarea 
+                    name="nota" 
+                    class="up-mgr-textarea" 
+                    rows="2" 
+                    placeholder="Ej: Pago de dos meses, transferencia desde Banco..."></textarea>
+            </div>
+
+            
+            <div style="margin-top: 15px; padding: 10px; border-radius: 8px; background-color: #fefce8; border: 1px solid #fef08a;">
+                <p style="margin: 0; font-size: 11px; color: #854d0e; line-height: 1.4;">
+                    <i class="bi bi-info-circle-fill me-1"></i> 
+                    <b>Nota:</b> Al subir tu comprobante, el administrador validará el monto y asignará el pago a los meses correspondientes. Recibirás una notificación cuando el proceso termine.
+                </p>
+            </div>
+
+            <div class="up-mgr-footer">
+                <button type="button" class="up-mgr-btn up-mgr-btn-cancel" onclick="closeUpMgr()">Cancelar</button>
+                <button type="submit" class="up-mgr-btn up-mgr-btn-submit">Registrar Pago</button>
+            </div>
+
+        </form>
+    </div>
+</div>

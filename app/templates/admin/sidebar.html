@@ -1,0 +1,29 @@
+<!-- Sidebar del Admin -->
+<aside class="sidebar">
+    <div class="logo-section">
+        <i class="bi bi-shield-lock-fill"></i>
+        <span>GESTIÓN PAGOS</span>
+    </div>
+
+    <nav class="menu">
+        <a href="{{ url_for('admin.dashboard') }}" class="menu-item {{ 'active' if request.endpoint == 'admin.dashboard' }}">
+            <i class="bi bi-grid-1x2-fill"></i>
+            <span>Principal</span>
+        </a>
+
+        <a href="{{ url_for('admin.servicios') }}" class="menu-item {{ 'active' if request.endpoint == 'admin.servicios' }}">
+            <i class="bi bi-play-circle"></i>
+            <span>Servicios</span>
+        </a>
+
+        <a href="{{ url_for('admin.usuarios') }}" class="menu-item {{ 'active' if request.endpoint == 'admin.usuarios' }}">
+            <i class="bi bi-people"></i>
+            <span>Usuarios</span>
+        </a>
+
+        <a href="{{ url_for('admin.cobros') }}" class="menu-item {{ 'active' if request.endpoint == 'admin.cobros' }}">
+            <i class="bi bi-cash-stack"></i>
+            <span>Cobros</span>
+        </a>
+    </nav>
+</aside>

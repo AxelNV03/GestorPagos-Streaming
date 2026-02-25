@@ -1,0 +1,266 @@
+/* ============================================================================================================= */
+/* CSS De la card de status main page admin */
+.dashboard-top-grid {
+    margin-bottom: 2rem;
+}
+
+.status-summary-card {
+    display: flex;
+    background-color: #ffffff;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    border: 1px solid #eef2f5;
+    gap: 40px; /* Espacio entre las dos columnas */
+}
+
+/* Columna Izquierda: Resumen */
+.summary-info {
+    flex: 0 0 250px; /* Ancho fijo para la info */
+    border-right: 2px solid #f1f4f6; /* Línea divisoria */
+    padding-right: 20px;
+}
+
+.summary-title {
+    color: #334155;
+    font-size: 1.1rem;
+    margin-bottom: 15px;
+    font-weight: 700;
+}
+
+.summary-details p {
+    margin: 8px 0;
+    font-size: 0.95rem;
+    color: #2a3646;
+}
+
+.summary-details span {
+    font-weight: 600;
+}
+
+/* Columna Derecha: Lista de Plataformas con Grid Inteligente */
+.mini-status-list {
+    flex: 1;
+    display: grid;
+    /* Definimos exactamente 5 filas */
+    grid-template-rows: repeat(5, auto);
+    /* La magia: cuando llena las 5 filas, crea una nueva columna a la derecha */
+    grid-auto-flow: column; 
+    /* Ajusta el ancho de las nuevas columnas */
+    grid-auto-columns: minmax(300px, 1fr); 
+    
+    gap: 9px 40px; /* 10px entre filas, 40px entre columnas */
+    padding-left: 10px;
+    overflow-x: auto; /* Por si tienes muchísimas plataformas, permite scroll lateral */
+}
+
+/* Ajuste de los items para que no se encimen */
+.mini-status-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2px 0; /* <--- Bajalo a 2px o incluso 0 */
+    min-width: 0;
+}
+
+.item-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.mini-logo {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    object-fit: cover;
+}
+
+.mini-name {
+    font-weight: 600;
+    color: #1e293b;
+    font-size: 0.9rem;
+}
+
+.item-brand p {
+    font-size: 0.75rem;
+    color: #94a3b8;
+    margin: 0;
+    margin-left: 5px;
+}
+
+/* Estados (Badges) */
+.dot-status {
+    font-size: 0.7rem;
+    font-weight: 800;
+    padding: 3px 10px;
+    border-radius: 6px;
+    letter-spacing: 0.5px;
+}
+
+.dot-paid {
+    background-color: #ecfdf5;
+    color: #10b981;
+    border: 1px solid #d1fae5;
+}
+
+.dot-error {
+    background-color: #fef2f2;
+    color: #ef4444;
+    border: 1px solid #fee2e2;
+}
+
+/* Colores de texto auxiliares */
+.text-success { color: #10b981 !important; }
+.text-danger { color: #ef4444 !important; }
+/* ============================================================================================================= */
+/* CSS de los servicios estilo playlist */
+
+/* Los rectángulos estilo "Servicios" */
+.horizontal-scroll-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 15px;
+}
+
+.status-rect {
+    background-color: var(--card-bg);
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid var(--border-color); /* Borde sutil para definir la tarjeta */
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+}
+
+.status-rect:hover {
+    transform: translateY(-2px); /* Efecto de levante */
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    background-color: var(--card-hover);
+}
+
+.rect-img-container img {
+    width: 45px;
+    height: 45px;
+    border-radius: 8px;
+    margin-right: 15px;
+    object-fit: cover;
+    border: 1px solid #eee;
+}
+
+.rect-title {
+    font-weight: 600;
+    margin: 0;
+    font-size: 1rem;
+}
+
+.rect-subtitle {
+    font-size: 0.85rem;
+    margin: 0;
+}
+.highlight-info {
+    background-color: #e0e0e0;
+    color: #000000 !important;
+}
+/* ============================================================================================================= */
+/* Tabla correspondiente a cobross */
+/* ============================================================================================================= */
+/* Contenedor específico para que el Dashboard no flote en el aire */
+.card-dashboard-container {
+    background: #ffffff;
+    border: 1px solid #edf2f7;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    margin-top: 20px;
+    overflow: hidden; /* Para que el header sticky no se salga de las esquinas redondeadas */
+}
+
+.dash-header-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    border-bottom: 1px solid #edf2f7;
+}
+
+.dash-title-sm {
+    font-size: 0.9rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+    color: #2d3748;
+    margin: 0;
+}
+
+/* Reutilización de tus estilos de tabla con ajustes menores para el Dash */
+.table-sm-custom {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+    color: #4a5568;
+}
+
+.table-sm-custom thead th {
+    background-color: #f8fafc;
+    color: #718096;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.7rem;
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 2px solid #edf2f7;
+    letter-spacing: 0.05em;
+}
+
+.table-sm-custom tbody td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #edf2f7;
+    vertical-align: middle;
+}
+
+.table-sm-custom tbody tr:hover {
+    background-color: #f7fafc;
+}
+
+/* Botón de acción siguiendo tu estilo btn-xs */
+.btn-outline-primary {
+    color: #3182ce;
+    border: 1px solid #bee3f8;
+    background: #fff;
+    padding: 5px 12px;
+    font-size: 0.75rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-outline-primary:hover {
+    background: #ebf8ff;
+    border-color: #3182ce;
+}
+
+
+
+/* Forzamos que la cabecera y la celda se alineen igual */
+.table-sm-custom thead th.text-center, 
+.table-sm-custom tbody td.text-center {
+    text-align: center !important;
+}
+
+/* Ajustamos el contenedor de los botones */
+.actions-flex {
+    display: flex;
+    gap: 8px;
+    justify-content: center; /* Centra el botón dentro de la celda */
+    align-items: center;
+    width: 100%;
+}
+
+/* Opcional: si el botón se ve "recargado" a un lado, quítale márgenes extra */
+.btn-xs {
+    margin: 0 auto; 
+}

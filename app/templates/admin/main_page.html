@@ -1,0 +1,133 @@
+{% extends 'layouts/base_admin.html' %}
+{% block main_content %}
+    <h2>Panel Principal</h2>
+
+    <!-- Card de Resumen Mensual-->
+    <div class="dashboard-top-grid">
+        <header class="status-summary-card">
+            <div class="summary-info">
+                <h3 class="summary-title">Resumen Mensual</h3>
+                <div class="summary-details">
+                        <p><strong>Periodo:</strong> {{ data.periodo.nombre_mes }} {{ data.periodo.anio }}</p>
+                        <p><strong>Recaudado:</strong> <span class="text-success">${{ "{:,.2f}".format(data.recaudacion.recaudado|float) }}</span></p>
+                        <p><strong>Restante:</strong> <span class="text-danger">${{ "{:,.2f}".format(data.recaudacion.pendiente|float) }}</span></p>
+                </div>
+            </div>
+
+            <div class="mini-status-list">
+                {% for p in data.plataformas_restantes %}
+                    <div class="mini-status-item">
+                        <div class="item-brand">
+                            <img src="{{ p.url_logo }}" alt="" class="mini-logo">
+                            <span class="mini-name">{{ p.nombre }}</span>
+                        </div>
+                        
+                        <div class="item-status">
+                            {% if p.pagaron == p.total_users %}
+                                <span class="dot-status dot-paid">PAGADO</span>
+                            {% else %}
+                                <span class="dot-status dot-error">PENDIENTE</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% else %}
+                    <p class="text-muted">No hay plataformas restantes todavía. ¡A cobrar!</p>
+                {% endfor %}
+            </div>
+        </header>
+    </div>
+
+    <!-- Servicios estilo playlist -->
+    <section class="platform-status-section">
+        <h2>Acceso Rapido</h2>
+        <div class="horizontal-scroll-container">
+            
+            {% for p in data.finanzas_plataformas %}
+            <div class="status-rect">
+                <div class="rect-img-container">
+                    <img src="{{ p.url_logo }}" alt="{{ p.nombre }}">
+                </div>
+                <div class="rect-text">
+                    <p class="rect-title">{{ p.nombre }}</p>
+                    <p class="rect-subtitle">
+                        {{ p.pagaron }}/{{ p.total_users }} Pagos
+                    </p>
+                </div>
+            </div>
+            {% endfor %}
+
+        </div>
+    </section>
+
+
+
+
+    <!-- Tablas -->
+    <div class="card-dashboard-container">
+    <div class="dash-header-flex">
+        <h5 class="dash-title-sm">Comprobantes Recibidos</h5>
+        <span class="badge-status badge-en-revision">{{ data.cobros_pendientes|length }} EN REVISIÓN</span>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table-sm-custom">
+            <thead>
+                <tr>
+                    <th>Usuario</th>
+                    <th>Plataforma</th>
+                    <th>Mes Pagado</th>
+                    <th>Monto</th>
+                    <th class="text-center">Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for c in data.cobros_pendientes %}
+                <tr>
+                    <td>
+                        <div style="display: flex; flex-direction: column;">
+                            <span style="font-weight: 700; color: #2d3748;">{{ c.usuario }}</span>
+                            <small style="color: #a0aec0; font-size: 0.7rem;">ID Cobro: #{{ c.id }}</small>
+                        </div>
+                    </td>
+                    <td>
+                        <span style="background: #edf2f7; padding: 2px 8px; border-radius: 4px; font-weight: 600; font-size: 0.75rem;">
+                            {{ c.plataforma }}
+                        </span>
+                    </td>
+                    <td>{{ c.nombre_mes }} {{ c.anio }}</td>
+                    <td style="font-weight: 700; color: #38a169;">${{ c.monto }}</td>
+                    <td>
+                        <div class="actions-flex">
+                                    <button  
+                                            class="btn-action btn-upload" 
+                                            onclick="mostrarComprobante('{{ c.ruta_archivo }}', '{{ c.id }}', '{{ c.estado }}', '{{ c.usuario }}', '{{ c.monto }}', this)" 
+                                            data-nota="{{ c.nota }}" 
+                                            title="Ver comprobante">
+                                        <i class="bi bi-file-earmark-check"></i> Ver
+                                    </button>
+                        </div>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="5" style="text-align: center; padding: 40px; color: #a0aec0;">
+                        <i class="bi bi-shield-check" style="font-size: 2rem; display: block; margin-bottom: 10px;"></i>
+                        No hay comprobantes pendientes de validación.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+    {% include 'admin/modals/visor_pagos.html' %}
+    {% include 'admin/modals/visor_notas.html' %}
+
+    <script src="/static/js/admin/comprobantes_view.js"></script>
+    <script src="/static/js/admin/expandir_img.js"></script>
+    <script src="/static/js/admin/comprobantes_notas.js"></script>
+    <script src="/static/js/admin/procesar_pagos.js"></script>
+
+
+{% endblock %}

@@ -1,0 +1,178 @@
+{% extends 'layouts/base_admin.html' %}
+{% block main_content %}
+    <!-- Card de Filtros -->
+    <div class="card-filters shadow-sm mb-4">
+        <form action="{{ url_for('admin.cobros') }}" method="GET" class="filter-form">
+            
+            <div class="filter-group buscador">
+                <span class="filter-label">Nombre o WhatsApp</span>
+                <input type="text" name="q" class="minimal-input" placeholder="Ej. Juan Pérez..." value="{{ request.args.get('q', '') }}">
+            </div>
+
+            <div class="filter-group plataforma">
+                <span class="filter-label">Plataforma</span>
+                <select name="plataforma_id" class="minimal-input">
+                    <option value="">Todas</option>
+                    {% for p in data.plats %}
+                    <option value="{{ p.id }}">{{ p.nombre }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="filter-group small">
+                <span class="filter-label">Mes</span>
+                <select name="mes" class="minimal-input">
+                    <option value="">Todos</option>
+                    {% set meses = [
+                        (1, 'Enero'), (2, 'Febrero'), (3, 'Marzo'), (4, 'Abril'),
+                        (5, 'Mayo'), (6, 'Junio'), (7, 'Julio'), (8, 'Agosto'),
+                        (9, 'Septiembre'), (10, 'Octubre'), (11, 'Noviembre'), (12, 'Diciembre')
+                    ] %}
+                    {% for num, nombre in meses %}
+                        <option value="{{ num }}" {{ 'selected' if request.args.get('mes')|int == num }}>
+                            {{ nombre }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="filter-group small">
+                <span class="filter-label">Año</span>
+                <select name="anio" class="minimal-input">
+                    {% for anio in range(2026, 2041) %}
+                        {# Aquí cambiamos 'a' por 'anio' para que coincida con el bucle #}
+                        <option value="{{ anio }}" {% if request.args.get('anio')|int == anio %}selected{% endif %}>
+                            {{ anio }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="filter-group-btn">
+                <button type="submit" class="btn-filter">
+                    <i class="bi bi-search"></i> Filtrar
+                </button>
+            </div>
+        </form>
+    </div>
+
+
+    <!-- Alertas -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="alerts-wrapper">
+                {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                    <span class="alert-icon">
+                        {% if category == 'success' %}
+                            <i class="bi bi-check-circle-fill"> </i>
+                        {% elif category == 'error' or category == 'danger' %}
+                            <i class="bi bi-exclamation-triangle-fill"> </i>
+                        {% else %}
+                            <i class="bi bi-info-circle-fill"> </i>
+                        {% endif %}
+                    </span>
+                    <div class="alert-text">  {{ message }}</div>
+                </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+
+
+
+    <!-- Tabla -->
+    <div class="table-container shadow-sm">
+        <table class="table-sm-custom">
+            <thead>
+                <tr>
+                    <th class="text-center">ID</th>
+                    <th class="text-center">Usuario</th>
+                    <th class="text-center">Plataforma</th>
+                    <th class="text-center">Monto</th>
+                    <th class="text-center">Estado</th>
+                    <th class="text-center">Fecha Comprobante</th>
+                    <th class="text-center">Gestión</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for mes, registros in data.cobros_lista.items() %}
+                    <tr class="month-divider">
+                        <td colspan="7">{{ mes }}</td>
+                    </tr>
+                    
+                    {% for c in registros %}
+                    <tr>
+                        <td class="text-muted">#{{ c.id }}</td>
+                        <td><strong>{{ c.usuario }}</strong></td>
+                        <td><span class="text-secondary">{{ c.plataforma }}</span></td>
+                        <td class="fw-bold"><b>${{ c.monto }}</b></td>                           
+                        <td>
+                            {% if c.estado == 'pagado' %}
+                                <span class="badge-status badge-aceptado">PAGADO</span>
+                            {% elif c.estado == 'rechazado' %}
+                                <span class="badge-status badge-rechazado">RECHAZADO</span>                            
+                            {% elif c.com_id %}
+                                <span class="badge-status badge-revision" style="background-color: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd;">
+                                    EN REVISION
+                                </span>
+                            {% else %}
+                                {% if c.limite_pago %}
+                                    {% if data.hoy > c.limite_pago %}
+                                        <span class="badge-status badge-atrasado">ATRASADO</span>
+                                    {% else %}
+                                        <span class="badge-status badge-pendiente">PENDIENTE</span>
+                                    {% endif %}
+                                {% else %}
+                                    <span class="text-muted">Sin datos</span>
+                                {% endif %}
+                            {% endif %}
+                        </td>
+                        <td class="fw-bold">
+                            {% if c.fecha_comprobante %}
+                                {{ c.fecha_comprobante }}
+                            {% else %}
+                                N/A
+                            {% endif %}
+                        </td>
+                        <td class="text-center">
+                            <div class="d-flex justify-content-center gap-2">
+                                {% if not c.com_id %}
+                                    <button class="btn-action btn-upload" 
+                                            onclick="openUpMgr('{{ c.id }}', '{{ c.usuario }}', '{{ c.monto }}', '{{ c.user_id }}')">
+                                        <i class="bi bi-cloud-upload"></i> Subir
+                                    </button>
+                                {% else %}
+                                    <button  
+                                            class="btn-action btn-upload" 
+                                            onclick="mostrarComprobante('{{ c.ruta_archivo }}', '{{ c.id }}', '{{ c.estado }}', '{{ c.usuario }}', '{{ c.monto }}', this)" 
+                                            data-nota="{{ c.nota }}" 
+                                            title="Ver comprobante">
+                                        <i class="bi bi-file-earmark-check"></i> Ver
+                                    </button>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+    <!-- Modales -->
+    {% include 'admin/modals/carga_comprobante.html' %}
+    {% include 'admin/modals/visor_pagos.html' %}
+    {% include 'admin/modals/visor_notas.html' %}
+
+
+    <!-- JS -->
+    <script src="/static/js/admin/comprobantes_form.js"></script>
+    <script src="/static/js/admin/comprobantes_view.js"></script>
+    <script src="/static/js/admin/expandir_img.js"></script>
+    <script src="/static/js/admin/comprobantes_notas.js"></script>
+    <script src="/static/js/admin/procesar_pagos.js"></script>
+
+
+{% endblock %}

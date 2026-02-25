@@ -1,0 +1,138 @@
+{% extends 'layouts/layout_user.html' %}
+{% block main_content %}
+    <section class="user-card-section">
+        <div class="tidal-profile-card">
+            
+            <p class="welcome-text">Bienvenido</p>
+            
+            <div class="profile-header-block">
+                <div class="avatar-icon">
+                    <i class="bi bi-person"></i>
+                </div>
+                <h2 class="user-main-name">{{ data.user.nombres | lower | title }}</h2>
+                <p class="user-phone">{{ data.user.telefono }}</p>
+            </div>
+
+            <div class="info-details-grid">
+                <div class="info-item">
+                    <span class="info-label">Periodo Actual</span>
+                    <span class="info-value">{{ data.periodo.nombre_mes }}  {{ data.periodo.anio }}</span>
+                </div>
+                
+                <div class="info-item">
+                    <span class="info-label">Próximo Pago</span>
+                    <span class="info-value {{ data.clase_pago }}">
+                        {{ data.last_p.limite_pago.strftime('%d %b, %Y') }}
+                    </span>
+                </div>
+
+                <div class="info-item full-width">
+                    <span class="info-label">Monto a Pagar</span>
+                    <span class="info-value info-price">${{ data.last_p.monto }} MXN</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+
+    {% if data.clase_pago == 'pago-normal' %}
+    <div class="alert-card-container">
+        <div class="alert-card aprobado">
+            <div class="alert-icon">
+                <i class="bi bi-shield-check"></i>
+            </div>
+            <div class="alert-text">
+                <strong>Felicidades</strong>
+                <span>Mensualidad cubierta. Próximo pago en <b>{{ data.last_p.dias_restantes }}</b> días.</span>
+            </div>
+        </div>
+    </div>
+    {% elif data.clase_pago == 'pago-revision' %}
+    <div class="alert-card-container">
+        <div class="alert-card revision">
+            <div class="alert-icon">
+                <i class="bi bi-hourglass-split"></i>
+            </div>
+            <div class="alert-text">
+                <strong>Pago en revisión</strong>
+                <span>Se esta revisando tu comprobante. Al finalizar se reflejará en tu historial.</span>
+            </div>
+        </div>
+    </div>
+    {% elif data.clase_pago == 'pago-vencido' %}
+    <div class="alert-card-container">
+        <div class="alert-card vencido">
+            <div class="alert-icon">
+                <i class="bi bi-exclamation-circle-fill"></i>
+            </div>
+            <div class="alert-text">
+                <strong>Aviso de sistema</strong>
+                <span>Tu pago de este mes está atrasado. Evita la suspensión del servicio.</span>
+            </div>
+        </div>
+    </div>
+    {% elif data.clase_pago == 'pago-hoy' %}
+    <div class="alert-card-container">
+        <div class="alert-card urgente">
+            <div class="alert-icon">
+                <i class="bi bi-clock-fill"></i>
+            </div>
+            <div class="alert-text">
+                <strong>¡Fecha Corte!</strong>
+                <span>Recuerda realizar tu pago antes del {{ data.last_p.limite_pago.strftime('%d %b, %Y') }}</span>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+
+
+    <div class="menu-cards-container">
+        <a href="{{ url_for('user.historial') }}" class="menu-card">
+            <div class="menu-card-content">
+                <div class="menu-icon">
+                    <i class="bi bi-clock-history"></i>
+                </div>
+                <div class="menu-text">
+                    <h3>Historial de Pagos</h3>
+                    <span>Consulta tu historial de pagos anteriores</span>
+                </div>
+            </div>
+            <div class="menu-arrow">
+                <i class="bi bi-chevron-right"></i>
+            </div>
+        </a>
+
+
+        <a href="{{ url_for('user.seccion_comprobante') }}" class="menu-card">
+            <div class="menu-card-content">
+                <div class="menu-icon icon-blue">
+                    <i class="bi bi-plus-circle-fill"></i>
+                </div>
+                <div class="menu-text">
+                    <h3>Agregar Pago</h3>
+                    <span>Reporta tu transferencia aquí</span>
+                </div>
+            </div>
+            <div class="menu-arrow"><i class="bi bi-chevron-right"></i></div>
+        </a>
+
+        <a href="https://wa.me/527774399424?text=Hola!%20Soy%20{{ data.user.nombres | lower | title }}%20de%20{{ data.user.plataforma | lower | title }},%20tengo%20dudas%20con%20del%20servicio:"        
+        target="_blank" 
+        class="menu-card">
+            <div class="menu-card-content">
+                <div class="menu-icon icon-green">
+                    <i class="bi bi-whatsapp"></i>
+                </div>
+                <div class="menu-text">
+                    <h3>Mensaje Directo</h3>
+                    <span>Escribeme directamente por WhatsApp</span>
+                </div>
+            </div>
+            <div class="menu-arrow"><i class="bi bi-box-arrow-up-right"></i></div>
+        </a>
+    </div>
+
+
+{% endblock %}

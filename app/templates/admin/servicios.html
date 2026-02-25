@@ -1,0 +1,278 @@
+{% extends 'layouts/base_admin.html' %}
+{% block main_content %}
+    <h2>Servicios ({{ data.finanzas_plataformas|length }})</h2>
+    
+    <!-- Card Info -->
+    <div class="servicios top-grid">
+        <header class="status-summary-card-srv">
+            <div class="profile-content-servicios">
+                <div class="info-group">
+                    <h3 class="summary-title">Resumen Operativo</h3>
+
+                    <div class="metrics-container">
+                        <div class="metric-block">
+                            <p class="label">Calendario</p>
+                            <p><strong>Periodo:</strong> {{ data.periodo.nombre_mes|default('Sin Mes') }} {{ data.periodo.anio }}</p>
+                            <p><strong>Límite pago:</strong> {{ data.periodo.limite_pago|default('No definido') }}</p>
+                        </div>
+
+                        <div class="metric-block">
+                            <p class="label">Finanzas</p>
+                            <p><strong>Recaudado:</strong> <span class="text-success"><strong>${{ "{:,.2f}".format(data.recaudacion.recaudado|float) }}</strong></span></p>
+                            <p><strong>Restante:</strong> <span class="text-danger"><strong>${{ "{:,.2f}".format(data.recaudacion.pendiente|float) }}</strong></span></p>
+                        </div>
+
+                        <div class="metric-block">
+                            <p class="label">Usuarios Globales</p>
+                            <div class="user-ratio" title="Progreso global: {{ (data.conteo_global.pagos / data.conteo_global.users * 100)|round(1) if data.conteo_global.users > 0 else 0 }}%">
+                                <span class="ratio-number">{{ data.conteo_global.pagos }}/{{ data.conteo_global.users }}</span>
+                                <p class="sub-label">Pagos recibidos</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+    </div>
+    
+    <!-- Boton de agregar servicio y bitwarden-->
+    <div class="header-actions-wrapper">
+        <button class="btn-primary" onclick="abrirModalFormService({})">
+            <i class="bi bi-plus-lg"></i> Nuevo Servicio
+        </button>
+
+        <a href="https://vault.bitwarden.com/" target="_blank" class="btn-bitwarden">
+            <i class="bi bi-shield-lock"></i> Bitwarden
+        </a>
+    </div>
+
+    <!-- Alertas -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="alerts-wrapper">
+                {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                    <span class="alert-icon">
+                        {% if category == 'success' %}
+                            <i class="bi bi-check-circle-fill"> </i>
+                        {% elif category == 'error' or category == 'danger' %}
+                            <i class="bi bi-exclamation-triangle-fill"> </i>
+                        {% else %}
+                            <i class="bi bi-info-circle-fill"> </i>
+                        {% endif %}
+                    </span>
+                    <div class="alert-text">  {{ message }}</div>
+                </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+        
+    <!-- Tabla de datos -->
+    <h3>Detalles</h3>
+    <table class="services-table">
+        <thead>
+            <tr>
+                <th>Logo</th>
+                <th>Nombre</th>
+                <th>Fecha corte</th>
+                <th>Precio mensual</th>
+                <th>Pagos</th>
+                <th>Conteo Pagos</th>
+                <th>Recaudado</th>
+                <th>Restante</th>
+                <th>Url</th>
+                <th>Correo</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for p in data.finanzas_plataformas %}
+                <tr>
+                    <td><img src="{{ p.url_logo }}" alt="{{ p.nombre }}" class="table-logo"></td>
+                    <td><strong>{{ p.nombre }}</strong></td>
+                    <td>Dia {{ p.dia_cobro }}</td>
+                    <td>${{ "{:,.2f}".format(p.precio_mensual) }}</td>
+                    <td>
+                        {% if p.pagaron == p.total_users %}
+                            <span class="badge-status-green">COMPLETOS</span>
+                        {% else %}
+                            <span class="badge-status-alert">PENDIENTES</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ p.pagaron }}/{{ p.total_users }}</td>
+                    <td>${{ "{:,.2f}".format(p.recaudado|float) }}</td>
+                    <td>${{ "{:,.2f}".format(p.faltante|float) }}</td>
+                    <td>
+                        {% if p.url_plataforma %}
+                            <a href="{{ p.url_plataforma }}" target="_blank" class="btn-go-link" title="Ir a la plataforma">
+                                <i class="bi bi-box-arrow-up-right"></i>
+                            </a>
+                        {% else %}
+                            <span class="text-muted">No URL</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <div class="email-container">
+                            <code class="user-email">{{ p.correo_asociado }}</code>
+                            <button class="btn-copy-small" onclick="copyToClipboard('{{ p.correo_asociado }}')" title="Copiar correo">
+                                <i class="bi bi-clipboard"></i>
+                            </button>
+                        </div>
+                    </td>
+                    <td>
+                        <button class="btn-action" 
+                            onclick='abrirModalFormService({{ {
+                                "id": p.id,
+                                "nombre": p.nombre,
+                                "precio": p.precio_mensual|float,
+                                "dia": p.dia_cobro,
+                                "url": p.url_plataforma,
+                                "correo": p.correo_asociado,
+                                "logo": p.url_logo
+                            } | tojson | safe }})'>
+                            <i class="bi bi-pencil-square"></i>
+                        </button>
+                        <button class="btn-action btn-delete" 
+                            onclick="confirmarEliminar('{{ p.id }}', '{{ p.nombre }}')">
+                            <i class="bi bi-trash3-fill"></i>
+                        </button>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+
+
+
+    <!-- Modal para editar y crear servicios -->
+    <div id="modalServicio" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle"><i class="bi bi-pencil-square"></i> Editar Servicio</h3>
+                <span class="close" onclick="cerrarModal()">&times;</span>
+            </div>
+            <form id="formServicio" action="/admin/servicios/guardar" method="POST">
+                <div class="form-body">
+                    <input type="hidden" name="plataforma_id" id="form_plataforma_id">
+                    
+                    <div class="form-group">
+                        <label for="nombre">Nombre del Servicio</label>
+                        <input type="text" name="nombre" id="form_nombre" required>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="precio_mensual">Costo Mensual ($)</label>
+                            <input type="number" step="0.01" name="precio_mensual" id="form_precio_mensual" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="dia_cobro">Día de Corte</label>
+                            <input type="number" name="dia_cobro" id="form_dia_cobro" min="1" max="31" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="correo_asociado">Correo de la Cuenta</label>
+                        <input type="email" name="correo_asociado" id="form_correo_asociado" placeholder="ejemplo@netflix.com">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="url_plataforma">Enlace de la Plataforma (Login)</label>
+                        <input type="text" name="url_plataforma" id="form_url_plataforma" placeholder="https://www.netflix.com/login">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="url_logo">URL del Logo</label>
+                        <input type="text" name="url_logo" id="form_url_logo">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" onclick="cerrarModal()">Cancelar</button>
+                    <button type="submit" class="btn-primary" id="btnGuardar">Guardar Cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+
+
+
+    <script>
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                // Opcional: Una alerta simple o cambio de icono para avisar que se copió
+            });
+        }
+
+        function abrirModalFormService(data = {}) {
+            const modal = document.getElementById('modalServicio');
+            const form = document.getElementById('formServicio');
+            const title = document.getElementById('modalTitle');
+            const btn = document.getElementById('btnGuardar');
+
+            // Limpiamos el formulario por si acaso
+            form.reset();
+
+            if (data.id) {
+                // MODO EDICIÓN
+                title.innerHTML = '<i class="bi bi-pencil-square"></i> Editar Servicio';
+                btn.textContent = 'Actualizar Servicio';
+                
+                // Rellenamos los campos
+                document.getElementById('form_plataforma_id').value = data.id;
+                document.getElementById('form_nombre').value = data.nombre;
+                document.getElementById('form_precio_mensual').value = data.precio;
+                document.getElementById('form_dia_cobro').value = data.dia;
+                document.getElementById('form_url_plataforma').value = data.url;
+                document.getElementById('form_correo_asociado').value = data.correo;
+                document.getElementById('form_url_logo').value = data.logo;
+            } else {
+                // MODO NUEVO
+                title.innerHTML = '<i class="bi bi-plus-circle"></i> Nueva Plataforma';
+                btn.textContent = 'Crear Servicio';
+                
+                // Aseguramos que el hidden ID esté vacío
+                document.getElementById('form_plataforma_id').value = '';
+            }
+
+            modal.style.display = 'block';
+        }
+
+
+        // Función básica para cerrar
+        function cerrarModal() {
+            const modal = document.getElementById('modalServicio');
+            modal.style.display = 'none';
+            // Opcional: limpiar el formulario al cerrar
+            document.getElementById('formServicio').reset();
+        }
+
+        // 1. Cerrar al presionar la tecla ESC
+        document.addEventListener('keydown', function(event) {
+            if (event.key === "Escape") {
+                cerrarModal();
+            }
+        });
+
+        // 2. Cerrar al hacer clic fuera del contenido blanco (en el fondo oscuro)
+        window.onclick = function(event) {
+            const modal = document.getElementById('modalServicio');
+            if (event.target == modal) {
+                cerrarModal();
+            }
+        }
+
+        function confirmarEliminar(id, nombre) {
+            if (confirm(`¿Seguro que quieres borrar ${nombre}?`)) {
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = `/admin/servicios/eliminar/${id}`;
+                document.body.appendChild(form);
+                form.submit();
+            }
+        }
+    </script>
+{% endblock %}

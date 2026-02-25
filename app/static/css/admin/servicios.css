@@ -1,0 +1,509 @@
+/* ===================================================================================================================== */
+/* Contenedor de Alertas */
+/* Contenedor de Alertas corregido */
+.alert {
+    padding: 12px 20px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    margin-left: 0;          /* Forzamos que se pegue a la izquierda */
+    margin-right: auto;     /* Evita que se centre */
+    
+    max-width: fit-content;  /* La alerta solo medirá lo que mida el texto */
+    min-width: 300px;        /* Un ancho mínimo para que tenga presencia */
+    
+    border-radius: 12px;
+    border-left: 6px solid;
+    display: flex;
+    align-items: center;
+    gap: 12px;               /* Espacio perfecto entre icono y texto */
+    
+    font-weight: 500;
+    font-size: 0.95rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    animation: slideIn 0.3s ease-out;
+}
+
+/* Colores suaves (Success) */
+.alert-success {
+    background-color: #ecfdf5; 
+    color: #065f46;
+    border-color: #10b981;
+}
+
+/* Colores suaves (Error) */
+.alert-danger, .alert-error {
+    background-color: #fef2f2;
+    color: #991b1b;
+    border-color: #ef4444;
+}
+/* ===================================================================================================================== */
+/* CARD de Servicios */
+.status-summary-card-srv {
+    display: inline-flex;
+    background-color: #ffffff;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    border: 1px solid #eef2f5;
+    gap: 50px; /* Espacio entre las dos columnas */
+}
+
+.metrics-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    margin-top: 15px;
+    flex-wrap: wrap; /* Para que en el cel se apilen si no caben */
+}
+
+.metric-block {
+    flex: 1;
+    min-width: 200px;
+}
+
+.metric-block p {
+    font-size: 0.95rem; /* Ajusta este valor (1rem es el estándar) */
+    color: #334155;    /* Un color gris oscuro profesional */
+}
+
+.metric-block .label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    border-bottom: 1px solid #444;
+    margin-bottom: 10px;
+    letter-spacing: 1px;
+}
+
+.user-ratio {
+    text-align: center;
+    background: #f8f9fa;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+}
+
+.ratio-number {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--text-main);
+}
+
+.sub-label {
+    font-size: 0.7rem;
+    color: #666;
+    margin: 0;
+}
+/* ===================================================================================================================== */
+/* Boton de Agregar */
+
+/* Aplicamos el mismo alto base a ambos */
+.btn-primary, .btn-bitwarden {
+    height: 45px;                /* Altura fija para garantizar simetría */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 24px;             /* Padding horizontal igualado */
+    box-sizing: border-box;      /* Crucial para que el borde no sume altura extra */
+    font-size: 0.9rem;
+    line-height: 1;              /* Evita que el texto mueva el alto del botón */
+}
+
+.btn-bitwarden {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: transparent;
+    color: #1a1a1a;
+    border: 2px solid #1a1a1a;
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-weight: 600;
+    text-decoration: none; /* Quita el subrayado del link */
+    transition: all 0.2s;
+    margin-right: 12px; /* Espacio entre este botón y el de Nuevo Servicio */
+}
+
+.btn-bitwarden:hover {
+    background: #f4f4f4;
+    transform: translateY(-1px);
+    color: #000;
+}
+.btn-primary {
+    background: #1a1a1a;
+    color: #fff;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 0px; /* Si el botón está arriba de la card */
+    margin-top: 20px;    /* Si el botón está abajo de la card */
+}
+
+.btn-primary:hover {
+    background: #333;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+}
+/* ===================================================================================================================== */
+/* TABLA DE DATOS - Style */
+.services-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: #ffffff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    margin-top: 15px;
+    border: 1px solid #eef2f5;
+}
+
+.services-table thead {
+    background-color: #f8f9fa;
+}
+
+.services-table th {
+    padding: 15px;
+    text-align: left;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #666;
+    font-weight: 700;
+    border-bottom: 2px solid #eee;
+}
+
+.services-table td {
+    padding: 12px 15px;
+    vertical-align: middle;
+    border-bottom: 1px solid #f1f1f1;
+    color: #333;
+    font-size: 0.9rem;
+}
+
+.services-table tr:last-child td {
+    border-bottom: none;
+}
+
+.services-table tr:hover {
+    background-color: #fcfcfc; /* Efecto hover sutil */
+}
+
+/* Logos en la tabla */
+.table-logo {
+    width: 35px;
+    height: 35px;
+    object-fit: contain;
+    border-radius: 6px;
+    background: #f9f9f9;
+    padding: 2px;
+}
+
+/* Badges de Estado - Éxito/Pagado */
+.badge-status-green {
+    background-color: #e8f5e9; /* Un verde muy claro de fondo */
+    color: #2e7d32;           /* Un verde oscuro para el texto (legibilidad) */
+    border: 1px solid #c8e6c9; /* Borde sutil para darle estructura */
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    display: inline-block;
+}
+
+.badge-status-alert {
+    background-color: #fff3f3;
+    color: #ef4444;
+    border: 1px solid #ffcccc;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 0.7rem;
+    font-weight: 700;
+}
+
+/* Botones de Acción (Pencil) */
+
+.btn-action {
+    background: transparent;
+    border: 1px solid #eee;
+    padding: 8px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: #555;
+}
+
+.btn-action:hover {
+    background: #1a1a1a;
+    color: #fff;
+    border-color: #1a1a1a;
+    transform: translateY(-2px);
+}
+
+.services-table th, 
+.services-table td {
+    text-align: center; /* Esto centra texto, imágenes y botones */
+    vertical-align: middle;
+}
+
+/* Boton de gestionar */
+.btn-go-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background-color: #f8f9fa;
+    color: #1a1a1a;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.btn-go-link i {
+    font-size: 0.9rem;
+}
+
+.btn-go-link:hover {
+    background-color: #1a1a1a;
+    color: #ffffff;
+    border-color: #1a1a1a;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.text-muted {
+    color: #adb5bd;
+    font-size: 0.8rem;
+    font-style: italic;
+}
+
+
+/* Boton de copiar correo */
+.email-container {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #f4f4f4;
+    padding: 4px 8px;
+    border-radius: 6px;
+    border: 1px solid #e0e0e0;
+}
+
+.user-email {
+    font-family: 'Cascadia Code', 'Courier New', monospace;
+    font-size: 0.85rem;
+    color: #333;
+}
+
+.btn-copy-small {
+    background: none;
+    border: none;
+    color: #888;
+    cursor: pointer;
+    font-size: 0.8rem;
+    padding: 0;
+    transition: color 0.2s;
+}
+
+.btn-copy-small:hover {
+    color: #1a1a1a;
+}
+
+/* Ajuste de anchos específicos en algunas columnas */
+table.services-table th:nth-child(1) { width: 60px; }  /* Logo */
+table.services-table th:nth-child(6) { width: 100px; } /* Fecha, Precio, Conteo */
+table.services-table td:nth-child(9),
+table.services-table th:nth-child(9) {
+    text-align: left !important;
+    padding-left: 20px !important;
+}
+
+/* Datos de la columan correos alinear a la izquierda */
+/* Localizamos el TD que contiene el email-container */
+.services-table td:has(.email-container) {
+    text-align: left !important;
+    padding-left: 15px !important;
+}
+
+/* Forzamos al contenedor a no centrarse por márgenes automáticos */
+.email-container {
+    display: inline-flex !important; 
+    margin: 0 !important; /* Elimina cualquier margin: auto que lo esté centrando */
+    justify-content: flex-start !important;
+}
+
+/* Columna Correo alinear izquierda */
+/* Alineamos el encabezado "Correo" (columna 10) */
+.services-table thead th:nth-child(10) {
+    text-align: left !important;
+    padding-left: 20px !important;
+}
+
+/* Alineamos los datos del correo (columna 10) */
+.services-table tbody td:nth-child(10) {
+    text-align: left !important;
+    padding-left: 20px !important;
+}
+
+/* Aseguramos que el contenedor del email no tenga márgenes que lo centren */
+.services-table td:nth-child(10) .email-container {
+    margin-left: 0 !important;
+    margin-right: auto !important;
+}
+
+/* ===================================================================================================================== */
+/* Modal de agregar servicio - Style */
+/* 1. Fondo del Modal (Overlay) */
+.modal {
+    display: none; 
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px); /* Efecto moderno de desenfoque */
+}
+
+/* 2. Contenedor Principal */
+#modalServicio .modal-content {
+    background-color: #fff;
+    margin: 5% auto;
+    padding: 0;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    animation: slideDown 0.3s ease-out;
+    overflow: hidden;
+}
+
+/* 3. Header */
+#modalServicio .modal-header {
+    background: #f8f9fa;
+    padding: 20px;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#modalServicio .modal-header h3 {
+    margin: 0;
+    font-size: 1.25rem;
+    color: #333;
+}
+
+/* 4. Cuerpo del Formulario */
+#modalServicio .form-body {
+    padding: 20px;
+}
+
+#modalServicio .form-group {
+    margin-bottom: 15px;
+}
+
+#modalServicio .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+#modalServicio label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #555;
+}
+
+#modalServicio input {
+    width: 100%;
+    box-sizing: border-box; /* <--- ESTO ES LA CLAVE */
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: border-color 0.2s;
+}
+
+#modalServicio input:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
+}
+
+/* 5. Footer y Botones */
+#modalServicio .modal-footer {
+    padding: 15px 20px;
+    background: #f8f9fa;
+    border-top: 1px solid #eee;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+/* Hereda las dimensiones de .btn-primary */
+.btn-secondary {
+    height: 45px;                /* Misma altura que el primary */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 0 24px;             /* Padding igualado */
+    box-sizing: border-box;
+    border-radius: 10px;         /* Mismo radio que el primary */
+    font-size: 0.9rem;
+    font-weight: 600;
+    line-height: 1;
+    cursor: pointer;
+    transition: all 0.2s;
+    
+    /* Colores para versión secundaria (Gris suave/Minimalista) */
+    background: #f4f4f4;         /* Fondo claro */
+    color: #444;                 /* Texto gris oscuro */
+    border: 1px solid #e0e0e0;   /* Borde sutil */
+    text-decoration: none;
+}
+
+.btn-secondary:hover {
+    background: #e8e8e8;         /* Un poco más oscuro al pasar el mouse */
+    color: #1a1a1a;
+    transform: translateY(-1px); /* Mismo efecto que el primary */
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+/* Ajuste para el footer del modal (para quitar márgenes extra que no necesites) */
+#modalServicio .modal-footer .btn-secondary {
+    margin: 0; /* Limpiamos márgenes para que el gap del footer mande */
+}
+
+#modalServicio .modal-footer .btn-primary {
+    margin-top: 0; /* Quita el margen que usas cuando el botón está solo en una card */
+}
+
+.close {
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #aaa;
+}
+
+.close:hover { color: #333; }
+
+/* Animación */
+@keyframes slideDown {
+    from { transform: translateY(-50px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}

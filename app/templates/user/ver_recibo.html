@@ -1,0 +1,43 @@
+{% extends 'user/components/bar_back.html' %}
+{% block main_content %}
+
+<div class="receipt-viewer">
+    <div class="viewer-header">
+        <h3>Tu Comprobante</h3>
+    </div>
+    
+    <div class="receipt-card">
+<img src="{{ url_for('user.servir_comprobante_user', filename=pago.ruta_archivo) }}" 
+     alt="Recibo de pago" 
+     class="receipt-img">
+        
+        <div class="receipt-info">
+            <div class="info-group">
+                <label>Fecha de Subida</label>
+                <span>{{ pago.fecha_subida }}</span>
+            </div>
+
+            <div class="info-group">
+                <label>Estado del Pago</label>
+                <span class="status-text-inline {{ pago.estado }}">
+                    {% if pago.estado|lower == 'pendiente' %}
+                        En revisión
+                    {% else %}
+                        {{ pago.estado }}
+                    {% endif %}
+                </span>
+            </div>
+            {% if pago.nota %}
+            <div class="info-group full-width">
+                <label>Nota / Comentario</label>
+                <p class="receipt-note">{{ pago.nota }}</p>
+            </div>
+            {% endif %}
+        </div>
+
+        
+    </div>
+
+    <a href="{{ url_for('user.historial') }}" class="btn-back">Volver al historial</a>
+</div>
+{% endblock %}

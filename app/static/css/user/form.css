@@ -1,0 +1,343 @@
+/* =========================================================================================================== */
+/* # CARD */
+/* =========================================================================================================== */
+/* Contenedor principal con el fondo gris claro que indicaste */
+html, body {
+    background-color: #eef0f2 !important; 
+}
+
+.form-white-body {
+    /* padding: 0px 0px; Margen de 15px a los lados como pediste */
+    padding: 0px ; /* Cero absoluto a los lados */
+    width: 100%;
+}
+
+.dp-card {
+    background: #ffffff;
+    border-radius: 20px; /* Un poco más compacto */
+    padding: 20px; /* Padding interno reducido */
+    border: 1px solid rgba(0,0,0,0.04);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+    border-radius: 24px; /* Un radio alto hace que se vea premium aunque esté cerca del borde */
+}
+
+.dp-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 12px; /* Espacio reducido */
+    color: #8E959B;
+    font-size: 0.65rem; /* Tamaño heredado de tus etiquetas */
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.dp-header i {
+    color: #00ba13;
+    font-size: 0.9rem;
+}
+
+/* Grid para compactar Entidad y Nombre en una sola fila */
+.dp-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.dp-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.dp-item.full {
+    grid-column: span 2;
+}
+
+.dp-label {
+    font-size: 0.6rem;
+    color: #8E959B;
+    font-weight: 600;
+    text-transform: uppercase;
+    margin-bottom: 2px;
+}
+
+.dp-value {
+    font-size: 0.85rem;
+    color: #000;
+    font-weight: 600;
+}
+
+/* Caja de CLABE más delgada */
+.dp-copy-box {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #f4f6f8;
+    padding: 8px 12px;
+    border-radius: 10px;
+    margin-top: 4px;
+}
+
+.clabe-text {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.8rem;
+    letter-spacing: 0.3px;
+}
+
+.dp-copy-btn {
+    background: #000;
+    color: #fff;
+    border: none;
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+}
+
+/* =========================================================================================================== */
+/* # FORM */
+/* =========================================================================================================== */
+.payment-form {
+    margin-top: 25px;
+    padding-bottom: 40px;
+}
+
+.upload-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #8E959B;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+    display: block;
+}
+
+.custom-file-upload {
+    width: 100%;
+    height: 200px;
+    background-color: #ffffff;
+    border: 2px dashed #D1D5DB;
+    border-radius: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    overflow: hidden;
+    position: relative;
+}
+
+.custom-file-upload:active {
+    transform: scale(0.98);
+    background-color: #f9fafb;
+}
+
+#placeholder-content {
+    text-align: center;
+    color: #4B5563;
+}
+
+#placeholder-content i {
+    font-size: 2.5rem;
+    color: #A1AAB2;
+    margin-bottom: 10px;
+    display: block;
+}
+
+#placeholder-content span {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: #000;
+}
+
+#placeholder-content p {
+    font-size: 0.75rem;
+    color: #8E959B;
+    margin-top: 5px;
+}
+
+/* Vista Previa de la Imagen */
+#image-preview {
+    width: 100%;
+    height: 220px;
+    object-fit: contain; /* Para que no se corte la captura de pantalla */
+    background: #f0f3f5;
+}
+
+.change-photo-badge {
+    position: absolute;
+    bottom: 12px;
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    padding: 5px 12px;
+    border-radius: 12px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    backdrop-filter: blur(4px);
+}
+
+/* Botón de Confirmación */
+.btn-confirm-payment {
+    width: 100%;
+    height: 55px;
+    background-color: #000000;
+    color: #ffffff;
+    border: none;
+    border-radius: 18px;
+    font-weight: 700;
+    font-size: 1rem;
+    margin-top: 25px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s;
+}
+
+.btn-confirm-payment:active {
+    transform: scale(0.96);
+}
+
+#file-upload {
+    display: none;
+}
+
+.notes-section {
+    margin-top: 20px;
+}
+
+.payment-notes {
+    width: 100%;
+    background-color: #ffffff;
+    border: 1px solid rgba(0,0,0,0.1);
+    border-radius: 16px;
+    padding: 12px 15px;
+    font-size: 0.85rem;
+    font-family: 'Montserrat', sans-serif;
+    color: #1a1a1a;
+    resize: none; /* Evita que el usuario lo deforme */
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+}
+
+.payment-notes:focus {
+    outline: none;
+    border-color: #000000;
+    box-shadow: 0 0 0 3px rgba(0,0,0,0.02);
+}
+
+.payment-notes::placeholder {
+    color: #A1AAB2;
+    font-size: 0.8rem;
+}
+
+/* kjshgfdsrsyuio */
+.btn-back-menu {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    height: 50px;
+    margin-top: 15px;
+    background: transparent;
+    color: #8E959B; /* Gris sutil */
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    border-radius: 18px;
+    transition: all 0.2s ease;
+}
+
+.btn-back-menu:active {
+    background-color: rgba(0, 0, 0, 0.05);
+    color: #000;
+}
+
+.btn-back-menu i {
+    font-size: 1.1rem;
+}
+
+
+
+
+
+
+
+
+
+.alert {
+    padding: 12px 20px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    margin-left: 0;          /* Forzamos que se pegue a la izquierda */
+    margin-right: auto;     /* Evita que se centre */
+    
+    max-width: fit-content;  /* La alerta solo medirá lo que mida el texto */
+    min-width: 300px;        /* Un ancho mínimo para que tenga presencia */
+    
+    border-radius: 12px;
+    border-left: 6px solid;
+    display: flex;
+    align-items: center;
+    gap: 12px;               /* Espacio perfecto entre icono y texto */
+    
+    font-weight: 500;
+    font-size: 0.95rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    animation: slideIn 0.3s ease-out;
+}
+
+/* Colores suaves (Success) */
+.alert-success {
+    background-color: #ecfdf5; 
+    color: #065f46;
+    border-color: #10b981;
+}
+
+/* Colores suaves (Error) */
+.alert-danger, .alert-error {
+    background-color: #fef2f2;
+    color: #991b1b;
+    border-color: #ef4444;
+}
+
+
+
+
+/* Media Query para Tablets y PC */
+@media screen and (min-width: 768px) {
+    /* Limitamos el ancho de la tarjeta de datos y el formulario */
+    .dp-card, 
+    .payment-form, 
+    .alert {
+        max-width: 480px; /* Ancho ideal para lectura en PC */
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    /* El botón de confirmar no debe ser una franja gigante en PC */
+    .btn-confirm-payment {
+        max-width: 480px;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    /* Ajuste para el área de subida de archivos */
+    .custom-file-upload {
+        max-width: 480px;
+        margin-left: auto;
+        margin-right: auto;
+        height: 250px; /* Un poco más alta en PC para que luzca */
+    }
+
+    /* Notas y otros elementos */
+    .notes-section {
+        max-width: 480px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+}

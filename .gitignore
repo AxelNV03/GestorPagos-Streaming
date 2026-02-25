@@ -1,0 +1,30 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.venv/
+env/
+
+# --- Variables de Entorno (SEGURIDAD) ---
+.env
+
+# --- Base de Datos ---
+# Si usas SQLite local, ignora el archivo de la DB
+*.sqlite3
+*.db
+# Ignoramos los archivos SQL de respaldo por si tienen datos reales
+# (A menos que quieras que se suban los scripts vacíos)
+# tablas.sql
+# seeder.sql
+
+# --- Archivos de Usuario (PRIVACIDAD) ---
+# No queremos subir las fotos de los recibos reales a GitHub
+storage/comprobantes/
+static/uploads/comprobantes/
+
+# --- Otros ---
+.vscode/
+.idea/
+.DS_Store
+*.log

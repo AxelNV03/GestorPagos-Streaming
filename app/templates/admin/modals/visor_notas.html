@@ -1,0 +1,25 @@
+<div id="modalNotaDetalle" class="nt-overlay-custom" style="display: none;">
+    <div class="nt-modal-card" style="max-width: 450px; width: 90%;">
+        
+        <div class="up-mgr-header" style="border-bottom: 1px solid #eee;">
+            <div class="d-flex align-items-center gap-2">
+                <i class="bi bi-chat-left-text" style="color: #000;"></i>
+                <span style="font-weight: 800; color: #000; font-size: 13px; text-transform: uppercase;">Nota del Usuario</span>
+            </div>
+            <button onclick="cerrarModalNota()" style="background:none; border:none; cursor:pointer; font-size:24px; color: #000;">&times;</button>
+        </div>
+
+        <div class="nt-modal-body">
+            <div class="nt-text-container">
+                <p id="textoNotaCompleta" class="nt-nota-p">
+                    </p>
+            </div>
+        </div>
+
+        <div class="up-mgr-footer" style="border-top: 1px solid #eee; padding: 15px;">
+            <button type="button" class="nt-btn-close" style="width: 100%; font-weight: 700;" onclick="cerrarModalNota()">
+                ENTENDIDO
+            </button>
+        </div>
+    </div>
+</div>

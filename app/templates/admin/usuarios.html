@@ -1,0 +1,258 @@
+{% extends 'layouts/base_admin.html' %}
+{% block main_content %}
+
+    <h2>Gestión de Usuarios </h2>
+
+
+    <!-- Card de conteo -->
+    <div class="stats-overview">
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="bi bi-people-fill"></i>
+            </div>
+            <div class="stat-content">
+                <span class="stat-label">Usuarios Totales</span>
+                    <h3 class="stat-value">{{ (data.usuarios or [])|length }}</h3>
+            </div>
+        </div>
+    </div>
+    
+
+    <!-- Filtros de busqueda -->
+    <div class="card-filters shadow-sm mb-4">
+        <form action="{{ url_for('admin.usuarios') }}" method="GET" class="filter-form">
+            
+            <div class="filter-group buscador">
+                <span class="filter-label">Nombre o WhatsApp</span>
+                <div class="input-wrapper">
+                    <i class="bi bi-search"></i>
+                    <input type="text" name="q" class="minimal-input with-icon" placeholder="Buscar usuario..." value="{{ request.args.get('q', '') }}">
+                </div>
+            </div>
+
+            <div class="filter-group plataforma">
+                <span class="filter-label">Plataforma</span>
+                <select name="plataforma_id" class="minimal-input">
+                    <option value="">Todas</option>
+                    {% for p in data.listaP %}
+                        <option value="{{ p.id }}" {% if request.args.get('plataforma_id') == p.id|string %}selected{% endif %}>
+                            {{ p.nombre }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="filter-group-btn">
+                <button type="submit" class="btn-filter">
+                    <i class="bi bi-search"></i> Filtrar Usuarios
+                </button>
+            </div>
+
+            <!-- Agregar user -->
+            <div class="filter-group-btn btn-add-container">
+                <button type="button" class="btn-primary add-user" onclick="abrirModalUsuario()">
+                    <i class="bi bi-person-plus"></i> Nuevo Usuario
+                </button>
+            </div>
+        </form>
+    </div>
+
+        <!-- Alertas -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="alerts-wrapper">
+                {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                    <span class="alert-icon">
+                        {% if category == 'success' %}
+                            <i class="bi bi-check-circle-fill"> </i>
+                        {% elif category == 'error' or category == 'danger' %}
+                            <i class="bi bi-exclamation-triangle-fill"> </i>
+                        {% else %}
+                            <i class="bi bi-info-circle-fill"> </i>
+                        {% endif %}
+                    </span>
+                    <div class="alert-text">  {{ message }}</div>
+                </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+        
+
+    <!-- Tabla de datos -->
+    <table class="users-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Plataforma</th>
+                <th>Teléfono</th>
+                <th>Registro</th>
+                <th>Acciones</th>              
+            </tr>
+        </thead>
+        <tbody>
+            {% for u in data.usuarios or [] %}
+                <tr>
+                    <td>#{{ u.id }}</td>
+                    <td>{{ u.nombres }} {{ u.apeP }} {{ u.apeM }}</td>
+                    <td>
+                        <span class="plataforma-tag tag-{{ u.plataforma|lower }}">
+                            {{ u.plataforma }}
+                        </span>
+                    </td>
+                    <td>{{ u.telefono }}</td>
+                    <td>{{ u.created_at }}</td>
+                    <td>
+                        <a href="https://wa.me/{{ u.telefono }}" target="_blank" class="btn-action btn-whatsapp" title="Contactar por WhatsApp">
+                            <i class="bi bi-whatsapp"></i>
+                        </a>
+
+                        <button class="btn-action btn-edit" 
+                            onclick='abrirModalUsuario({{ {
+                                "id": u.id,
+                                "nombres": u.nombres,
+                                "apeP": u.apeP,
+                                "apeM": u.apeM,
+                                "telefono": u.telefono,
+                                "plataforma_id": u.p_id
+                            } | tojson | safe }})'>
+                            <i class="bi bi-pencil-square"></i>
+                        </button>
+                                                            
+                        <button class="btn-action btn-delete" 
+                            onclick="confirmarEliminarUser('{{ u.id }}', '{{ u.nombres }}', '{{ u.p_id }}')">
+                            <i class="bi bi-trash3-fill"></i>
+                        </button>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="5" class="text-center">No se encontraron usuarios con esos filtros.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+
+
+
+
+    <!-- Modal de Crear/Editar -->
+    <div id="modalUsuario" class="modal-custom">
+        <div class="modal-content-custom">
+            <div class="modal-header-custom">
+                <h4 id="modalTitle">Editar Usuario</h4>
+                <button class="btn-close-modal" onclick="cerrarModalUsuario()">&times;</button>
+            </div>
+            <form id="formUsuario" method="POST" action="/admin/usuarios/guardar">
+                <input type="hidden" name="user_id" id="edit_id">
+                
+                <div class="modal-body-custom">
+                    <div class="form-row">
+                        <div class="form-group flex-2">
+                            <label class="filter-label">Nombre(s)</label>
+                            <input type="text" name="nombres" id="edit_nombres" class="minimal-input" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="filter-label">Apellido Paterno</label>
+                            <input type="text" name="apeP" id="edit_apeP" class="minimal-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="filter-label">Apellido Materno</label>
+                            <input type="text" name="apeM" id="edit_apeM" class="minimal-input">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="filter-label">WhatsApp (10 dígitos)</label>
+                            <input type="tel" name="telefono" id="edit_telefono" class="minimal-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="filter-label">Plataforma</label>
+                            <select name="plataforma_id" id="edit_plataforma_id" class="minimal-input" required>
+                                <option value="" disabled selected>Seleccionar</option>
+                                {% for p in data.listaP %}
+                                <option value="{{ p.id }}">{{ p.nombre }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer-custom">
+                    <button type="button" class="btn-secondary" onclick="cerrarModalUsuario()">Cancelar</button>
+                    <button type="submit" class="btn-primary add-user">Guardar Cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Única función para abrir el modal
+        function abrirModalUsuario(usuario = null) {
+            const modal = document.getElementById('modalUsuario');
+            const title = document.getElementById('modalTitle');
+            const form = document.getElementById('formUsuario');
+            
+            if (usuario) {
+                // MODO EDICIÓN
+                title.innerHTML = '<i class="bi bi-pencil-square"></i> Editar Usuario';
+                
+                // Sincronizamos con las llaves que mandas en el botón
+                document.getElementById('edit_id').value = usuario.id;
+                document.getElementById('edit_nombres').value = usuario.nombres; // Viene como "nombre"
+                document.getElementById('edit_apeP').value = usuario.apeP;
+                document.getElementById('edit_apeM').value = usuario.apeM;
+                document.getElementById('edit_telefono').value = usuario.telefono;
+                document.getElementById('edit_plataforma_id').value = usuario.plataforma_id;
+                // Bloqueamos el select para que no cambien la plataforma en edición
+                document.getElementById('edit_plataforma_id').disabled = true;
+            } else {
+                // MODO NUEVO
+                title.innerHTML = '<i class="bi bi-person-plus"></i> Nuevo Usuario';
+                form.reset();
+                document.getElementById('edit_id').value = "";
+                document.getElementById('edit_plataforma_id').disabled = false;
+            }
+            
+            modal.style.display = 'flex';
+        }
+
+        function cerrarModalUsuario() {
+            document.getElementById('modalUsuario').style.display = 'none';
+        }
+
+        // Eventos globales de cierre
+        window.onclick = function(event) {
+            const modal = document.getElementById('modalUsuario');
+            if (event.target == modal) cerrarModalUsuario();
+        }
+
+        document.addEventListener('keydown', function(event) {
+            if (event.key === "Escape") {
+                const modal = document.getElementById('modalUsuario');
+                if (modal.style.display === 'flex') cerrarModalUsuario();
+            }
+        });
+        function confirmarEliminarUser(id, nombre, platId) {
+            // Verificación rápida en consola
+            console.log(`Intentando borrar ID: ${id} de Plataforma: ${platId}`);
+
+            if (confirm(`¿Seguro que quieres borrar a ${nombre}? Los precios de los demás se ajustarán.`)) {
+                const form = document.createElement('form');
+                form.method = 'POST';
+                // Construimos la ruta: /admin/usuarios/eliminar/18/5
+                form.action = `/admin/usuarios/eliminar/${id}/${platId}`;
+                document.body.appendChild(form);
+                form.submit();
+            }
+        }
+    </script>
+
+{% endblock %}

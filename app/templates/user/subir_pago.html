@@ -1,0 +1,161 @@
+{% extends 'user/components/bar_back.html' %}
+
+{% block main_content %}
+<!-- Card de datos -->
+<div class="form-white-body">
+    <div class="dp-card">
+        <div class="dp-header">
+            <i class="bi bi-shield-check"></i>
+            <span>Datos de pago</span>
+        </div>
+        
+        <div class="dp-grid">
+            <div class="dp-item">
+                <span class="dp-label">Entidad</span>
+                <span class="dp-value">NU MÉXICO</span>
+            </div>
+            <div class="dp-item">
+                <span class="dp-label">Nombre</span>
+                <span class="dp-value">Axel Nava Sánchez</span>
+            </div>
+            <div class="dp-item full">
+                <span class="dp-label">CLABE</span>
+                <div class="dp-copy-box">
+                    <span class="dp-value clabe-text" id="clabeNum">638180010141524646</span>
+                    <button class="dp-copy-btn" onclick="copyClabe()">
+                        <i class="bi bi-copy"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Alertas -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="alerts-wrapper">
+                {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                    <span class="alert-icon">
+                        {% if category == 'success' %}
+                            <i class="bi bi-check-circle-fill"> </i>
+                        {% elif category == 'error' or category == 'danger' %}
+                            <i class="bi bi-exclamation-triangle-fill"> </i>
+                        {% else %}
+                            <i class="bi bi-info-circle-fill"> </i>
+                        {% endif %}
+                    </span>
+                    <div class="alert-text">  {{ message }}</div>
+                </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+
+<!-- FORM -->
+<form action="{{ url_for('user.subir_comprobante') }}" method="POST" enctype="multipart/form-data" class="payment-form">
+    <div class="upload-section">
+        <label class="upload-label">Comprobante de transferencia</label>
+        
+        <label for="file-upload" class="custom-file-upload" id="drop-container">
+            <input type="file" 
+                id="file-upload" 
+                name="comprobante" 
+                accept=".jpg, .jpeg, .png, image/png, image/jpeg"
+                required 
+                onchange="previewImage(event)">
+            <div id="placeholder-content">
+                <i class="bi bi-cloud-arrow-up"></i>
+                <span>Seleccionar captura o foto</span>
+                <p>Formato JPG, PNG o Captura de pantalla</p>
+            </div>
+
+            <div id="preview-container" style="display: none;">
+                <img id="image-preview" src="#" alt="Vista previa">
+                <div class="change-photo-badge">Tap para cambiar</div>
+            </div>
+        </label>
+    </div>
+
+    <div class="notes-section">
+        <label class="upload-label">Notas adicionales (Opcional)</label>
+        <textarea 
+            name="notas" 
+            class="payment-notes" 
+            placeholder="Ej: Pago de 2 meses, etc."
+            rows="2"
+        ></textarea>
+    </div>
+    
+
+    <button type="submit" class="btn-confirm-payment">
+        Enviar
+    </button>
+    <a href="{{ url_for('user.dashboard') }}" class="btn-back-menu">
+    <i class="bi bi-arrow-left"></i>
+    Regresar al menú
+</a>
+</form>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+
+<script>
+    function previewImage(event) {
+    const reader = new FileReader();
+    reader.onload = function() {
+        const output = document.getElementById('image-preview');
+        const placeholder = document.getElementById('placeholder-content');
+        const previewCont = document.getElementById('preview-container');
+        const container = document.getElementById('drop-container');
+
+        output.src = reader.result;
+        placeholder.style.display = 'none';
+        previewCont.style.display = 'block';
+        container.style.borderStyle = 'solid'; // Cambia el borde de punteado a sólido
+    };
+    reader.readAsDataURL(event.target.files[0]);
+}
+
+function copyClabe() {
+    // 1. Obtenemos el texto del número de cuenta
+    const clabeTexto = document.getElementById('clabeNum').innerText;
+    const btn = document.querySelector('.dp-copy-btn');
+    const icon = btn.querySelector('i');
+
+    // 2. Usamos la API de portapapeles
+    navigator.clipboard.writeText(clabeTexto).then(() => {
+        // --- EFECTO VISUAL DE ÉXITO ---
+        // Cambiamos el icono a un check verde
+        icon.classList.replace('bi-copy', 'bi-check2');
+        btn.style.backgroundColor = '#00ba13'; // Verde éxito
+        
+        // Después de 2 segundos, regresamos al estado original
+        setTimeout(() => {
+            icon.classList.replace('bi-check2', 'bi-copy');
+            btn.style.backgroundColor = '#000000'; // Negro original
+        }, 2000);
+
+    }).catch(err => {
+        console.error('Error al copiar: ', err);
+        alert("No se pudo copiar, inténtalo manualmente.");
+    });
+}
+</script>
+{% endblock %}

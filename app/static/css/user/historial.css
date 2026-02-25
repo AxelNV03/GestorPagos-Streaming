@@ -1,0 +1,158 @@
+.facturacion-container {
+    background: #f8f9fa; /* Fondo muy claro */
+    padding: 20px;
+    border-radius: 12px;
+}
+
+.facturacion-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.facturacion-header h3 {
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: #1a1a1a;
+}
+
+.year-select {
+    border: none;
+    background: transparent;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.billing-table {
+    width: 100%;
+    background: white;
+    border-radius: 10px;
+    border-collapse: collapse;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+    overflow: hidden;
+}
+
+.billing-table tr {
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.billing-table tr:last-child {
+    border-bottom: none;
+}
+
+.billing-table td {
+    padding: 20px 15px;
+    font-size: 0.95rem;
+    color: #444;
+}
+
+.col-date {
+    width: 25%;
+}
+
+.col-status {
+    color: #8E959B !important; /* Gris como en tu imagen */
+}
+
+.col-amount {
+    text-align: center;
+}
+
+.col-link {
+    text-align: right;
+}
+
+.col-link a {
+    color: #1a1a1a;
+    text-decoration: underline;
+    font-weight: 500;
+}
+
+.no-receipt {
+    color: #ccc;
+}
+.billing-table td {
+    padding: 16px 12px;
+    vertical-align: middle;
+    border-bottom: 1px solid #f2f2f2;
+}
+
+/* Columna de Fecha y Estado */
+.col-main {
+    width: 20%;
+}
+
+.date-text {
+    font-weight: 700;
+    color: #1a1a1a;
+    font-size: 0.9rem;
+    margin-bottom: 2px;
+}
+
+.status-subtext {
+    font-size: 0.75rem;
+    color: #8E959B; /* Gris sutil para el estado debajo */
+    text-transform: capitalize;
+}
+
+/* Columna de Monto */
+.col-amount {
+    width: 25%;
+    font-weight: 600;
+    color: #444;
+    text-align: right;
+    font-size: 0.9rem;
+}
+
+/* Columna de Link */
+.col-link {
+    width: 25%;
+    text-align: right;
+}
+
+.col-link a {
+    color: #000;
+    text-decoration: underline;
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+.no-receipt {
+    color: #d1d1d1;
+    font-size: 0.8rem;
+}
+
+
+
+/* Media Query para Tablets y PC */
+@media screen and (min-width: 768px) {
+    .facturacion-container {
+        /* Limitamos el ancho para que no se pierda la proporción */
+        max-width: 600px; 
+        margin-left: auto;
+        margin-right: auto;
+        padding: 30px; /* Un poco más de aire en PC se ve mejor */
+        background-color: #ffffff; /* Le damos fondo blanco al contenedor en PC */
+        box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        border-radius: 24px;
+        margin-top: 40px;
+    }
+
+    .billing-table {
+        box-shadow: none; /* Quitamos la sombra interna porque el contenedor ya tiene */
+    }
+
+    /* Ajuste de fuentes para que no se vean pequeñas en monitores */
+    .date-text {
+        font-size: 1rem;
+    }
+    
+    .col-amount {
+        font-size: 1.05rem;
+    }
+
+    .col-link a {
+        font-size: 0.95rem;
+    }
+}

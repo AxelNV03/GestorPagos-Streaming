@@ -1,0 +1,324 @@
+.user-card-section {
+    width: 100%;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.tidal-profile-card {
+    width: 100%;
+    max-width: 500px;
+    background-color: #ffffff;
+    border-radius: 24px;
+    padding: 10px 10px;
+    text-align: center;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+}
+
+.welcome-text {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #8E959B;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 15px;
+}
+
+.avatar-icon {
+    width: 70px;
+    height: 70px;
+    background-color: #F0F3F5;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.2rem;
+    color: #A1AAB2;
+    margin: 0 auto 12px;
+}
+
+.user-main-name {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    font-size: 1.3rem;
+    margin: 0;
+    text-transform: capitalize;
+}
+
+.user-phone, .session-user {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 400;
+    font-size: 0.85rem;
+    color: #8E959B;
+}
+
+/* --- EL GRID DE DATOS (2 COLUMNAS EN CEL) --- */
+.info-details-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Aquí ocurre la magia */
+    gap: 10px 10px;
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 1px solid #F0F3F5;
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.info-item.full-width {
+    grid-column: span 2; /* El monto ocupa todo el ancho para resaltar */
+    margin-top: 10px;
+}
+
+.info-label {
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: #8E959B;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+}
+
+.info-value {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    font-size: 0.95rem;
+    color: #000000;
+}
+
+.info-price {
+    color: #00ba13;
+    font-weight: 700;
+    font-size: 1.2rem;
+}
+
+/* --- 💻 MEDIA QUERY PARA PC (950px+) --- */
+@media (min-width: 950px) {
+    .tidal-profile-card {
+        max-width: 1000px; /* La tarjeta se ensancha */
+        padding: 10px 10px; /* Mucho más aire interno */
+        border-radius: 32px; /* Bordes más imponentes */
+    }
+
+    .avatar-icon {
+        width: 100px; /* El avatar crece para llenar el espacio */
+        height: 100px;
+        font-size: 3.5rem;
+        margin-bottom: 25px;
+    }
+
+    /* El grid de datos también respira más en PC */
+    .info-details-grid {
+        margin-top: 10px;
+        padding-top: 30px;
+        gap:10px 20px; /* Más espacio entre los datos de pago */
+    }
+}
+
+/* =========================================================================================================== */
+/* # Letras del proximo pago */
+/* =========================================================================================================== */
+/* Rojo para cuando ya pasó la fecha */
+.pago-vencido {
+    color: #FF3B30 !important;
+    font-weight: 700;
+}
+
+/* Naranja para cuando el pago es HOY */
+.pago-hoy {
+    color: #FF9500 !important;
+    font-weight: 700;
+}
+
+/* Estilo por defecto */
+.pago-normal {
+    color: #000000;
+    font-weight: 700;
+}
+
+/* Estado: Enviado, esperando aprobación */
+.pago-revision {
+    color: #007AFF !important;
+    font-weight: 700;
+}
+
+.alert-card.revision {
+    background-color: rgba(0, 122, 255, 0.1);
+    border: 1px solid rgba(0, 122, 255, 0.2);
+}
+.alert-card.revision .alert-icon, 
+.alert-card.revision .alert-text strong { 
+    color: #007AFF; 
+}
+
+/* =========================================================================================================== */
+/* # Avisos */
+/* =========================================================================================================== */
+/* Conatines de avisios */
+.alert-card-container {
+    padding: 0 20px;
+    margin-top: 5px;
+    max-width: 500px; /* Misma que tu card principal */
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.alert-card {
+    display: flex;
+    align-items: center;
+    padding: 15px 20px;
+    border-radius: 18px;
+    gap: 15px;
+}
+
+/* Variante Vencido (Rojo) */
+.alert-card.vencido {
+    background-color: rgba(255, 59, 48, 0.1); /* Rojo muy suave */
+    border: 1px solid rgba(255, 59, 48, 0.2);
+}
+.alert-card.vencido .alert-icon { color: #FF3B30; }
+.alert-card.vencido .alert-text strong { color: #FF3B30; }
+
+/* Variante Hoy (Naranja) */
+.alert-card.urgente {
+    background-color: rgba(255, 149, 0, 0.1); /* Naranja muy suave */
+    border: 1px solid rgba(255, 149, 0, 0.2);
+}
+.alert-card.urgente .alert-icon { color: #FF9500; }
+.alert-card.urgente .alert-text strong { color: #FF9500; }
+
+.alert-text {
+    display: flex;
+    flex-direction: column;
+    font-size: 0.85rem;
+    color: #444;
+}
+
+.alert-text strong {
+    font-size: 0.9rem;
+    margin-bottom: 2px;
+}
+
+/* Esto es lo único que debería estar si quieres el aviso verde */
+.alert-card.aprobado {
+    background-color: rgba(0, 186, 19, 0.1); 
+    border: 1px solid rgba(0, 186, 19, 0.2);
+}
+.alert-card.aprobado .alert-icon, 
+.alert-card.aprobado .alert-text strong { 
+    color: #00ba13; 
+}
+
+@media (min-width: 950px) {
+    .alert-card-container {
+        max-width: 1000px; /* Igualamos al ancho de tu tarjeta principal */
+        margin-top: 15px;  /* Un poco más de separación del dashboard */
+        padding: 0;        /* Quitamos padding lateral para que alineen los bordes */
+    }
+
+    .alert-card {
+        padding: 20px 40px; /* Más aire interno en PC */
+        border-radius: 24px; /* Un poco más sutil que la principal */
+        justify-content: flex-start; /* Alineamos el aviso a la izquierda */
+    }
+
+    .alert-icon {
+        font-size: 1.5rem; /* Icono un poco más presente */
+    }
+
+    .alert-text {
+        font-size: 1rem; /* Texto más legible en pantallas grandes */
+        flex-direction: row; /* En PC podemos poner el título y el texto en una línea */
+        gap: 10px;
+        align-items: center;
+    }
+
+    .alert-text strong {
+        margin-bottom: 0;
+        border-right: 1px solid rgba(0,0,0,0.1); /* Una barrita separadora elegante */
+        padding-right: 10px;
+    }
+}
+/* =========================================================================================================== */
+/* # BOTONES */
+/* =========================================================================================================== */
+.menu-cards-container {
+    max-width: 500px;
+    margin: 20px auto;
+    padding: 0 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.menu-card {
+    background: #ffffff;
+    border-radius: 24px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    text-decoration: none; /* Quita el subrayado de link */
+    color: inherit;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+    border: 1px solid transparent;
+}
+
+.menu-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    border-color: #f0f0f0;
+}
+
+.menu-card-content {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.menu-icon {
+    width: 45px;
+    height: 45px;
+    background: #f5f5f7;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    color: #1d1d1f;
+}
+
+.menu-text h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    margin: 0;
+    color: #1d1d1f;
+}
+
+.menu-text span {
+    font-size: 0.8rem;
+    color: #8e959b;
+}
+
+.menu-arrow {
+    color: #c1c1c1;
+    font-size: 1.1rem;
+}
+
+/* --- 💻 ADAPTACIÓN A PC (950px+) --- */
+@media (min-width: 950px) {
+    .menu-cards-container {
+        max-width: 1000px; /* Alineado con tu Main Card */
+        flex-direction: row; /* En PC se ponen uno al lado del otro */
+        flex-wrap: wrap;
+    }
+
+    .menu-card {
+        flex: 1; /* Se estiran para ocupar el ancho */
+        min-width: 300px;
+        padding: 25px;
+    }
+}

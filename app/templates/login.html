@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inicia Sesión | Access</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+</head>
+<body>
+    <!-- Login General -->
+    <div class="login-card">
+        <h1>Inicia Sesión</h1>
+        <p class="subtitle">Introduce tu número de teléfono para acceder</p>
+
+        <form method="POST" id="loginForm" action="{{ url_for('main.login') }}">
+            <div class="form-group">
+                <input type="text" id="telefono" name="telefono" placeholder="Ejemplo: 7775671234" required>
+            </div>
+            <button type="submit" class="btn-primary">Continuar</button>
+        </form>
+        
+        {% if error %}
+            <p style="color: #ff0000; margin-top: 15px; font-size: 0.9rem; font-weight: 600; text-shadow: 0 0 10px rgba(255, 0, 0, 0.2);">{{ error }}</p>
+        {% endif %}
+    </div>
+
+    
+    <!-- Campo de pasword exclusivo admin -->
+    <div id="adminModal" class="modal-overlay" style="display: none;">
+        <div class="modal-content login-card">
+            <h3>Acceso de Administrador</h3>
+            <p class="subtitle">Se requiere clave maestra para continuar</p>
+            
+            <div class="form-group">
+                <input type="password" id="adminPass" name="password" placeholder="Clave secreta" form="loginForm">
+            </div>
+            
+            <div class="modal-buttons">
+                <button type="button" onclick="closeModal()" class="btn-secondary">Cancelar</button>
+                <button type="button" onclick="submitFinal()" class="btn-primary">Entrar al Sistema</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const celularInput = document.getElementById('telefono');
+        const adminModal = document.getElementById('adminModal');
+        const loginForm = document.getElementById('loginForm');
+        const adminPassInput = document.getElementById('adminPass');
+
+        const ADMIN_NUMBER = "7774399424"; 
+
+        // 1. Escuchador para el primer paso (Continuar)
+        loginForm.addEventListener('submit', (e) => {
+            const valorCelular = celularInput.value.trim();
+
+            if (valorCelular === ADMIN_NUMBER) {
+                e.preventDefault(); // Detenemos el envío para mostrar el modal
+                adminModal.style.display = 'flex';
+                adminPassInput.focus();
+            }
+            // Si no es admin, el e.preventDefault no se ejecuta y el form se va directo.
+        });
+
+        // 2. Función para el envío FINAL desde el modal
+        function submitFinal() {
+            if (adminPassInput.value.trim() === "") {
+                alert("Por favor, ingresa la clave maestra.");
+                return;
+            }
+            // Esto envía el formulario saltándose el EventListener anterior
+            loginForm.submit(); 
+        }
+
+        function closeModal() {
+            adminModal.style.display = 'none';
+            adminPassInput.value = "";
+        }
+
+        window.onclick = function(event) {
+            if (event.target == adminModal) { closeModal(); }
+        }
+
+        // 3. Permitir que el "Enter" envíe el formulario desde el campo de password
+        adminPassInput.addEventListener('keydown', (e) => {
+            if (e.key === "Enter") {
+                e.preventDefault(); // Evitamos cualquier comportamiento extraño
+                submitFinal();      // Llamamos a tu función que hace el loginForm.submit()
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,139 @@
+.receipt-viewer {
+    max-width: 400px;
+    margin: 20px auto;
+    padding: 15px;
+}
+
+.viewer-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    padding: 0 5px; /* Alineado con los bordes de la card */
+}
+
+.receipt-card {
+    background: white;
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+}
+
+.receipt-img {
+    width: 100%;
+    height: auto;
+    display: block;
+    cursor: zoom-in;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.receipt-info {
+    padding: 20px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.info-group label {
+    display: block;
+    font-size: 0.7rem;
+    color: #8E959B;
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+
+.info-group span {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #1a1a1a;
+}
+
+.btn-back {
+    display: block;
+    text-align: center;
+    margin-top: 25px;
+    color: #8E959B;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.viewer-header h3 {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: #1a1a1a;
+    margin: 0;
+}
+
+.status-badge-pago {
+    display: inline-block;
+    padding: 6px 14px;
+    border-radius: 50px;
+    font-size: 0.65rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    /* Evitamos que herede colores transparentes */
+    border: 1px solid rgba(0,0,0,0.05); 
+}
+
+.receipt-info {
+    padding: 20px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+/* Hace que la nota ocupe las dos columnas */
+.full-width {
+    grid-column: span 2;
+    margin-top: 10px;
+    border-top: 1px solid #f2f2f2;
+    padding-top: 15px;
+}
+
+.receipt-note {
+    font-size: 0.85rem;
+    color: #444;
+    line-height: 1.4;
+    margin: 5px 0 0 0;
+    font-style: italic; /* Opcional, para diferenciarla de los datos fijos */
+}
+/* Limpiamos cualquier estilo previo que pueda estar blanqueando el texto */
+.status-text-inline {
+    font-size: 0.95rem;
+    font-weight: 800 !important; /* Más negrita para que resalte */
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 4px;
+}
+
+/* PAGADO (Verde) */
+.status-text-inline.Pagado, 
+.status-text-inline.pagado, 
+.status-text-inline.PAGADO {
+    color: #10b981 !important;
+}
+
+/* RECHAZADO (Rojo) */
+.status-text-inline.Rechazado, 
+.status-text-inline.rechazado, 
+.status-text-inline.RECHAZADO {
+    color: #ef4444 !important;
+}
+
+/* EN REVISIÓN / PENDIENTE (Naranja) */
+.status-text-inline.Pendiente, 
+.status-text-inline.pendiente, 
+.status-text-inline.PENDIENTE {
+    color: #3b82f6 !important; /* Este es un azul vibrante y limpio */
+}
+
+/* Puntito indicador para que se vea Pro */
+.status-text-inline::before {
+    content: "●";
+    font-size: 0.8rem;
+    display: inline-block;
+}

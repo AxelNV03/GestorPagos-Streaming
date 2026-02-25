@@ -1,0 +1,665 @@
+/* ==================================================================================================================== */
+/* Barra de Filtros */
+/* ==================================================================================================================== */
+/* --- LA CARD CONTENEDORA --- */
+.card-filters {
+    background: #ffffff;
+    border: 1px solid #eef0f2;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+/* --- EL FORMULARIO --- */
+.card-filters .filter-form {
+    display: flex;
+    gap: 15px;
+    align-items: flex-end;
+    width: 100%;
+    margin: 0;
+}
+
+/* --- GRUPOS DE FILTROS --- */
+.card-filters .filter-group,
+.card-filters .filter-group-btn {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+}
+
+/* 1. BUSCADOR - TOMA EL ESPACIO DISPONIBLE */
+.card-filters .filter-group.buscador {
+    flex: 1 1 0%;
+    min-width: 200px;
+    max-width: none;
+}
+
+/* 2. PLATAFORMA - ANCHO MEDIO */
+.card-filters .filter-group.plataforma {
+    flex: 0 0 180px;
+    min-width: 180px;
+    max-width: 180px;
+}
+
+/* 3. MES Y AÑO - COMPACTOS */
+.card-filters .filter-group.small {
+    flex: 0 0 110px;
+    min-width: 110px;
+    max-width: 110px;
+}
+
+/* 4. BOTÓN */
+.card-filters .filter-group-btn {
+    flex: 0 0 auto;
+}
+
+/* --- LABELS --- */
+.card-filters .filter-label {
+    display: block;
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #a0aec0;
+    margin-bottom: 6px;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+}
+
+/* --- INPUTS Y SELECTS --- */
+.card-filters .minimal-input {
+    width: 100%;
+    height: 38px;
+    padding: 8px 12px;
+    font-size: 0.85rem;
+    background-color: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    color: #2d3748;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+    margin: 0;
+}
+
+.card-filters .minimal-input:focus {
+    outline: none;
+    background-color: #fff;
+    border-color: #3182ce;
+    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+}
+
+/* --- BOTÓN FILTRAR --- */
+.card-filters .btn-filter {
+    height: 38px;
+    padding: 0 25px;
+    background-color: #000000;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background-color 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.card-filters .btn-filter:hover {
+    background-color: #000000;
+}
+
+.card-filters .btn-filter i {
+    font-size: 0.9rem;
+}
+
+/* --- RESPONSIVE --- */
+@media (max-width: 992px) {
+    .card-filters .filter-form {
+        flex-wrap: wrap;
+    }
+    
+    .card-filters .filter-group.buscador {
+        flex: 1 1 100%;
+        max-width: none;
+    }
+    
+    .card-filters .filter-group.plataforma {
+        flex: 1 1 200px;
+    }
+}
+.card-filters {
+    background: #ffffff;
+    border: 1px solid #eef0f2;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    
+    /* --- EL ESPACIO MÁGICO --- */
+    margin-bottom: 2rem; /* Esto separa la card de la tabla */
+}
+/* ==================================================================================================================== */
+/* Tabla de cobros */
+/* ==================================================================================================================== */
+.table-sm-custom {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+    color: #4a5568;
+}
+
+
+.table-sm-custom {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+    color: #4a5568;
+}
+
+/* --- ENCABEZADOS --- */
+.table-sm-custom thead th {
+    background-color: #f8fafc;
+    color: #718096;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.7rem;
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 2px solid #edf2f7;
+    letter-spacing: 0.05em;
+
+    position: sticky;
+    top: 0; 
+    z-index: 10;
+
+}
+
+/* --- FILAS Y CELDAS --- */
+.table-sm-custom tbody td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #edf2f7;
+    vertical-align: middle;
+}
+
+.table-sm-custom tbody tr:hover {
+    background-color: #f7fafc; /* Efecto hover sutil */
+}
+
+/* --- DIVISOR DE MES (EL QUE QUERÍAS) --- */
+.month-divider td {
+    background-color: #000000 !important; /* Fondo oscuro pro */
+    color: #ffffff !important;
+    font-weight: 700;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 10px 15px !important;
+}
+
+/* --- BADGES DE ESTADO (EN REVISIÓN, ACEPTADO, RECHAZADO) --- */
+.badge-status {
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    display: inline-block;
+}
+
+.badge-en-revision { background-color: #feebc8; color: #975a16; } /* Naranja/Amarillo */
+.badge-aceptado { background-color: #c6f6d5; color: #22543d; }    /* Verde */
+.badge-rechazado { background-color: #fed7d7; color: #822727; }   /* Rojo */
+.badge-pendiente { background-color: #edf2f7; color: #4a5568; }   /* Gris */
+
+/* --- BOTONES DE ACCIÓN (ÚLTIMA COLUMNA) --- */
+.actions-flex {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+}
+
+.btn-xs {
+    padding: 5px 10px;
+    font-size: 0.75rem;
+    border-radius: 6px;
+    border: 1px solid #e2e8f0;
+    background: #fff;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.btn-success:hover { background: #48bb78; color: white; border-color: #48bb78; }
+.btn-danger:hover { background: #f56565; color: white; border-color: #f56565; }
+.btn-outline-primary { color: #3182ce; border-color: #bee3f8; }
+.btn-outline-primary:hover { background: #ebf8ff; }
+
+/* --- ICONOS --- */
+.bi-image { font-size: 1.1rem; }
+.text-danger-x { color: #e53e3e; font-weight: bold; }
+/* ==================================================================================================================== */
+/* Alertas de la tablas */
+/* ==================================================================================================================== */
+/* Naranja para Pendiente (Advertencia) 
+/* Estilo base para todos los badges */
+.badge-status {
+    display: inline-block;
+    padding: 6px 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #fff;
+    text-align: center;
+    min-width: 90px;
+}
+
+/* PAGADO */
+.badge-aceptado {
+    background-color: #28a745;
+}
+
+/* RECHAZADO */
+.badge-rechazado {
+    background-color: #dc3545;
+}
+
+/* ATRASADO */
+.badge-atrasado {
+    background-color: #fd7e14;
+}
+
+/* PENDIENTE */
+.badge-pendiente {
+    background-color: #ffc107;
+    color: #212529; /* Mejor contraste en amarillo */
+}
+
+/* Texto sin datos */
+.text-muted {
+    color: #6c757d;
+    font-style: italic;
+}
+/* ==================================================================================================================== */
+/* Estilo Form cargar comprobante*/
+/* ==================================================================================================================== */
+/* Contenedor Único para el Modal de Subida */
+/* Contenedor fondo (Overlay) */
+.up-mgr-overlay {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    left: 0; top: 0;
+    width: 100%; height: 100%;
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(8px);
+    align-items: center;
+    justify-content: center;
+}
+
+/* Tarjeta del Modal */
+.up-mgr-card {
+    background: #ffffff;
+    width: 90%;
+    max-width: 440px;
+    border-radius: 20px;
+    box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
+    animation: upMgrSlide 0.3s ease-out;
+    overflow: hidden;
+    border: 1px solid #e2e8f0;
+}
+
+@keyframes upMgrSlide {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+/* Cabecera */
+.up-mgr-header {
+    padding: 20px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+/* Banner de Datos */
+.up-mgr-info-box {
+    background: #f8fafc;
+    margin: 20px 24px;
+    padding: 16px;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    display: flex;
+    justify-content: space-between;
+}
+
+.up-mgr-label {
+    font-size: 10px;
+    font-weight: 800;
+    color: #94a3b8;
+    text-transform: uppercase;
+    display: block;
+}
+
+.up-mgr-value {
+    font-size: 14px;
+    font-weight: 600;
+    color: #000000; /* Color del nombre */
+}
+
+/* Zona de Input */
+.up-mgr-body { 
+    padding: 0 24px 24px 24px; 
+    box-sizing: border-box; /* Crucial para que el padding no sume al ancho */
+}
+
+.up-mgr-input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 12px;
+    border: 2px dashed #cbd5e1;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 13px;
+    transition: all 0.2s;
+}
+
+.up-mgr-input:hover { border-color: #000000; background: #f0f7ff; }
+
+/* Botonera */
+.up-mgr-footer {
+    background: #f8fafc;
+    padding: 16px 24px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+}
+
+.up-mgr-btn {
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: 0.2s;
+}
+
+.up-mgr-btn-cancel { background: #e2e8f0; color: #475569; }
+.up-mgr-btn-submit { background: #1e293b; color: #ffffff; }
+
+
+.up-mgr-textarea {
+    width: 100%;
+    box-sizing: border-box; /* Mantiene el ancho dentro de la card */
+    padding: 12px;
+    border: 1px solid #cbd5e1; /* Borde sólido, no dashed */
+    border-radius: 12px;
+    font-size: 13px;
+    font-family: inherit;
+    resize: none;
+    background-color: #ffffff;
+    transition: all 0.2s ease;
+    display: block;
+}
+
+/* Para que se sienta vivo al hacer clic */
+.up-mgr-textarea:focus {
+    outline: none;
+    border-color: #3b82f6;
+    background-color: #f8fbff;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+
+/* ==================================================================================================================== */
+/* Modal ver comprobante */
+/* ==================================================================================================================== */
+/* --- Estilo Minimalista B&W para Visor --- */
+/* --- Namespace CVP: Estética 'Subir Comprobante' --- */
+
+.cvp-modal-container {
+    margin: 1.75rem auto;
+    max-width: 450px !important; /* Ancho fijo para que no se estire */
+}
+
+.cvp-modal-card {
+    border: none !important;
+    border-radius: 25px !important; /* Bordes muy redondeados como tu ejemplo */
+    box-shadow: 0 15px 35px rgba(0,0,0,0.1) !important;
+    background-color: #f8fafc !important; /* Fondo sutilmente azulado */
+}
+
+.cvp-header {
+    border-bottom: 1px solid #eef2f6 !important;
+    padding: 1.5rem 2rem !important;
+    background: #fff;
+}
+
+.cvp-title {
+    color: #2c3e50 !important;
+    font-weight: 700 !important;
+    font-size: 1.1rem !important;
+}
+
+.cvp-body {
+    padding: 1.5rem 2rem !important;
+}
+
+/* Caja de imagen tipo tarjeta interna */
+.cvp-image-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 15px;
+    padding: 12px;
+    margin-bottom: 1.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;     /* Centra vertical */
+    min-height: 400px;       /* Altura suficiente para tickets largos */
+    max-height: 500px;
+    overflow: hidden;
+}
+
+.cvp-img-render {
+    max-width: 100%;
+    max-height: 100%; /* Se adapta al contenedor */
+    width: auto;      /* Mantiene proporción */
+    height: auto;     /* Mantiene proporción */
+    border-radius: 10px;
+    object-fit: contain;
+    display: block !important;   /* Quita el comportamiento de 'texto' */
+    margin-left: auto !important;  /* Empuja desde la izquierda */
+    margin-right: auto !important;
+}
+
+.cvp-label {
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: #94a3b8;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.cvp-select {
+    border-radius: 10px !important;
+    border: 1px solid #e2e8f0 !important;
+    padding: 0.6rem !important;
+    font-weight: 600 !important;
+    color: #2c3e50 !important;
+    margin-bottom: 1.5rem !important;
+    border: 2px solid #000 !important; /* Borde negro continuo */
+}
+
+/* --- Botones Black & White --- */
+.cvp-button-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.cvp-btn {
+    padding: 10px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 0.85rem;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.cvp-btn-white {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    color: #475569;
+}
+
+.cvp-btn-white:hover { background: #f1f5f9; }
+
+.cvp-btn-black {
+    background: #2c3e50; /* Gris muy oscuro/negro del ejemplo */
+    border: none;
+    color: #ffffff;
+}
+
+.cvp-btn-black:hover { background: #1e293b; }
+
+.cvp-footer {
+    border-top: none !important;
+    padding: 0 2rem 2rem 2rem !important;
+    justify-content: center !important;
+}
+
+.cvp-btn-cancel {
+    background: #e2e8f0;
+    border: none;
+    color: #64748b;
+    padding: 8px 25px;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.cvp-wrapper-centrado {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 10px;
+    margin-bottom: 15px;
+    
+    /* Centrado Maestro */
+    display: flex !important;
+    justify-content: center !important; /* Horizontal */
+    align-items: center !important;     /* Vertical */
+    max-height: 200px;       /* Ajusta este valor a tu gusto */
+    height: 200px;
+    width: 100%;
+    overflow: hidden;
+    box-sizing: border-box;
+    text-align: center !important;      /* Por si las dudas */
+}
+
+.cvp-img-centrada {
+    display: block !important;
+    margin: 0 auto !important;          /* Centrado por margen */
+    max-width: 100%;
+    max-height: 350px;
+    border-radius: 8px;
+    object-fit: contain;
+}
+
+/* Estilo cuando la imagen está en pantalla completa */
+#imgComprobanteVisor:fullscreen {
+    object-fit: contain;
+    background-color: rgba(0,0,0,0.9); /* Fondo oscuro elegante */
+    padding: 20px;
+}
+
+/* Safari support */
+#imgComprobanteVisor:-webkit-full-screen {
+    object-fit: contain;
+    background-color: rgba(0,0,0,0.9);
+}
+
+
+/* ==================================================================================================================== */
+/* Modal Notas */
+/* ==================================================================================================================== */
+/* Contenedor principal con clase única */
+.nt-overlay-custom {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.75);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+/* La tarjeta del modal de nota */
+.nt-modal-card {
+    background: #ffffff !important;
+    border: 2px solid #000000 !important;
+    border-radius: 8px !important;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    overflow: hidden;
+}
+
+/* El cuerpo con scroll independiente */
+.nt-modal-body {
+    padding: 20px !important;
+    max-height: 300px; /* Altura ideal para la Thinkpad */
+    overflow-y: auto;
+}
+
+/* El cuadro interno del texto (Forzando B&W) */
+.nt-text-container {
+    background: #f8fafc !important; /* Gris ultra claro */
+    border: 1px solid #000000 !important;
+    border-left: 6px solid #000000 !important; /* Acento grueso a la izquierda */
+    padding: 15px !important;
+    border-radius: 4px !important;
+    box-shadow: none !important;
+}
+
+/* Tipografía de la nota */
+.nt-nota-p {
+    color: #000000 !important;
+    font-size: 14px !important;
+    line-height: 1.6 !important;
+    margin: 0 !important;
+    white-space: pre-wrap;
+}
+
+/* Botón de cierre B&W */
+.nt-btn-close {
+    background: #000000 !important;
+    color: #ffffff !important;
+    border: none !important;
+    padding: 12px !important;
+    text-transform: uppercase;
+    border-radius: 8px !important; /* Esquinas redondeadas */
+    letter-spacing: 1px;
+    transition: 0.2s;
+}
+
+.nt-btn-close:hover {
+    background: #333333 !important;
+}
+
+/* Scrollbar personalizada para este modal */
+.nt-modal-body::-webkit-scrollbar {
+    width: 5px;
+}
+.nt-modal-body::-webkit-scrollbar-thumb {
+    background: #000;
+}
