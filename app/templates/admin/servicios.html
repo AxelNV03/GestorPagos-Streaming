@@ -1,4 +1,4 @@
-{% extends 'layouts/base_admin.html' %}
+{% extends 'layouts/admin_layout.html' %}
 {% block main_content %}
     <h2>Servicios ({{ data.finanzas_plataformas|length }})</h2>
     
@@ -12,21 +12,84 @@
                     <div class="metrics-container">
                         <div class="metric-block">
                             <p class="label">Calendario</p>
-                            <p><strong>Periodo:</strong> {{ data.periodo.nombre_mes|default('Sin Mes') }} {{ data.periodo.anio }}</p>
-                            <p><strong>Límite pago:</strong> {{ data.periodo.limite_pago|default('No definido') }}</p>
+
+                            <p>
+                                <strong>Periodo:</strong> 
+                                {% if data.periodo.nombre_mes %}
+                                    {{ data.periodo.nombre_mes }} {{ data.periodo.anio }}
+                                {% else %}
+                                    <span class="text-muted">Sin Periodo Activo</span>
+                                {% endif %}
+                            </p>
+
+                            <p>
+                                <strong>Límite pago:</strong> 
+                                {% if data.periodo.limite_pago %}
+                                    {{ data.periodo.limite_pago }}
+                                {% else %}
+                                    <span class="text-muted">Día no definido</span>
+                                {% endif %}
+                            </p>
+
                         </div>
 
                         <div class="metric-block">
                             <p class="label">Finanzas</p>
-                            <p><strong>Recaudado:</strong> <span class="text-success"><strong>${{ "{:,.2f}".format(data.recaudacion.recaudado|float) }}</strong></span></p>
-                            <p><strong>Restante:</strong> <span class="text-danger"><strong>${{ "{:,.2f}".format(data.recaudacion.pendiente|float) }}</strong></span></p>
+
+                            <p>
+                                <strong>Recaudado:</strong> 
+                                <span class="text-success">
+                                    <strong>
+                                        {% if data.recaudacion.recaudado %}
+                                            ${{ "{:,.2f}".format(data.recaudacion.recaudado | float) }}
+                                        {% else %}
+                                            $0.00
+                                        {% endif %}
+                                    </strong>
+                                </span>
+                            </p>
+
+                            <p>
+                                <strong>Restante:</strong> 
+                                <span class="text-danger">
+                                    <strong>
+                                        {% if data.recaudacion.pendiente %}
+                                            ${{ "{:,.2f}".format(data.recaudacion.pendiente | float) }}
+                                        {% else %}
+                                            $0.00
+                                        {% endif %}
+                                    </strong>
+                                </span>
+                            </p>
+
+
                         </div>
 
                         <div class="metric-block">
                             <p class="label">Usuarios Globales</p>
-                            <div class="user-ratio" title="Progreso global: {{ (data.conteo_global.pagos / data.conteo_global.users * 100)|round(1) if data.conteo_global.users > 0 else 0 }}%">
-                                <span class="ratio-number">{{ data.conteo_global.pagos }}/{{ data.conteo_global.users }}</span>
-                                <p class="sub-label">Pagos recibidos</p>
+                            {# 1. Preparamos los números de forma segura usando filtros #}
+                            {% set total_u = data.conteo_global.users | default(0) | int %}
+                            {% set pagos_u = data.conteo_global.pagos | default(0) | int %}
+                            
+                            {# 2. Calculamos el porcentaje solo si hay usuarios para evitar crash #}
+                            {% set porcentaje = (pagos_u / total_u * 100) | round(1) if total_u > 0 else 0 %}
+
+                            <div class="user-ratio" title="Progreso global: {{ porcentaje }}%">
+                                <span class="ratio-number">
+                                    {% if total_u > 0 %}
+                                        {{ pagos_u }}/{{ total_u }}
+                                    {% else %}
+                                        0/0
+                                    {% endif %}
+                                </span>
+                                
+                                <p class="sub-label">
+                                    {% if total_u > 0 %}
+                                        Pagos recibidos ({{ porcentaje }}%)
+                                    {% else %}
+                                        Sin usuarios activos
+                                    {% endif %}
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -139,7 +202,17 @@
                         </button>
                     </td>
                 </tr>
-            {% endfor %}
+
+                {% else %}
+                    {# ESTO SE MUESTRA SI LA LISTA ESTÁ VACÍA #}
+                    <tr>
+                        <td colspan="11" style="text-align: center; padding: 3rem; color: #a0aec0;">
+                            <i class="bi bi-folder2-open" style="font-size: 2.5rem; display: block; margin-bottom: 1rem;"></i>
+                            <p>No se encontraron plataformas registradas.</p>
+                            <p style="font-size: 0.85rem;">Haz clic en "Nuevo Servicio" para empezar.</p>
+                        </td>
+                    </tr>
+                {% endfor %}
         </tbody>
     </table>
 

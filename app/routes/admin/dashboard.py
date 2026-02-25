@@ -27,11 +27,6 @@ def index():
 def usuarios():
     return "Pantalla de Usuarios (Próximamente)"
 
-@admin_bp.route('/servicios')
-@admin_required
-def servicios():
-    return "Pantalla de Servicios/Plataformas (Próximamente)"
-
 @admin_bp.route('/cobros')
 @admin_required
 def cobros():
