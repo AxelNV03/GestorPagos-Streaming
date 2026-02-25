@@ -2,9 +2,8 @@ import os
 from flask import Flask
 from flask_migrate import Migrate
 from dotenv import load_dotenv
-# Instanciamos las extensiones fuera para evitar importaciones circulares
 from app.core.db_manager import db, ManagerDB
-from .routes import all_blueprints
+from app.routes import register_blueprints
 
 migrate = Migrate()
 
@@ -32,7 +31,23 @@ def create_app():
     migrate.init_app(app, db)
 
     # Registro dinámico de Blueprints
-    for bp in all_blueprints:
-        app.register_blueprint(bp)
+    register_blueprints(app)
+
+    @app.context_processor
+    def inject_assets():
+        """Inyecta automáticamente los CSS según la carpeta del módulo"""
+        def get_css_from_folder(folder):
+            path = os.path.join(app.root_path, 'static', 'css', folder)
+            try:
+                return [f for f in os.listdir(path) if f.endswith('.css')]
+            except FileNotFoundError:
+                return []
+
+        return dict(
+            admin_css=get_css_from_folder('admin'),
+            user_css=get_css_from_folder('user'),
+            auth_css=get_css_from_folder('auth')
+        )
 
     return app
+

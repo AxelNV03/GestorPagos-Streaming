@@ -1,16 +1,24 @@
 # app/routes/__init__.py
+# ===================================================================================================
+from app.routes.auth import auth_bp
+from app.routes.admin import admin_bp
+# from app.routes.user import user_bp # Descomenta cuando crees la carpeta user
+# ===================================================================================================
 
-# Importamos los Blueprints de cada archivo de la carpeta routes
-from .main import main_bp
-from .admin_routes import admin_bp
-from .user_routes import user_bp
+def register_blueprints(app):
+    """
+    Registra todos los Blueprints de la aplicación.
+    Aquí definimos los prefijos de URL de manera centralizada.
+    """
+    
+    # 1. Autenticación (Login, Logout)
+    # Sin prefijo ('/') para que el login sea la página de entrada
+    app.register_blueprint(auth_bp, url_prefix='/')
 
-# Aquí irás agregando los demás conforme los crees, por ejemplo:
-# from .admin import admin_bp
-# from .pagos import pagos_bp
+    # 2. Administración
+    # Todas las rutas dentro de admin (dashboard, usuarios, etc.) heredarán '/admin'
+    app.register_blueprint(admin_bp, url_prefix='/admin')
 
-all_blueprints = [
-    main_bp,
-    admin_bp,
-    user_bp
-]
+    # 3. Usuario / Cliente
+    # app.register_blueprint(user_bp, url_prefix='/dashboard')
+    print("🚀 Rutas: Blueprints registrados correctamente.")

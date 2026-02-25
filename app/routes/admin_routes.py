@@ -1,4 +1,4 @@
-# app/routes/admin.py
+# app/routes/admin_routes.py
 # ===================================================================================================
 from flask import Blueprint, render_template, session, redirect, url_for, g, current_app, request, flash, send_from_directory
 from functools import wraps
