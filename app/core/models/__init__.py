@@ -1,9 +1,9 @@
-from .plataformas import Plataforma
-from .periodos import Periodo  # <--- Nuevo import
-from .usuarios import Usuario
+from .plataforma import Plataforma
+from .periodo import Periodo  # <--- Nuevo import
+from .usuario import Usuario
 from .plataforma_usuario import PlataformaUsuario # <--- El nuevo integrante
-from .comprobantes import Comprobante
-from .cobros import Cobro
+from .comprobante import Comprobante
+from .cobro import Cobro
 
 __all__ = [
     'Plataforma',
@@ -11,5 +11,5 @@ __all__ = [
     'Usuario',
     'PlataformaUsuario',
     'Comprobante',
-    'cobros'
+    'Cobro'
 ]
