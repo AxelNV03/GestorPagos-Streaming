@@ -1,12 +1,11 @@
 import os
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from dotenv import load_dotenv
+# Instanciamos las extensiones fuera para evitar importaciones circulares
+from app.core.db_manager import db, ManagerDB
 from .routes import all_blueprints
 
-# Instanciamos las extensiones fuera para evitar importaciones circulares
-db = SQLAlchemy()
 migrate = Migrate()
 
 def create_app():
@@ -17,16 +16,9 @@ def create_app():
     app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 
     # Configurar directorio de almacenamiento 
-    env_upload_path = os.getenv('UPLOAD_FOLDER')
-    if env_upload_path:
-        app.config['UPLOAD_FOLDER'] = env_upload_path
-    else:
-        app.config['UPLOAD_FOLDER'] = os.path.join(os.getcwd(), 'storage', 'comprobantes')
+    app.config['UPLOAD_FOLDER'] = os.getenv('UPLOAD_FOLDER', os.path.join(os.getcwd(), 'storage', 'comprobantes'))
+    os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
-    try:
-        os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
-    except OSError as e:
-        print(f"Error creando el directorio: {e}")
 
     # Configuración de SQLAlchemy para MariaDB
     app.config['SQLALCHEMY_DATABASE_URI'] = (
@@ -36,7 +28,7 @@ def create_app():
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
     # Inicialización de extensiones
-    db.init_app(app)
+    m_db = ManagerDB(app, fresh=False)
     migrate.init_app(app, db)
 
     # Registro dinámico de Blueprints

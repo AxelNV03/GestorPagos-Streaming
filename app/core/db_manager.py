@@ -4,7 +4,7 @@ from contextlib import contextmanager
 
 db = SQLAlchemy()
 
-class manager_db:
+class ManagerDB:
     # Crea una instancia de la conexion a la db
     def __init__(self, app=None, fresh=False):
         if app:
