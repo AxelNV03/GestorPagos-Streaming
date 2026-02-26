@@ -21,13 +21,3 @@ def index():
 
     # 3. Renderizamos la página principal del admin
     return render_template('admin/dashboard.html', data=datos)
-
-@admin_bp.route('/usuarios')
-@admin_required
-def usuarios():
-    return "Pantalla de Usuarios (Próximamente)"
-
-@admin_bp.route('/cobros')
-@admin_required
-def cobros():
-    return "Pantalla de Cobros (Próximamente)"

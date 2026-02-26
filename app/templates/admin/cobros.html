@@ -1,4 +1,4 @@
-{% extends 'layouts/base_admin.html' %}
+{% extends 'layouts/admin_layout.html' %}
 {% block main_content %}
     <!-- Card de Filtros -->
     <div class="card-filters shadow-sm mb-4">
@@ -16,6 +16,8 @@
                     {% for p in data.plats %}
                     <option value="{{ p.id }}">{{ p.nombre }}</option>
                     {% endfor %}
+
+                    
                 </select>
             </div>
 
@@ -156,6 +158,17 @@
                         </td>
                     </tr>
                     {% endfor %}
+                {% else %}
+                    {# ESTO SE MUESTRA SI NO HAY NINGÚN MES NI REGISTRO #}
+                    <tr>
+                        <td colspan="7" class="text-center" style="padding: 4rem; color: #6c757d;">
+                            <div class="empty-state">
+                                <i class="bi bi-cash-stack" style="font-size: 3rem; opacity: 0.3;"></i>
+                                <p class="mt-3">No hay historial de cobros para mostrar.</p>
+                                <small>Intenta cambiando los filtros de búsqueda o el periodo.</small>
+                            </div>
+                        </td>
+                    </tr>
                 {% endfor %}
             </tbody>
         </table>

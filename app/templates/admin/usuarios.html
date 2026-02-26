@@ -1,4 +1,4 @@
-{% extends 'layouts/base_admin.html' %}
+{% extends 'layouts/admin_layout.html' %}
 {% block main_content %}
 
     <h2>Gestión de Usuarios </h2>
@@ -129,7 +129,7 @@
                 </tr>
             {% else %}
                 <tr>
-                    <td colspan="5" class="text-center">No se encontraron usuarios con esos filtros.</td>
+                    <td colspan="5" class="text-center">Sin coincidencia de usuarios.</td>
                 </tr>
             {% endfor %}
         </tbody>
