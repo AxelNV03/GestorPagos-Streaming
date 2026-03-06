@@ -56,4 +56,4 @@ def crear_sesion(user):
     session['user_id'] = user.id
     session['user_rol'] = user.rol
     session['user_nombre'] = user.nombres
-    
+# ===================================================================================================    

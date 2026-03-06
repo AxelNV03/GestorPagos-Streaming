@@ -4,7 +4,6 @@ from app.routes.auth import auth_bp
 from app.routes.admin import admin_bp
 # from app.routes.user import user_bp # Descomenta cuando crees la carpeta user
 # ===================================================================================================
-
 def register_blueprints(app):
     """
     Registra todos los Blueprints de la aplicación.
@@ -22,3 +21,4 @@ def register_blueprints(app):
     # 3. Usuario / Cliente
     # app.register_blueprint(user_bp, url_prefix='/dashboard')
     print("🚀 Rutas: Blueprints registrados correctamente.")
+# ===================================================================================================
