@@ -2,7 +2,7 @@
 # ===================================================================================================
 import os
 from flask import Blueprint, render_template, request, redirect, url_for, session
-from app.services import UserService
+from app.services import UsuarioService
 # ===================================================================================================
 auth_bp = Blueprint('auth', __name__)
 # ===================================================================================================
@@ -23,7 +23,7 @@ def login():
             return render_template('auth/login.html', error="Número inválido (debe tener 10 dígitos)")
         
         # 2. Consultar en la DB
-        user = UserService.buscar_usuario(tel=telefono)
+        user = UsuarioService.buscar_usuario(busqueda=telefono)
 
         if user:
             # 4. Verificación de Roles

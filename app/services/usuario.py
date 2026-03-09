@@ -1,10 +1,12 @@
-# app/services/user_service.py
+# app/services/usuario.py
 # ===================================================================================================
 from app.core.models import Usuario # Importamos el db y el Modelo directamente
+from app.core.models.plataforma_usuario import PlataformaUsuario
 from app.core.db_manager import db, ManagerDB  # Importa el objeto db de SQLAlchemy
 from sqlalchemy import or_
+from sqlalchemy.exc import IntegrityError
 # ===================================================================================================
-class UserService:
+class UsuarioService:
     @staticmethod
     def buscar_usuario(busqueda=None, user_id=None):
             """
@@ -14,16 +16,15 @@ class UserService:
             """
             # 1. Búsqueda directa (ID no entra en el buscador de texto)
             if user_id:
-                u = Usuario.query.get(user_id)
-                return [u] if u else []
+                return Usuario.query.get(user_id)
 
+            # 2. Si no hay búsqueda ni ID, regresamos lista vacía
             if not busqueda:
-                return []
+                return None            
+            # 3. Limpieza del término de búsqueda
+            search = f"%{str(busqueda).strip()}%"
 
-            term_str = str(busqueda).strip()
-            search = f"%{term_str}%"
-
-            # 2. Búsqueda por texto (Nombre, Apellidos y Teléfono únicamente)
+            # 4. Búsqueda por texto con ILIKE (Case Insensitive)
             return Usuario.query.filter(
                 or_(
                     Usuario.telefono.ilike(search),
@@ -31,18 +32,14 @@ class UserService:
                     Usuario.apeP.ilike(search),
                     Usuario.apeM.ilike(search)
                 )
-            ).all()
+            ).first()
     # ===================================================================================================
     @staticmethod
     def obtener_usuarios(search_query=None, plataforma_id=None):
-        """
-        Consulta usuarios aplicando filtros dinámicos.
-        Retorna una lista de objetos Usuario.
-        """
-        # 1. Iniciamos la consulta base
+        # 1. Consulta base
         query = Usuario.query
 
-        # 2. Si hay búsqueda de texto, aplicamos el OR en nombres, apellidos y teléfono
+        # 2. Búsqueda por texto
         if search_query:
             search = f"%{search_query.strip()}%"
             query = query.filter(
@@ -54,27 +51,31 @@ class UserService:
                 )
             )
 
-        # 3. Si hay filtro de plataforma, hacemos el JOIN
+        # 3. Filtro de plataforma (CORREGIDO)
         if plataforma_id:
-            # SQLAlchemy es inteligente: sabe cómo unir Usuario con Plataforma 
-            # a través de tu tabla intermedia 'plataforma_usuario'
-            query = query.join(Usuario.plataformas).filter_by(id=plataforma_id)
+            # Unimos con la tabla nexo usando el nombre de la relación en el modelo Usuario
+            query = query.join(PlataformaUsuario).filter(
+                PlataformaUsuario.plataforma_id == plataforma_id
+            )
 
-        # 4. Ordenamos por el más reciente y ejecutamos
+        # 4. Orden y ejecución
         return query.order_by(Usuario.id.desc()).all()
     # ===================================================================================================
-    @staticmethod
     def crear_usuario(datos):
-        nuevo_usuario = Usuario(
-            nombres=datos['nombres'],
-            apeP=datos['apeP'],
-            apeM=datos.get('apeM'), # .get() por si es opcional
-            telefono=datos['telefono'],
-            rol='no_admin'
-        )
-        db.session.add(nuevo_usuario)
-        db.session.commit() # ¡Importante! En SQLAlchemy hay que hacer commit
-        return nuevo_usuario
+        try:
+            nuevo_usuario = Usuario(
+                nombres=datos.get('nombres'),
+                apeP=datos.get('apeP'),
+                apeM=datos.get('apeM'),
+                telefono=datos.get('telefono'),
+                rol='no_admin'
+            )
+            db.session.add(nuevo_usuario)
+            db.session.commit()
+            return nuevo_usuario
+        except IntegrityError:
+            db.session.rollback() # ¡Vital! Si falla, hay que limpiar la sesión
+            return None # O lanza una excepción personalizada: "El teléfono ya existe"
     # ===================================================================================================
     @staticmethod
     def eliminar_usuario(user_id):

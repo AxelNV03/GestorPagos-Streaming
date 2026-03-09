@@ -1,0 +1,66 @@
+{% extends 'layouts/admin_layout.html' %}
+{% block main_content %}
+    <h2>Panel Principal</h2>
+
+    <!-- Card de Resumen Mensual-->
+    <div class="dashboard-top-grid">
+        <header class="status-summary-card">
+            <div class="summary-info">
+                <h3 class="summary-title">Resumen Mensual</h3>
+                <div class="summary-details">
+                    <p>
+                        <strong>Periodo:</strong> 
+                        {% if periodo %}
+                            {{ periodo.label }}
+                        {% else %}
+                            <span class="text-muted">Sin Periodo Activo</span>
+                        {% endif %}
+                    </p>
+
+                    <p>
+                        <strong>Recaudado:</strong> 
+                        {% if periodo and periodo.total_recaudado > 0 %}
+                            <span class="text-success">
+                                ${{ "{:,.2f}".format(periodo.total_recaudado) }}
+                            </span>
+                        {% else %}
+                            <span class="text-muted">$0.00</span>
+                        {% endif %}
+                    </p>
+
+                    <p>
+                        <strong>Restante:</strong> 
+                        {% if periodo and periodo.total_pendiente > 0 %}
+                            <span class="text-danger">
+                                ${{ "{:,.2f}".format(periodo.total_pendiente) }}
+                            </span>
+                        {% else %}
+                            <span class="text-muted">$0.00</span>
+                        {% endif %}
+                    </p>
+                </div>
+            
+
+                <div class="mini-status-list">
+                    {% for p in pendientes %}
+                        <div class="mini-status-item">
+                            <div class="item-brand">
+                                {# Usamos 'or' para que sea más corto que el if/else #}
+                                <img src="{{ p.url_logo or url_for('static', filename='img/logos/default.png') }}" 
+                                    alt="{{ p.nombre }}" class="mini-logo">
+                                <span class="mini-name">{{ p.nombre }}</span>
+                            </div>
+                            
+                            <div class="item-status">
+                                {# Si está en la lista 'pendientes', por definición no está pagada #}
+                                <span class="dot-status dot-error">PENDIENTE</span>
+                            </div>
+                        </div>
+                    {% else %}
+                        {# Este bloque se ejecuta si la lista 'pendientes' está vacía #}
+                        <p class="text-muted">✅ ¡Todas las plataformas están al día!</p>
+                    {% endfor %}
+                </div>
+        </header>
+    </div>
+{% endblock %}

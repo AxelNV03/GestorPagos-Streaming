@@ -31,7 +31,6 @@ class Periodo(db.Model):
         return f"{self.nombre_mes} {self.anio}"
     
     @property
-
     def es_pasado(self):
         """Indica si el periodo ya terminó (mes anterior al actual)."""
         from datetime import date
@@ -40,7 +39,6 @@ class Periodo(db.Model):
         return self.anio == hoy.year and self.mes < hoy.month
 
     @property
-    
     def es_actual(self):
         """Verifica si es el periodo en curso."""
         from datetime import date

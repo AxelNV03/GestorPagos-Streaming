@@ -8,7 +8,7 @@ class PlataformaUsuario(db.Model):
     plataforma_id = db.Column(db.Integer, db.ForeignKey('plataformas.id', ondelete='CASCADE'), nullable=False)
 
     # Un vínculo puede tener muchos cobros (mes tras mes)
-    historial_cobros = db.relationship('Cobro', backref='registro_vinculo')
+    # historial_cobros = db.relationship('Cobro', backref='registro_vinculo')
 
     # El UNIQUE compuesto para evitar que un usuario se asigne dos veces a la misma plataforma
     __table_args__ = (
