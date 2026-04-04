@@ -1,0 +1,34 @@
+services:
+  db:
+    image: mariadb:12.2.2
+    container_name: pagos_db
+    restart: always
+    environment:
+      MARIADB_ROOT_PASSWORD: 1234
+      MARIADB_DATABASE: streaming
+      MARIADB_USER: nava
+      MARIADB_PASSWORD: 1234
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+
+  app:
+    build: .
+    container_name: pagos_app
+    volumes:
+      - .:/app
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_APP=run.py
+      - FLASK_DEBUG=1
+      - DB_HOST=db
+      - DB_USER=nava
+      - DB_PASSWORD=1234
+      - DB_NAME=streaming
+    depends_on:
+      - db
+
+volumes:
+  db_data:

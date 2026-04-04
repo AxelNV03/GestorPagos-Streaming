@@ -2,7 +2,7 @@ DROP DATABASE IF EXISTS streaming;
 CREATE DATABASE streaming;
 
 USE streaming;
-source /home/nv/KDE/www/pagos-project/app/core/tablas.sql
+source /home/nv/Proyectos/GestorPagos-Streaming/app/core/tablas.sql
 
 # Tabla: users, plataformas, plataforma_user, cobro, periodos
 INSERT INTO users (nombres, apeP, apeM, telefono, rol) VALUES 

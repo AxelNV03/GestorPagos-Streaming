@@ -7,3 +7,10 @@ MarkupSafe==3.0.3
 mysql-connector-python==9.6.0
 python-dotenv==1.2.1
 Werkzeug==3.1.5
+
+# Base de Datos y Conectividad
+SQLAlchemy==2.0.25
+
+# Validación y Utilidades
+pydantic==2.6.1
+python-dateutil==2.8.2
