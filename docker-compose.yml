@@ -16,6 +16,7 @@ services:
   app:
     build: .
     container_name: pagos_app
+    restart: always 
     volumes:
       - .:/app
     ports:
@@ -28,7 +29,8 @@ services:
       - DB_PASSWORD=1234
       - DB_NAME=streaming
     depends_on:
-      - db
+      db: # Versión extendida para evitar el error de conexión que vimos antes
+        condition: service_started
 
 volumes:
   db_data:
