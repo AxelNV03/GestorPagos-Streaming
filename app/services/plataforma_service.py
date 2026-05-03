@@ -1,0 +1,114 @@
+# app/services/plataforma_service.py
+# ===================================================================================================
+import os
+from flask import current_app
+from app import db
+from app.core.models.plataforma import Plataforma
+from app.core.models.plataforma_usuario import PlataformaUsuario
+from app.core.models.cobro import Cobro
+from werkzeug.utils import secure_filename
+from sqlalchemy import func
+# ===================================================================================================
+class PlataformaService:
+    @staticmethod
+    def pendientes_periodo(mes, anio):
+        """Obtiene las plataformas que tienen pagos pendientes para un periodo especifico"""
+        # Ajustamos el formato de fecha para que coincida con DATE de MariaDB (YYYY-MM-01)
+        fecha_busqueda = f"{anio}-{mes:02d}-01"
+        return Plataforma.query.join(PlataformaUsuario).join(Cobro).filter(
+            Cobro.mes_anio == fecha_busqueda,
+            Cobro.estado == 'pendiente'
+        ).distinct().all()
+    
+    @staticmethod
+    def obtener_todas():
+        """Retorna una lista con todas las plataformas registradas."""
+        return Plataforma.query.all()
+    
+    @staticmethod
+    def _procesar_y_guardar_logo(p_id, archivo_logo):
+        """Método de apoyo para procesar y guardar físicamente el logo en el servidor."""
+        if not archivo_logo or archivo_logo.filename == '':
+            return None
+            
+        nombre_seguro = secure_filename(archivo_logo.filename)
+        nombre_final = f"{p_id}_{nombre_seguro}"
+        ruta_completa = os.path.join(current_app.config['UPLOAD_LOGOS'], nombre_final)
+        
+        archivo_logo.save(ruta_completa)
+        return nombre_final
+
+    # ===============================================================================================
+
+    @staticmethod
+    def nueva_plataforma(datos, archivo_logo):
+        nueva_p = Plataforma(
+            nombre=datos.get('nombre'),
+            precio_total=datos.get('precio_total'),
+            dia_cobro=datos.get('dia_cobro'),
+            correo_admin=datos.get('correo_admin')
+        )
+        
+        db.session.add(nueva_p)
+        db.session.flush()
+
+        # Usamos el método de apoyo
+        nombre_logo = PlataformaService._procesar_y_guardar_logo(nueva_p.id, archivo_logo)
+        if nombre_logo:
+            nueva_p.url_logo = nombre_logo
+
+        db.session.commit()
+        return nueva_p
+    
+    @staticmethod
+    def editar_plataforma(p_id, datos, archivo_logo):
+        p = Plataforma.query.get_or_404(p_id)
+
+        p.nombre = datos.get('nombre')
+        p.precio_total = datos.get('precio_total')
+        p.dia_cobro = datos.get('dia_cobro')
+        p.correo_admin = datos.get('correo_admin')
+
+        db.session.flush()
+
+        # Si viene un nuevo logo, lo procesamos
+        if archivo_logo and archivo_logo.filename != '':
+            # 1. Borramos el logo anterior
+            if p.url_logo:
+                ruta_anterior = os.path.join(current_app.config['UPLOAD_LOGOS'], p.url_logo)
+                if os.path.exists(ruta_anterior):
+                    try:
+                        os.remove(ruta_anterior)
+                    except OSError:
+                        pass
+
+            # 2. Guardamos el nuevo usando el método de apoyo
+            p.url_logo = PlataformaService._procesar_y_guardar_logo(p.id, archivo_logo)
+
+        db.session.commit()
+        return p
+    
+    @staticmethod
+    def eliminar_plataforma(p_id):
+        """
+        Busca una plataforma, borra su logo del disco y la elimina de la base de datos.
+        """
+        # 1. Buscamos la plataforma en la DB
+        p = Plataforma.query.get_or_404(p_id)
+
+        # 2. Si tiene un logo asignado, lo borramos del disco
+        if p.url_logo:
+            ruta_logo = os.path.join(current_app.config['UPLOAD_LOGOS'], p.url_logo)
+            if os.path.exists(ruta_logo):
+                try:
+                    os.remove(ruta_logo)
+                except OSError:
+                    # Evita que se detenga el código si hay problemas de permisos
+                    pass
+
+        # 3. Borramos el registro de la DB y confirmamos los cambios
+        db.session.delete(p)
+        db.session.commit()
+        return True
+    
+    

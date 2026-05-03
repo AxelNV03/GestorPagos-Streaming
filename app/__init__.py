@@ -1,7 +1,5 @@
-# ===================================================================================================
-# app/__init__.py
-# ===================================================================================================
 import os
+from datetime import timedelta  # <--- IMPORTANTE: Para definir la duración
 from flask import Flask
 from dotenv import load_dotenv
 from app.core.db_manager import db, ManagerDB
@@ -14,13 +12,25 @@ def create_app():
     # --- Configuración de Seguridad y Almacenamiento ---
     app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'dev_key_123')
     
-    # Directorio de comprobantes (Ruta absoluta para evitar fallos en Docker)
+    # --- CONFIGURACIÓN PARA SESIÓN INFINITA ---
+    # Definimos una duración exageradamente larga (ej. 10 años)
+    app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=3650)
+    # Asegura que la cookie se refresque para mantener la fecha de expiración lejos
+    app.config['SESSION_REFRESH_EACH_REQUEST'] = True 
+    # ------------------------------------------
+
+    # Directorio de comprobantes
     upload_path = os.getenv('UPLOAD_FOLDER', os.path.join(os.getcwd(), 'storage', 'comprobantes'))
     app.config['UPLOAD_FOLDER'] = os.path.abspath(upload_path)
     os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
+    # === NUEVO: Directorio para logos de plataformas (Público) ===
+    # Apunta directamente a: app/static/uploads
+    logos_path = os.path.join(app.root_path, 'static', 'uploads')
+    app.config['UPLOAD_LOGOS'] = os.path.abspath(logos_path)
+    os.makedirs(app.config['UPLOAD_LOGOS'], exist_ok=True)
+
     # --- Configuración de SQLAlchemy para MariaDB ---
-    # Agregamos charset=utf8mb4 para evitar errores con nombres o caracteres especiales
     app.config['SQLALCHEMY_DATABASE_URI'] = (
         f"mysql+pymysql://{os.getenv('DB_USER')}:{os.getenv('DB_PASS')}"
         f"@{os.getenv('DB_HOST')}/{os.getenv('DB_NAME')}?charset=utf8mb4"
@@ -28,7 +38,6 @@ def create_app():
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
     # --- Inicialización del Manager (ORM Puro) ---
-    # Aquí se ejecutan tus modelos y la creación de tablas
     m_db = ManagerDB(app, fresh=False)
 
     # --- Registro de Rutas ---
@@ -37,7 +46,6 @@ def create_app():
     # --- Context Processor para Assets ---
     @app.context_processor
     def inject_assets():
-        """Inyecta automáticamente los CSS según la carpeta del módulo"""
         def get_css_from_folder(folder):
             path = os.path.join(app.root_path, 'static', 'css', folder)
             if os.path.exists(path):
@@ -47,7 +55,7 @@ def create_app():
         return dict(
             admin_css=get_css_from_folder('admin'),
             user_css=get_css_from_folder('user'),
-            auth_css=get_css_from_folder('auth')
+            public_css=get_css_from_folder('public')
         )
 
     return app

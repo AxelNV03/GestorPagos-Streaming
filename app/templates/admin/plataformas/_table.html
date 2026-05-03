@@ -1,0 +1,77 @@
+ <!-- Tabla de datos -->
+    <h3>Detalles</h3>
+    <table class="plataforma-table">
+        <thead>
+            <tr>
+                <th scope="col">Logo</th>
+                <th scope="col">Plataforma</th>
+                <th scope="col">Correo Admin</th>
+                <th scope="col" class="text-center">Día de Cobro</th>
+                <th scope="col" class="text-end">Precio Mensual</th>
+                <th scope="col" class="text-end">Cuota sugerida</th>
+                <th scope="col" class="text-center">Cupos</th>
+                <th scope="col" class="text-center">Conteo de Pagos</th>
+                <th scope="col" class="text-end">Recaudado</th>
+                <th scope="col" class="text-end">Restante</th>
+                <th scope="col" class="text-center">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for p in plataformas %}
+                <tr>
+                    <td>
+                        {% if p.url_logo %}
+                            <img src="{{ url_for('static', filename='uploads/' ~ p.url_logo) }}" alt="{{ p.nombre }}" class="table-logo">
+                        {% else %}
+                            <div class="table-logo-placeholder">
+                                {{ p.nombre[:2] | upper }}
+                            </div>
+                        {% endif %}
+                    </td>
+                    <td><strong>{{ p.nombre }}</strong></td>
+                    <td>
+                        <div class="email-container">
+                            <code class="user-email">{{ p.correo_admin }}</code>
+                            <button class="btn-copy-small" onclick="copyToClipboard('{{ p.correo_admin }}')" title="Copiar correo">
+                                <i class="bi bi-clipboard"></i>
+                            </button>
+                        </div>
+                    </td>                    
+                    <td>Dia {{ p.dia_cobro }}</td>
+                    <td>${{ "{:,.2f}".format(p.precio_total) }}</td>
+                    <td>{{ p.cuota_sugerida }}</td>
+                    <td>{{ p.cupos }}/{{ p.total_usersP }}</td>
+                    <td>{{ p.pagados }}/{{ p.no_pagados }}</td>
+                    <td>${{ "{:,.2f}".format(p.recaudado|float) }}</td>
+                    <td>${{ "{:,.2f}".format(p.restante|float) }}</td>
+                    <td>
+                        <button class="btn-action" 
+                            onclick='abrirModalFormPlataforma({{ {
+                                "id": p.id,
+                                "nombre": p.nombre,
+                                "precio": p.precio_total|float,
+                                "dia": p.dia_cobro,
+                                "correo": p.correo_admin,
+                                "logo": p.url_logo
+                            } | tojson | safe }})'>
+                            <i class="bi bi-pencil-square"></i>
+                        </button>
+<button class="btn-action delete" 
+        onclick="confirmarEliminacion('{{ p.nombre }}', '{{ url_for('admin.eliminar_plataforma', p_id=p.id) }}')">
+    <i class="bi bi-trash"></i>
+</button>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="11" class="text-center text-muted py-5">
+                        <div class="empty-state-wrapper">
+                            <i class="bi bi-folder-x fs-1 d-block mb-3 text-secondary"></i>
+                            <h5 class="fw-bold">No hay plataformas registradas</h5>
+                            <p class="mb-0">Agrega una nueva plataforma usando el botón en la parte superior.</p>
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>

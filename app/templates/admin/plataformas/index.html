@@ -1,0 +1,23 @@
+{% extends "layouts/admin.html" %}
+{% block title %} Panel Plataformas | Admin{% endblock %}
+{% block main_content %}
+    <h2>Panel de Plataformas</h2>
+    
+    <!-- Header -->
+    {% include "admin/plataformas/_header.html" %}
+
+    <!-- Tabla de servicios -->
+    {% include "admin/plataformas/_table.html" %}
+
+    <!-- Modal de creación-edición -->
+    {% include "admin/plataformas/_modal_create_edit.html" %}
+
+{% endblock %}
+
+{% block scripts %}
+    {# Heredas cualquier script que ya venga en la plantilla padre #}
+    {{ super() }}
+    
+    {# Cargas tu archivo JS específico para este CRUD #}
+    <script src="{{ url_for('static', filename='js/admin/crud_plataformas.js') }}"></script>
+{% endblock %}

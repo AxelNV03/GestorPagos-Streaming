@@ -3,6 +3,7 @@
 # ===================================================================================================
 from app.core.db_manager import db
 from sqlalchemy import Computed
+import math
 # ===================================================================================================
 class Plataforma(db.Model):
     __tablename__ = 'plataformas'
@@ -21,6 +22,27 @@ class Plataforma(db.Model):
     # ===================================================================================================
     # Relación: Una plataforma tiene muchos registros de usuarios
     usuarios_vinculados = db.relationship('PlataformaUsuario', backref='plataforma', lazy=True)
+    # ===================================================================================================
+    @property
+    def total_usuarios(self):
+        """
+        Calcula el número de usuarios actualmente vinculados a esta plataforma.
+        Usa la relación 'usuarios_vinculados' definida arriba.
+        """
+        return len(self.usuarios_vinculados)
+
+    @property
+    def cupos_disponibles(self):
+        """
+        Resta el total de usuarios actuales del máximo de cupos permitidos.
+        Útil para saber si aún se pueden agregar personas a la cuenta.
+        """
+        return self.max_cupos - self.total_usuarios
+
+    @property
+    def tiene_cupos(self):
+        """ Indica con un booleano si aun hay cupos """
+        return self.cupos_disponibles > 0
     # ===================================================================================================
     def __repr__(self):
         return f'<Plataforma {self.nombre} - ${self.precio_total}>'

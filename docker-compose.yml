@@ -16,17 +16,19 @@ services:
   app:
     build: .
     container_name: pagos_app
+    restart: always  # <--- Añade esto aquí también
     volumes:
       - .:/app
+      - ./storage:/app/storage
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
     ports:
       - "5000:5000"
+    env_file: .env
     environment:
-      - FLASK_APP=run.py
+      - FLASK_ENV=development
       - FLASK_DEBUG=1
-      - DB_HOST=db
-      - DB_USER=nava
-      - DB_PASSWORD=1234
-      - DB_NAME=streaming
+      - TZ=America/Mexico_City
     depends_on:
       - db
 

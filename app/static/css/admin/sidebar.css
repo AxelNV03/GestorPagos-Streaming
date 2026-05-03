@@ -1,0 +1,116 @@
+/* Sidebar Container - Fondo claro/grisáceo */
+:root {
+    --bg-bone: #f5f2eb;
+    --sidebar-bg: #ede9df;
+    --card-bg: #ffffff;
+    --text-main: #2c3e50;
+    --text-muted: #5f7d7d;
+
+    /* Aguamarina → Negro */
+    --accent-aqua: #000000;
+    --accent-soft: #f0f0f0;
+
+    --border-color: #e3ded0;
+
+    /* Ya que se usan pero no estaban definidos */
+    --accent-hover: #333333;
+    --card-hover: #f7f7f7;
+}
+
+.sidebar {
+    width: 260px;
+    height: 100vh;
+    background-color: var(--sidebar-bg);
+    padding: 25px 0; /* Espaciado vertical */
+    border-right: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    position: sticky;
+    top: 0;
+    left: 0;
+    box-sizing: border-box;
+}
+
+
+.logo-section {
+    padding: 0 25px 30px 25px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-weight: bold;
+    color: var(--text-main);
+    font-size: 1.1rem;
+    letter-spacing: 0.5px;
+}
+
+.logo-section i {
+    font-size: 1.5rem;
+    color: #2c3e50;
+}
+
+/* Menu Navigation */
+.menu {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 0 15px; /* Espacio lateral para que los botones no toquen el borde */
+}
+
+
+/* Menu Items - Estilo flat */
+.menu-item {
+    text-decoration: none;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 18px;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.menu-item i {
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+}
+
+.menu-item:hover {
+    color: var(--accent-aqua);
+    background-color: var(--accent-soft);
+}
+
+.menu-item.active {
+    color: #ffffff !important;
+    background-color: var(--accent-aqua);
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(0, 105, 92, 0.2);
+}
+
+.menu-item.active i {
+    color: #ffffff;
+}
+
+/* Ajuste del Body */
+body {
+    background-color: var(--bg-bone);
+    color: var(--text-main);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    /* Agrega estas dos líneas: */
+    margin: 0;
+    padding: 0;
+}
+
+/* Layout Principal */
+.dashboard-container {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* Contenido */
+.content {
+    flex: 1;
+    padding: 30px;
+}
