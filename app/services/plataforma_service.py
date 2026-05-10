@@ -46,6 +46,7 @@ class PlataformaService:
             nombre=datos.get('nombre'),
             precio_total=datos.get('precio_total'),
             dia_cobro=datos.get('dia_cobro'),
+            cuota=datos.get('cuota'),
             correo_admin=datos.get('correo_admin')
         )
         
@@ -67,6 +68,7 @@ class PlataformaService:
         p.nombre = datos.get('nombre')
         p.precio_total = datos.get('precio_total')
         p.dia_cobro = datos.get('dia_cobro')
+        p.cuota = datos.get('cuota') 
         p.correo_admin = datos.get('correo_admin')
 
         db.session.flush()

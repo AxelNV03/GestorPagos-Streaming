@@ -11,10 +11,7 @@ class Plataforma(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     nombre = db.Column(db.String(100), nullable=False)
     precio_total = db.Column(db.Numeric(10, 2), nullable=False)
-    cuota_sugerida = db.Column(
-        db.Numeric(10, 2), 
-        Computed("precio_total / 5", persisted=True)
-    )
+    cuota = db.Column(db.Numeric(10, 2), nullable=True)
     dia_cobro = db.Column(db.Integer, default=1)
     url_logo = db.Column(db.String(255), default='default_logo.png')
     correo_admin = db.Column(db.String(255), nullable=False)

@@ -21,7 +21,7 @@ class Cobro(db.Model):
     mes_anio = db.Column(db.Date, nullable=False)    
     monto_deuda = db.Column(db.Numeric(10, 2), nullable=False)    
     estado = db.Column(
-        db.Enum('pendiente', 'en_revision', 'pagado', name='estado_cobro_enum'), 
+        db.Enum('pendiente', 'en_revision', 'pagado', 'rechazado', name='estado_cobro_enum'), 
         default='pendiente'
     )
     # ===================================================================================================

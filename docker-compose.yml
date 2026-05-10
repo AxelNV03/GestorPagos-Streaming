@@ -2,7 +2,7 @@ services:
   db:
     image: mariadb:12.2.2
     container_name: pagos_db
-    restart: always
+    restart: unless-stopped
     environment:
       MARIADB_ROOT_PASSWORD: 1234
       MARIADB_DATABASE: streaming
@@ -16,7 +16,7 @@ services:
   app:
     build: .
     container_name: pagos_app
-    restart: always  # <--- Añade esto aquí también
+    restart: unless-stopped  # <--- Añade esto aquí también
     volumes:
       - .:/app
       - ./storage:/app/storage

@@ -69,7 +69,7 @@ class AdminService:
                 "dia_cobro": p.dia_cobro,
                 
                 # Datos de tus @properties del modelo:
-                "cuota_sugerida": p.cuota_sugerida,
+                "cuota": p.cuota,
                 "cupos": p.cupos_disponibles,
                 "total_usersP": p.total_usuarios,
                 
@@ -103,6 +103,7 @@ class AdminService:
             p.nombre = datos['nombre']
             p.precio_total = precio_nuevo
             p.dia_cobro = datos['dia_cobro']
+            p.cuota = datos['cuota'] 
             p.correo_admin = datos['correo_admin']
 
             p_actualizada = PlataformaService.editar_plataforma(plataforma_id, datos, archivo_logo)

@@ -1,27 +1,34 @@
 from sqlalchemy import or_
 from app.core.models.usuario import Usuario
+from app.core.db_manager import db, ManagerDB
 from app import db
+from sqlalchemy.exc import IntegrityError
 
 class UsuarioService:
     @staticmethod
-    def buscar_usuario(busqueda=None, user_id=None, exacto=False):
-        # 1. Búsqueda por ID (Equivalente al find de Laravel)
-
-        if user_id is not None:
-            return db.session.get(Usuario, user_id)
-
-        if not busqueda:
+    def buscar_por_id(user_id):
+        """Busca un usuario por su clave primaria. Retorna un objeto o None."""
+        if not user_id:
             return None
+        return db.session.get(Usuario, user_id)
 
-        term = str(busqueda).strip()
-        
-        # 2. BÚSQUEDA PARA LOGIN (Exacta)
-        if exacto:
-            # Usamos db.session.query para ser explícitos
-            return db.session.query(Usuario).filter_by(telefono=term).first()
+    @staticmethod
+    def buscar_por_telefono(telefono):
+        """Búsqueda exacta por teléfono para el Login. Retorna un objeto o None."""
+        if not telefono:
+            return None
+            
+        term = str(telefono).strip()
+        # Usamos filter para asegurar una comparación limpia contra el modelo
+        return db.session.query(Usuario).filter(Usuario.telefono == term).first()
 
-        # 3. BÚSQUEDA PARA ADMIN (Parcial / Filtro)
-        search = f"%{term}%"
+    @staticmethod
+    def filtrar_usuarios(busqueda):
+        """Búsqueda parcial para el panel de administración. Retorna una lista."""
+        if not busqueda:
+            return []
+
+        search = f"%{str(busqueda).strip()}%"
         return db.session.query(Usuario).filter(
             or_(
                 Usuario.telefono.ilike(search),
@@ -30,3 +37,4 @@ class UsuarioService:
                 Usuario.apeM.ilike(search)
             )
         ).all()
+    

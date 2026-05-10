@@ -28,6 +28,7 @@ function abrirModalFormPlataforma(data = {}) {
         document.getElementById('form_nombre').value = data.nombre;
         document.getElementById('form_precio_total').value = data.precio;
         document.getElementById('form_dia_cobro').value = data.dia;
+        document.getElementById('form_cuota').value = data.cuota;
         document.getElementById('form_correo_admin').value = data.correo;
 
         // --- MANEJO DE LA IMAGEN EN EDICIÓN ---

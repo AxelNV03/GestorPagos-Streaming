@@ -11,33 +11,40 @@ def login():
     #  Login automatico
     if 'user_id' in session:
         return redirect(url_for('admin.index' if session['user_rol'] == 'admin' else 'user.dashboard'))
-        
+      
+    # Credenciales del .env
+    ADMIN_PASSWORD = os.getenv('ADMIN_PASSWORD')
+    
     # Validaciones y redireccion
     if request.method == 'POST':
         telefono = request.form.get('telefono', '').strip() # .strip() quita espacios accidentales
         password = request.form.get('password') # Este solo llega si se abrió el modal
 
-        # 1. Validaciones entrada        
-        if not telefono or not telefono.isdigit() or len(telefono) != 10:
-            return render_template('public/login.html', error="Número inválido (10 dígitos)")
+        # 1. Validaciones entrada
+        if not telefono:
+            return render_template('public/login.html', error="Introduce un número")
+        if not telefono.isdigit() or len(telefono) != 10:
+            return render_template('public/login.html', error="Número inválido (debe tener 10 dígitos)")
+
+        # 2. Buscar usuario por teléfono (Búsqueda exacta)
+        user = UsuarioService.buscar_por_telefono(telefono)
         
-
-        # 2. Consultar en la DB
-        user = UsuarioService.buscar_usuario(busqueda=telefono, exacto=True)
-
         if user:
-            # Lógica para Admin
+            # 4. Verificación de Roles
             if user.rol == 'admin':
-                if password == os.getenv('ADMIN_PASSWORD'):
+                # Si es admin, validamos la contraseña
+                if password == ADMIN_PASSWORD:
                     crear_sesion(user)
                     return redirect(url_for('admin.index'))
-                return render_template('public/login.html', error="Contraseña admin incorrecta")
+                else:
+                    return render_template('public/login.html', error="Contraseña de administrador incorrecta")
             
-            # Lógica para Usuario (no_admin)
+            
+            # 5. Si es un usuario normal (cliente), entra directo por teléfono
             crear_sesion(user)
-            return redirect(url_for('user.dashboard')) # <--- Asegúrate que se llame 'dashboard' en user_routes
-            
-        return render_template('public/login.html', error="Este número no está registrado")
+            return redirect(url_for('user.dashboard'))
+        else:
+            return render_template('public/login.html', error="Este número no está registrado")
     return render_template('public/login.html')
 # ===================================================================================================
 @auth_bp.route('/logout')

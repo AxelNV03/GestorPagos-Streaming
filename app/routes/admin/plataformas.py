@@ -25,6 +25,7 @@ def guardar_plataforma():
         'nombre': request.form.get('nombre'),
         'precio_total': float(request.form.get('precio_total', 0)),
         'dia_cobro': int(request.form.get('dia_cobro', 1)),
+        'cuota': float(request.form.get('cuota', 30)),
         'correo_admin': request.form.get('correo_admin')
     }
 

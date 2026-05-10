@@ -8,7 +8,7 @@
                 <th scope="col">Correo Admin</th>
                 <th scope="col" class="text-center">Día de Cobro</th>
                 <th scope="col" class="text-end">Precio Mensual</th>
-                <th scope="col" class="text-end">Cuota sugerida</th>
+                <th scope="col" class="text-end">Cuota</th>
                 <th scope="col" class="text-center">Cupos</th>
                 <th scope="col" class="text-center">Conteo de Pagos</th>
                 <th scope="col" class="text-end">Recaudado</th>
@@ -39,7 +39,7 @@
                     </td>                    
                     <td>Dia {{ p.dia_cobro }}</td>
                     <td>${{ "{:,.2f}".format(p.precio_total) }}</td>
-                    <td>{{ p.cuota_sugerida }}</td>
+                    <td>{{ p.cuota }}</td>
                     <td>{{ p.cupos }}/{{ p.total_usersP }}</td>
                     <td>{{ p.pagados }}/{{ p.no_pagados }}</td>
                     <td>${{ "{:,.2f}".format(p.recaudado|float) }}</td>
@@ -51,15 +51,16 @@
                                 "nombre": p.nombre,
                                 "precio": p.precio_total|float,
                                 "dia": p.dia_cobro,
+                                "cuota": p.cuota,
                                 "correo": p.correo_admin,
                                 "logo": p.url_logo
                             } | tojson | safe }})'>
                             <i class="bi bi-pencil-square"></i>
                         </button>
-<button class="btn-action delete" 
-        onclick="confirmarEliminacion('{{ p.nombre }}', '{{ url_for('admin.eliminar_plataforma', p_id=p.id) }}')">
-    <i class="bi bi-trash"></i>
-</button>
+                        <button class="btn-action delete" 
+                                onclick="confirmarEliminacion('{{ p.nombre }}', '{{ url_for('admin.eliminar_plataforma', p_id=p.id) }}')">
+                            <i class="bi bi-trash"></i>
+                        </button>
                     </td>
                 </tr>
             {% else %}
