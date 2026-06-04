@@ -21,6 +21,7 @@ def seed_admin():
                 apeP='NAVA',
                 apeM='SANCHEZ',
                 telefono='7774399424',
+                correo='axelnava3105@gmail.com',
                 rol='admin'
             )
             

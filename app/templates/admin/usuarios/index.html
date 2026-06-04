@@ -1,0 +1,22 @@
+{% extends "layouts/admin.html" %}
+{% block title %} Panel Usuarios | Admin{% endblock %}
+{% block main_content %}
+    <h2>Panel de Usuarios</h2>
+    <!-- Header -->
+    {% include "admin/usuarios/_encabezado.html" %}
+
+    <!-- Barra de filtros -->
+    {% include "admin/usuarios/_barra_busqueda.html" %}
+
+    <!-- Tabla de datos -->
+    {% include "admin/usuarios/_tabla.html" %}
+
+    {% include "admin/usuarios/_modal_crear_editar.html" %}
+
+{% endblock %}
+
+
+{% block scripts %}
+    {{ super() }}    
+    <script src="{{ url_for('static', filename='js/admin/crud_usuarios.js') }}"></script>
+{% endblock %}

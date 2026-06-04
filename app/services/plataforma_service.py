@@ -38,8 +38,6 @@ class PlataformaService:
         archivo_logo.save(ruta_completa)
         return nombre_final
 
-    # ===============================================================================================
-
     @staticmethod
     def nueva_plataforma(datos, archivo_logo):
         nueva_p = Plataforma(

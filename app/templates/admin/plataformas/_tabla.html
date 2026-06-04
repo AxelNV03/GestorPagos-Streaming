@@ -39,8 +39,8 @@
                     </td>                    
                     <td>Dia {{ p.dia_cobro }}</td>
                     <td>${{ "{:,.2f}".format(p.precio_total) }}</td>
-                    <td>{{ p.cuota }}</td>
-                    <td>{{ p.cupos }}/{{ p.total_usersP }}</td>
+                    <td>${{ "{:,.2f}".format(p.cuota) }}</td>
+                    <td>{{ p.cupos }}</td>
                     <td>{{ p.pagados }}/{{ p.no_pagados }}</td>
                     <td>${{ "{:,.2f}".format(p.recaudado|float) }}</td>
                     <td>${{ "{:,.2f}".format(p.restante|float) }}</td>

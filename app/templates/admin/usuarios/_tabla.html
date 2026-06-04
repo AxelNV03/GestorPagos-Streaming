@@ -1,0 +1,58 @@
+<!-- Tabla de datos -->
+<table class="plataforma-table">
+    <thead>
+        <th>Nombre(s)</th>
+        <th>Apellido(s)</th>
+        <th>Plataforma(s)</th>
+        <th>Teléfono</th>
+        <th>Correo</th>
+        <th>Acciones</th>
+    </thead>
+    <tbody>
+        {% for u in listaUsuarios %}
+            <tr>
+                <td>{{ u.nombres }}</td>
+                <td> {{ u.apeP }} {{ u.apeM }}</td>
+                <td>
+                    {% for p in u.plataformas %}
+                        <span class="badge bg-primary">{{ p.nombre }}</span>
+                    {% endfor %}
+                </td>
+                <td>{{ u.telefono }}</td>
+                <td>{{ u.correo }}</td>
+                <td>
+                    <a href="https://wa.me/{{ u.telefono }}" target="_blank" class="btn-action btn-whatsapp" title="Contactar por WhatsApp">
+                        <i class="bi bi-whatsapp"></i>
+                    </a>
+
+                    <button class="btn-action btn-edit" 
+                        onclick='abrirModalUsuario({{ {
+                            "id": u.id,
+                            "nombres": u.nombres,
+                            "apeP": u.apeP,
+                            "apeM": u.apeM,
+                            "telefono": u.telefono,
+                            "plataformas": u.plataformas | map(attribute="id") | list
+                        } | tojson | safe }})'>
+                        <i class="bi bi-pencil-square"></i>
+                    </button>
+                                                        
+                    <button class="btn-action btn-delete" 
+                        onclick="confirmarEliminarUser('{{ u.id }}', '{{ u.nombres }}')">
+                        <i class="bi bi-trash3-fill"></i>
+                    </button>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="11" class="text-center text-muted py-5">
+                    <div class="empty-state-wrapper">
+                        <i class="bi bi-folder-x fs-1 d-block mb-3 text-secondary"></i>
+                        <h5 class="fw-bold">No hay usuarios registrados</h5>
+                        <p class="mb-0">Agrega una nuevo usuario usando el botón en la parte superior.</p>
+                    </div>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>

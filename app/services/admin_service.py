@@ -4,8 +4,12 @@ from app.services.usuario_service import UsuarioService
 from app.services.plataforma_service import PlataformaService
 from app.services.cobro_service import CobroService
 from app.services.periodo_service import PeriodoService
+from app.core.models.plataforma import Plataforma
+from app.core.models.usuario import Usuario
+
 
 from app import db
+from flask import flash
 # ===================================================================================================
 class AdminService:
     @staticmethod
@@ -92,7 +96,6 @@ class AdminService:
 
     @staticmethod
     def guardar_plataforma(plataforma_id, datos, archivo_logo):
-        from app.core.models.plataforma import Plataforma
         if plataforma_id and plataforma_id.strip():
             # Edición
             p = Plataforma.query.get_or_404(plataforma_id)            
@@ -125,3 +128,41 @@ class AdminService:
             p = PlataformaService.nueva_plataforma(datos, archivo_logo)
             mensaje = f"¡{p.nombre} creada correctamente!"
             tipo_flash = "success"
+
+    @staticmethod
+    def panel_usuarios(filtros):
+
+        # Lista de plataformas
+        plataformas = PlataformaService.obtener_todas()
+        
+        # Extraer valores
+        query_text = filtros.get('query', '').strip()
+        plat_id = filtros.get('plataforma_id', '').strip()
+
+        # Filtro
+        if query_text or plat_id:
+            usuarios = UsuarioService.filtrar_usuarios(
+                busqueda=query_text, 
+                plataforma_id=plat_id
+            )
+        else:
+            usuarios = UsuarioService.obtener_todos()
+
+        return {
+            'listaPlataformas' : plataformas,
+            'listaUsuarios' : usuarios,
+            'filtros_usados' : filtros
+        }
+    
+    @staticmethod
+    def guardar_usuario(usuario_id, datos):
+        if usuario_id and usuario_id.strip():
+            pass
+        else:
+            # Create
+            u = UsuarioService.nuevo_usuario(datos)
+            mensaje = f"¡{u.nombres} {u.apeP} creado correctamente!"
+            tipo_flash = "success"
+            flash(mensaje, tipo_flash)
+
+

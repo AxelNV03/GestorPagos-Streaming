@@ -1,0 +1,369 @@
+/* ==================================================================================================================== */
+/* Tabla de info - Estilo Card Minimalista */
+/* ==================================================================================================================== */
+.stats-overview {
+    margin-bottom: 25px;
+    display: flex;
+    gap: 20px;
+}
+
+.stat-card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    min-width: 240px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    border: 1px solid #eef2f5;
+}
+
+.stat-icon {
+    width: 48px;
+    height: 48px;
+    background: #1a1a1a; /* Negro para entonar con tus botones */
+    color: #ffffff;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+}
+
+.stat-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #666;
+    font-weight: 700;
+}
+
+.stat-value {
+    margin: 0;
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: #1a1a1a;
+    line-height: 1.2;
+}
+
+/* ==================================================================================================================== */
+/* Tabla de busquedas - Estilo Card Minimalista */
+/* ==================================================================================================================== */
+.card-filters {
+    background: #ffffff;
+    border: 1px solid #eef2f5;
+    border-radius: 12px;
+    padding: 1.2rem 1.5rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    margin-bottom: 25px;
+}
+
+/* --- Estructura del Formulario --- */
+.card-filters .filter-form {
+    display: flex;
+    gap: 15px;
+    align-items: flex-end; /* Alineación perfecta a la base */
+    width: 100%;
+}
+
+.card-filters .filter-group {
+    display: flex;
+    flex-direction: column;
+}
+
+/* --- Tamaños de Columnas --- */
+.card-filters .filter-group.buscador {
+    flex: 1; 
+    min-width: 250px;
+}
+
+.card-filters .filter-group.plataforma {
+    flex: 0 0 220px;
+}
+
+/* --- Etiquetas (Labels) --- */
+.card-filters .filter-label {
+    font-size: 0.65rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: #94a3b8;
+    margin-bottom: 8px;
+    letter-spacing: 0.8px;
+}
+
+/* --- Contenedor del Input con Icono --- */
+.input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    height: 40px; /* Misma altura que el botón */
+}
+
+.input-wrapper i {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94a3b8;
+    font-size: 0.9rem;
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* --- Estilo Base de Inputs, Selects y Botones --- */
+.card-filters .minimal-input,
+.card-filters .btn-filter {
+    box-sizing: border-box;
+    height: 40px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+    margin: 0;
+}
+
+/* --- Inputs y Selects Específicos --- */
+.card-filters .minimal-input {
+    width: 100%;
+    padding: 8px 12px;
+    background-color: #f8fafc;
+    border: 1px solid #e2e8f0;
+    color: #000000;
+    outline: none;
+}
+
+.card-filters .minimal-input.with-icon {
+    padding-left: 35px;
+}
+
+/* Quitar apariencia nativa del select para control total de altura */
+.card-filters select.minimal-input {
+    cursor: pointer;
+    line-height: 1; /* Evita que el texto mueva la altura en selects */
+}
+
+/* --- Estados de Foco --- */
+.card-filters .minimal-input:focus {
+    background-color: #fff;
+    border-color: #000000;
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
+}
+
+/* --- Botón Filtrar --- */
+.card-filters .btn-filter {
+    background-color: #000000;
+    color: white;
+    border: none;
+    padding: 0 25px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+}
+
+.card-filters .btn-filter:hover {
+    background-color: #000;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.card-filters .btn-filter i {
+    font-size: 1rem;
+}
+
+.card-filters select.minimal-input {
+    padding-right: 25px; 
+    cursor: pointer;
+}
+
+/* Empujamos el botón de agregar al extremo derecho de la barra */
+.btn-add-container {
+    margin-left: auto; 
+}
+
+/* Ajuste del botón para que encaje en la fila de filtros */
+.add-user {
+    height: 40px !important;
+    margin: 0 !important;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 20px;
+    white-space: nowrap;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    background-color: #000000; /* Unificado aquí */
+    border: none;
+    color: white;
+    transition: all 0.2s;
+    cursor: pointer; /* Agregué esto para que el cursor cambie al pasar el mouse */
+}
+
+.add-user:hover {
+    background-color: #1a202c;
+    transform: translateY(-1px);
+}
+
+
+
+
+/* ==================================================================================================================== */
+/* Modal de Usuarios */
+/* ==================================================================================================================== */
+/* 2. Contenedor Principal */
+#modalUsuario .modal-content {
+    background-color: #fff;
+    margin: 5% auto;
+    padding: 0;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    animation: slideDown 0.3s ease-out;
+    overflow: hidden;
+}
+
+/* 3. Header */
+#modalUsuario .modal-header {
+    background: #f8f9fa;
+    padding: 20px;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#modalUsuario .modal-header h3 {
+    margin: 0;
+    font-size: 1.25rem;
+    color: #333;
+}
+
+/* 4. Cuerpo del Formulario */
+#modalUsuario .form-body {
+    padding: 20px;
+}
+
+#modalUsuario .form-group {
+    margin-bottom: 15px;
+}
+
+#modalUsuario .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+#modalUsuario label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #555;
+}
+
+#modalUsuario input {
+    width: 100%;
+    box-sizing: border-box; /* <--- ESTO ES LA CLAVE */
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: border-color 0.2s;
+}
+
+#modalUsuario input:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
+}
+
+/* 5. Footer y Botones */
+#modalUsuario .modal-footer {
+    padding: 15px 20px;
+    background: #f8f9fa;
+    border-top: 1px solid #eee;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+/* Ajuste para el footer del modal (para quitar márgenes extra que no necesites) */
+#modalUsuario .modal-footer .btn-secondary {
+    margin: 0; /* Limpiamos márgenes para que el gap del footer mande */
+}
+
+#modalUsuario .modal-footer .btn-primary {
+    margin-top: 0; /* Quita el margen que usas cuando el botón está solo en una card */
+}
+
+/* ==================================================================================================================== */
+/* Sección Dinámica de Plataformas (Dentro del Modal) */
+/* ==================================================================================================================== */
+
+/* Alineación de la fila que contiene el select y el botón de eliminar */
+#modalUsuario .fila-plataforma {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+/* Forzamos a que el contenedor del select use todo el espacio restante */
+#modalUsuario .fila-plataforma .form-group {
+    flex: 1;
+    margin-bottom: 0; /* Quitamos el margen inferior para que se alinee con el botón */
+}
+
+/* Estilos para el elemento Select (Heredando el diseño de tus inputs actuales) */
+#modalUsuario .form-select {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 1rem;
+    background-color: #fff;
+    color: #333;
+    transition: border-color 0.2s;
+}
+
+#modalUsuario .form-select:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
+}
+
+/* Modificación exclusiva para hacer más grande el botón de borrar plataformas */
+.btn-action.btn-plat-delete {
+    padding: 10px 16px;      /* ⬅️ Más espacio interno (arriba/abajo e izquierda/derecha) */
+    font-size: 1.1rem;       /* ⬅️ Hacemos el icono de la basura más grande y visible */
+    border-radius: 6px;      /* ⬅️ Mantiene el radio de tus inputs actuales */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;            /* ⬅️ Si tu fila tiene un alto fijo, se estira para alinearse */
+}
+
+/* Efecto hover exclusivo para este botón */
+.btn-action.btn-plat-delete:hover {
+    background-color: #f8d7da; 
+    color: #dc3545;            
+    border-color: #f5c6cb;     
+}
+/* Botón secundario para agregar más filas (Ajustado al tamaño interno del modal) */
+#modalUsuario #btn-agregar-plataforma {
+    width: auto;
+    padding: 6px 12px;
+    font-size: 0.85rem;
+    cursor: pointer;
+}

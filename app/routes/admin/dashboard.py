@@ -14,11 +14,6 @@ def index():
         return render_template('admin/dashboard.html', **AdminService.dashboard_data())
 # ===================================================================================================
 # TEST
-
-@admin_bp.route('/usuarios')
-def usuarios(): # <--- ESTE NOMBRE es el que busca url_for
-    return render_template('admin/dashboard.html')
-
 @admin_bp.route('/cobros')
 def cobros(): # <--- ESTE NOMBRE es el que busca url_for
     return render_template('admin/dashboard.html')

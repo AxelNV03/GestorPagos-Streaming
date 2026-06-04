@@ -7,7 +7,6 @@ from app.utils.decorators import admin_required
 from werkzeug.utils import secure_filename
 
 from app.services.admin_service import AdminService
-from app.services.periodo_service import PeriodoService
 from app.services.plataforma_service import PlataformaService
 # ===================================================================================================
 @admin_bp.route('/plataformas')

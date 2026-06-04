@@ -1,7 +1,62 @@
+let toastTimeout;
+
 function copyToClipboard(text) {
-    navigator.clipboard.writeText(text).then(() => {
-        // Opcional: Una alerta simple o cambio de icono para avisar que se copió
+    if (!navigator.clipboard) {
+        console.error('Clipboard API no soportada');
+        return;
+    }
+
+    navigator.clipboard.writeText(text)
+        .then(() => showToast('Copiado al portapapeles'))
+        .catch(err => {
+            console.error('Error al copiar:', err);
+            showToast('No se pudo copiar', 'error');
+        });
+}
+
+function showToast(message, type = 'success') {
+    let toast = document.getElementById('copy-toast');
+
+    if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'copy-toast';
+
+        Object.assign(toast.style, {
+            position: 'fixed',
+            bottom: '20px',
+            right: '20px',
+            minWidth: '220px',
+            padding: '12px 18px',
+            borderRadius: '8px',
+            color: '#fff',
+            fontFamily: 'system-ui, sans-serif',
+            fontSize: '14px',
+            fontWeight: '500',
+            boxShadow: '0 4px 12px rgba(0,0,0,.15)',
+            zIndex: '9999',
+            opacity: '0',
+            transform: 'translateY(20px)',
+            transition: 'all .3s ease'
+        });
+
+        document.body.appendChild(toast);
+    }
+
+    toast.textContent = message;
+    toast.style.backgroundColor =
+        type === 'success' ? '#198754' : '#dc3545';
+
+    clearTimeout(toastTimeout);
+
+    requestAnimationFrame(() => {
+        toast.style.opacity = '1';
+        toast.style.transform = 'translateY(0)';
     });
+
+    toastTimeout = setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(20px)';
+    }, 2500);
 }
 
 function abrirModalFormPlataforma(data = {}) {

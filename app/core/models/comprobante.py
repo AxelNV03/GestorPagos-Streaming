@@ -16,6 +16,7 @@ class Comprobante(db.Model):
     ruta_archivo = db.Column(db.String(255), nullable=False)
     nota_usuario = db.Column(db.Text, nullable=True)
     motivo_rechazo = db.Column(db.Text, nullable=True)    
+    clave_rastreo = db.Column(db.Text, nullable=True)
     estado = db.Column(
         db.Enum('revision', 'aprobado', 'rechazado', name='estado_comprobante_enum'), 
         default='revision'
