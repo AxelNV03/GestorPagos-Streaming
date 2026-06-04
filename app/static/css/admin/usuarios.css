@@ -367,3 +367,178 @@
     font-size: 0.85rem;
     cursor: pointer;
 }
+
+
+/* ==================================================================================================================== */
+/* Tabla de Usuarios */
+/* ==================================================================================================================== */
+/* CONTAINER DE LA TABLA */
+.table-container {
+    background: #ffffff;
+    border-radius: 12px;
+    border: 1px solid #eef0f2;
+    overflow-x: auto; /* Permite scroll horizontal si la pantalla es muy chica */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    margin-top: 15px;
+}
+
+.users-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: #ffffff;
+    table-layout: fixed; /* Forzamos el respeto estricto de los anchos */
+}
+
+/* Encabezado */
+.users-table thead {
+    background-color: #f8f9fa;
+}
+
+.users-table th {
+    padding: 15px;
+    text-align: left;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #666;
+    font-weight: 700;
+    border-bottom: 2px solid #eee;
+}
+
+/* Celdas Generales */
+.users-table td {
+    padding: 14px 15px; /* Un poquito más de aire arriba y abajo */
+    text-align: left;
+    vertical-align: middle;
+    border-bottom: 1px solid #f1f1f1;
+    color: #333;
+    font-size: 0.9rem;
+    white-space: nowrap; /* Evita que el texto salte de línea */
+    overflow: hidden;
+    text-overflow: ellipsis; /* Si el texto no cabe, pone "..." */
+}
+
+.users-table tr:last-child td {
+    border-bottom: none;
+}
+
+.users-table tr:hover {
+    background-color: #f9fbfd; /* Un tono azulado/grisáceo muy sutil al pasar el mouse */
+}
+
+/* -------------------------------------------------------------------------------------------------------------------- */
+/* Definición de Anchos Asignados (Sumados dan el 100% de una visualización limpia) */
+
+/* 1. Nombres */
+.users-table th:nth-child(1), .users-table td:nth-child(1) { 
+    width: 200px;
+    font-weight: 600; /* Resalta un poco más el nombre del cliente */
+}
+
+/* Modificamos la celda de plataformas para que permitaマルチlínea */
+.users-table td:nth-child(2) { 
+    width: 180px; 
+    white-space: normal;       /* ⬅️ Cambia de nowrap a normal para que permita saltos */
+    overflow: visible;          /* ⬅️ Quitamos el corte */
+    text-overflow: clip;
+}
+
+/* Creamos un contenedor flex para los badges dentro de la celda */
+.users-table td:nth-child(2) .badge-container {
+    display: flex;
+    flex-wrap: wrap;           /* ⬅️ Si no caben, los manda abajo en automático */
+    gap: 10px;                  /* ⬅️ Separación perfecta entre badges */
+}
+
+/* 4. Teléfono */
+.users-table th:nth-child(3), .users-table td:nth-child(3) { 
+    width: 150px; 
+}
+
+/* 5. Correo */
+.users-table th:nth-child(4), .users-table td:nth-child(4) { 
+    width: 220px; 
+    color: #555;
+}
+
+/* 6. Acciones */
+.users-table th:nth-child(5), .users-table td:nth-child(5) { 
+    width: 160px; /* Espacio ideal para que tus 3 botones respiren alineados */
+    text-align: center;
+}
+
+/* -------------------------------------------------------------------------------------------------------------------- */
+/* Componentes Internos Modernizados */
+
+/* Estilo personalizado para los Badges de Plataformas */
+
+
+/* Estilo Premium para los Badges de Plataformas */
+.users-table .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px; /* Separación entre el puntito y el texto */
+    padding: 4px 10px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase; /* Estilo tipográfico más fino */
+    letter-spacing: 0.5px;
+    border-radius: 20px; /* Bordes completamente redondeados (estilo píldora) */
+    
+    /* Colores minimalistas: Fondo casi blanco con un toque de gris/azul */
+    background-color: #f1f3f5 !important; 
+    color: #495057 !important;
+    border: 1px solid #e9ecef;
+    
+    white-space: nowrap;
+    transition: all 0.2s ease;
+}
+
+/* El toque maestro: Un indicador de estado activo dentro de cada badge */
+.users-table .badge::before {
+    content: "";
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: #10b981; /* Verde esmeralda neón (Activo) */
+    box-shadow: 0 0 8px rgba(16, 185, 129, 0.5); /* Sutil brillo */
+}
+
+/* Micro-interacción cuando pasas el mouse por encima de la celda */
+.users-table tr:hover .badge {
+    background-color: #e9ecef !important;
+    color: #212529 !important;
+    border-color: #dee2e6;
+}
+
+/* Estilos de tus botones que mencionas que están perfectos */
+.btn-action {
+    background: transparent;
+    border: 1px solid #eee;
+    padding: 8px;
+    border-radius: 8px;
+    cursor: pointer;
+    color: #555;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.user-phone {
+    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+    background: #f4f6f8;
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    color: #444;
+    border: 1px solid #eef0f2;
+}
+
+.btn-whatsapp:hover { background: #25d366; color: #fff; border-color: #25d366; transform: scale(1.1); }
+.btn-edit:hover { background: #1a1a1a; color: #fff; border-color: #1a1a1a; transform: scale(1.1); }
+.btn-delete:hover { background: #ef4444; color: #fff; border-color: #ef4444; transform: scale(1.1); }
+
+

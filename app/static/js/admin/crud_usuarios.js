@@ -59,6 +59,25 @@ function abrirModalUsuario(data = {}) {
         document.getElementById('form_correo').value = data.correo;
 
 
+        // Plataformas
+        if (data.plataformas && data.plataformas.length > 0) {
+            const molde = document.getElementById('molde-plataforma');
+
+            data.plataformas.forEach(platId => {
+                // 1. Clonamos el contenido del molde HTML
+                const clon = molde.content.cloneNode(true);
+                
+                // 2. Buscamos el elemento <select> dentro del clon
+                const select = clon.querySelector('select[name="plataformas[]"]');
+                
+                // 3. Le asignamos el ID de la plataforma para que aparezca seleccionada
+                select.value = platId;
+                
+                // 4. Lo inyectamos en el contenedor visual del modal
+                contenedorPlat.appendChild(clon);
+            });
+        }
+
     } else {
         // Modo Nuevo
         title.innerHTML = '<i class="bi bi-plus-circle"></i> Nuevo Usuario';

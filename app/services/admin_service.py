@@ -157,7 +157,8 @@ class AdminService:
     @staticmethod
     def guardar_usuario(usuario_id, datos):
         if usuario_id and usuario_id.strip():
-            pass
+            flash(f'Usuario actualizado correctamente.', 'success')        
+            return UsuarioService.editar_usuario(int(usuario_id), datos)
         else:
             # Create
             u = UsuarioService.nuevo_usuario(datos)

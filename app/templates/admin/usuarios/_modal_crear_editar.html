@@ -5,7 +5,7 @@
             <span class="close" onclick="cerrarModal()">&times;</span>
         </div>
         <form id="formUsuario" action="{{ url_for('admin.guardar_usuario') }}" method="POST" enctype="multipart/form-data">
-            <div class="form-body">
+            <div class="form-body" style="overflow-y: auto; max-height: 60vh; padding-right: 10px;">
 
                 <!-- ID del Usuario -->
                 <input type="hidden" name="usuario_id" id="form_usuario_id">

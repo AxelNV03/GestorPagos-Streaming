@@ -80,3 +80,39 @@ class UsuarioService:
         db.session.commit()
         return nuevo_u
 
+    @staticmethod
+    def editar_usuario(usuario_id, datos):
+        u = Usuario.query.get_or_404(usuario_id)
+        if not u:
+            raise Exception("El usuario que intentas editar no existe.")
+        
+        # Actualizar los campos básicos
+        u.nombres = datos.get('nombres')
+        u.apeP = datos.get('apeP')
+        u.apeM = datos.get('apeM')
+        u.telefono = datos.get('telefono')
+        u.correo = datos.get('correo')
+
+        # Actualizar plataformas vinculadas
+        plataformas_nuevas = set(datos.get('plataformas', []))
+        plataformas_actuales = set([p.id for p in u.plataformas])
+
+        eliminar = plataformas_actuales - plataformas_nuevas
+        agregar = plataformas_nuevas - plataformas_actuales
+
+        if eliminar:
+            PlataformaUsuario.query.filter(
+                PlataformaUsuario.usuario_id == u.id,
+                PlataformaUsuario.plataforma_id.in_(eliminar)
+            ).delete(synchronize_session=False)
+
+        # Operación B: Si hay plataformas nuevas, las insertamos en la intermedia
+        for p_id in agregar:
+            nueva_vinculacion = PlataformaUsuario(
+                usuario_id=u.id,
+                plataforma_id=p_id
+            )
+            db.session.add(nueva_vinculacion)
+        
+        db.session.commit()
+        return u

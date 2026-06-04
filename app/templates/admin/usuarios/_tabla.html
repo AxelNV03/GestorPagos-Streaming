@@ -1,8 +1,7 @@
 <!-- Tabla de datos -->
-<table class="plataforma-table">
+<table class="users-table">
     <thead>
-        <th>Nombre(s)</th>
-        <th>Apellido(s)</th>
+        <th>Nombre completo</th>
         <th>Plataforma(s)</th>
         <th>Teléfono</th>
         <th>Correo</th>
@@ -11,14 +10,17 @@
     <tbody>
         {% for u in listaUsuarios %}
             <tr>
-                <td>{{ u.nombres }}</td>
-                <td> {{ u.apeP }} {{ u.apeM }}</td>
+                <td>{{ u.nombres }} {{ u.apeP }} {{ u.apeM }}</td>
                 <td>
-                    {% for p in u.plataformas %}
-                        <span class="badge bg-primary">{{ p.nombre }}</span>
-                    {% endfor %}
+                    <div class="badge-container">
+                        {% for p in u.plataformas %}
+                            <span class="badge bg-primary">{{ p.nombre }}</span>
+                        {% else %}
+                            <span class="text-muted fs-7">Sin plataformas</span>
+                        {% endfor %}
+                    </div>
                 </td>
-                <td>{{ u.telefono }}</td>
+                <td><span class="user-phone">{{ u.telefono }}</span></td>
                 <td>{{ u.correo }}</td>
                 <td>
                     <a href="https://wa.me/{{ u.telefono }}" target="_blank" class="btn-action btn-whatsapp" title="Contactar por WhatsApp">
@@ -32,6 +34,7 @@
                             "apeP": u.apeP,
                             "apeM": u.apeM,
                             "telefono": u.telefono,
+                            "correo": u.correo,
                             "plataformas": u.plataformas | map(attribute="id") | list
                         } | tojson | safe }})'>
                         <i class="bi bi-pencil-square"></i>

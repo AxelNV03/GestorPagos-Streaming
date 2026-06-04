@@ -34,7 +34,6 @@ def guardar_usuario():
     
     try:
         AdminService.guardar_usuario(usuario_id, datos)
-        flash('¡Usuario guardado exitosamente!', 'success')        
     except Exception as e:
         db.session.rollback()
         flash(f'Error al guardar el usuario: {str(e)}', 'danger')       
