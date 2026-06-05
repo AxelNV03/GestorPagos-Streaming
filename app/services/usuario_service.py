@@ -116,3 +116,16 @@ class UsuarioService:
         
         db.session.commit()
         return u
+    
+    @staticmethod
+    def eliminar_usuario(u_id):
+        u = Usuario.query.get_or_404(u_id)
+        if not u:
+            raise Exception("El usuario que intentas eliminar no existe.")
+        
+        # Primero borramos todas las plataformas vinculadas
+        PlataformaUsuario.query.filter(PlataformaUsuario.usuario_id == u.id).delete(synchronize_session=False)
+
+        db.session.delete(u)
+        db.session.commit()
+        return True

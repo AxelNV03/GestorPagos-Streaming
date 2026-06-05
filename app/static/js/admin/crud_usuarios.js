@@ -115,7 +115,7 @@ window.onclick = function(event) {
     }
 }
 
-function confirmarEliminacion(nombre, urlEliminar) {
+function confirmarEliminarUsuario(nombre, urlEliminar) {
     if (confirm(`¿Estás seguro de que deseas eliminar el usuario "${nombre}"?`)) {
         // Creamos un formulario temporal para enviar la petición POST de forma segura
         const form = document.createElement('form');

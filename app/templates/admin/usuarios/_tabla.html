@@ -41,18 +41,23 @@
                     </button>
                                                         
                     <button class="btn-action btn-delete" 
-                        onclick="confirmarEliminarUser('{{ u.id }}', '{{ u.nombres }}')">
+                        onclick="confirmarEliminarUsuario('{{ u.id }}', '{{ url_for('admin.eliminar_usuario', u_id=u.id) }}')">
                         <i class="bi bi-trash3-fill"></i>
                     </button>
                 </td>
             </tr>
         {% else %}
             <tr>
-                <td colspan="11" class="text-center text-muted py-5">
-                    <div class="empty-state-wrapper">
-                        <i class="bi bi-folder-x fs-1 d-block mb-3 text-secondary"></i>
-                        <h5 class="fw-bold">No hay usuarios registrados</h5>
-                        <p class="mb-0">Agrega una nuevo usuario usando el botón en la parte superior.</p>
+                <!-- Forzamos la expansión exacta por tus 5 columnas de la tabla de usuarios -->
+                <td colspan="5" class="text-center text-muted py-5" style="background: #ffffff; border: none;">
+                    <div class="user-empty-state-wrapper">
+                        <!-- El icono con las clases de Bootstrap idénticas a plataformas -->
+                        <i class="bi bi-person-x fs-1 d-block mb-3 text-secondary user-empty-icon"></i>
+                        
+                        <!-- Título con la clase fw-bold para heredar el peso exacto de plataformas -->
+                        <h5 class="fw-bold user-empty-title">No hay usuarios registrados</h5>
+                        
+                        <!-- Párrafo descriptivo secundario -->
                     </div>
                 </td>
             </tr>

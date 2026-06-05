@@ -6,8 +6,8 @@ from . import admin_bp
 from app.utils.decorators import admin_required
 
 from app.services.admin_service import AdminService
-# ===================================================================================================
-# ===================================================================================================
+from app.services.usuario_service import UsuarioService
+
 # ===================================================================================================
 @admin_bp.route('/usuarios')
 def usuarios():
@@ -37,5 +37,17 @@ def guardar_usuario():
     except Exception as e:
         db.session.rollback()
         flash(f'Error al guardar el usuario: {str(e)}', 'danger')       
+    
+    return redirect(url_for('admin.usuarios'))
+# ===================================================================================================
+@admin_bp.route('/usuarios/eliminar/<int:u_id>', methods=['POST'])
+@admin_required
+def eliminar_usuario(u_id):
+    try:
+        UsuarioService.eliminar_usuario(u_id)
+        flash("¡Usuario eliminado correctamente!", "success")
+    except Exception as e:
+        db.session.rollback()
+        flash(f"No se pudo eliminar al usuario: {str(e)}", "danger")
     
     return redirect(url_for('admin.usuarios'))

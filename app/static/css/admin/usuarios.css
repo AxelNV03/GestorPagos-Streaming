@@ -373,21 +373,17 @@
 /* Tabla de Usuarios */
 /* ==================================================================================================================== */
 /* CONTAINER DE LA TABLA */
-.table-container {
-    background: #ffffff;
-    border-radius: 12px;
-    border: 1px solid #eef0f2;
-    overflow-x: auto; /* Permite scroll horizontal si la pantalla es muy chica */
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-    margin-top: 15px;
-}
-
 .users-table {
     width: 100%;
     border-collapse: separate;
     border-spacing: 0;
     background: #ffffff;
     table-layout: fixed; /* Forzamos el respeto estricto de los anchos */
+     border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    margin-top: 15px;
+    border: 1px solid #eef2f5;
 }
 
 /* Encabezado */
@@ -431,26 +427,32 @@
 /* Definición de Anchos Asignados (Sumados dan el 100% de una visualización limpia) */
 
 /* 1. Nombres */
-.users-table th:nth-child(1), .users-table td:nth-child(1) { 
-    width: 200px;
+.users-table th:nth-child(1), 
+.users-table td:nth-child(1) { 
+    width: 350px;
     font-weight: 600; /* Resalta un poco más el nombre del cliente */
 }
 
 /* Modificamos la celda de plataformas para que permitaマルチlínea */
+/* Aplicamos el ancho de 180px tanto al TH como al TD para que NUNCA se encoja */
+.users-table th:nth-child(2), 
 .users-table td:nth-child(2) { 
     width: 180px; 
-    white-space: normal;       /* ⬅️ Cambia de nowrap a normal para que permita saltos */
-    overflow: visible;          /* ⬅️ Quitamos el corte */
+}
+
+/* Conservamos tus propiedades de multilínea exclusivas de la celda de datos */
+.users-table td:nth-child(2) { 
+    white-space: normal;       /* Permite saltos de línea */
+    overflow: visible;         /* Quita el corte */
     text-overflow: clip;
 }
 
-/* Creamos un contenedor flex para los badges dentro de la celda */
+/* Tu contenedor de badges flexible se queda igual */
 .users-table td:nth-child(2) .badge-container {
     display: flex;
-    flex-wrap: wrap;           /* ⬅️ Si no caben, los manda abajo en automático */
-    gap: 10px;                  /* ⬅️ Separación perfecta entre badges */
+    flex-wrap: wrap;           /* Si no caben, los manda abajo en automático */
+    gap: 10px;                 /* Separación perfecta entre badges */
 }
-
 /* 4. Teléfono */
 .users-table th:nth-child(3), .users-table td:nth-child(3) { 
     width: 150px; 
@@ -542,3 +544,22 @@
 .btn-delete:hover { background: #ef4444; color: #fff; border-color: #ef4444; transform: scale(1.1); }
 
 
+/* ==================================================================================================================== */
+/* Estado Vacío - Módulo de Usuarios (Calca Exacta y Aislada de Plataformas) */
+/* ==================================================================================================================== */
+
+/* Contenedor base para centrar los elementos de la fila */
+.users-table .user-empty-state-wrapper {
+    display: block;
+    text-align: center;
+}
+
+/* Forzamos al icono a heredar las dimensiones exactas del de plataformas */
+.users-table .user-empty-icon {
+    font-size: 1.5rem !important; /* Mismo tamaño que otorga la clase fs-1 de Bootstrap */
+    color: #6c757d !important;    /* Forzamos el tono gris exacto de la clase text-secondary */
+}
+/* Bloqueo del efecto hover gris en la fila del estado vacío */
+.users-table tr:has(.user-empty-state-wrapper):hover {
+    background-color: transparent !important;
+}
