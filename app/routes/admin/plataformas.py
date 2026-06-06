@@ -43,7 +43,7 @@ def guardar_plataforma():
 def eliminar_plataforma(p_id):
     try:
         # Llamamos directo al servicio encargado de las plataformas
-        PlataformaService.eliminar_plataforma(p_id)
+        AdminService.borrar_plataforma(p_id)
         flash("¡Plataforma eliminada correctamente!", "success")
     except Exception as e:
         db.session.rollback()

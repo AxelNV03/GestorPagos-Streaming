@@ -9,17 +9,7 @@ from app.core.models.cobro import Cobro
 from werkzeug.utils import secure_filename
 from sqlalchemy import func
 # ===================================================================================================
-class PlataformaService:
-    @staticmethod
-    def pendientes_periodo(mes, anio):
-        """Obtiene las plataformas que tienen pagos pendientes para un periodo especifico"""
-        # Ajustamos el formato de fecha para que coincida con DATE de MariaDB (YYYY-MM-01)
-        fecha_busqueda = f"{anio}-{mes:02d}-01"
-        return Plataforma.query.join(PlataformaUsuario).join(Cobro).filter(
-            Cobro.mes_anio == fecha_busqueda,
-            Cobro.estado == 'pendiente'
-        ).distinct().all()
-    
+class PlataformaService:    
     @staticmethod
     def obtener_todas():
         """Retorna una lista con todas las plataformas registradas."""
@@ -84,31 +74,27 @@ class PlataformaService:
 
             # 2. Guardamos el nuevo usando el método de apoyo
             p.url_logo = PlataformaService._procesar_y_guardar_logo(p.id, archivo_logo)
-
+        
         db.session.commit()
         return p
     
     @staticmethod
-    def eliminar_plataforma(p_id):
-        """
-        Busca una plataforma, borra su logo del disco y la elimina de la base de datos.
-        """
-        # 1. Buscamos la plataforma en la DB
+    def eliminar_archivo_logo(p_id):
+        """Busca la plataforma y borra su archivo de logo del almacenamiento"""
         p = Plataforma.query.get_or_404(p_id)
-
-        # 2. Si tiene un logo asignado, lo borramos del disco
-        if p.url_logo:
+        if p.url_logo and p.url_logo != 'default_logo.png': # Evitamos borrar el logo por defecto
             ruta_logo = os.path.join(current_app.config['UPLOAD_LOGOS'], p.url_logo)
             if os.path.exists(ruta_logo):
                 try:
                     os.remove(ruta_logo)
                 except OSError:
-                    # Evita que se detenga el código si hay problemas de permisos
                     pass
-
-        # 3. Borramos el registro de la DB y confirmamos los cambios
-        db.session.delete(p)
-        db.session.commit()
         return True
-    
+
+    @staticmethod
+    def eliminar_registro_base(p_id):
+        """Remueve la plataforma de la sesión (sin hacer commit aún)"""
+        p = Plataforma.query.get_or_404(p_id)
+        db.session.delete(p)
+        return True
     

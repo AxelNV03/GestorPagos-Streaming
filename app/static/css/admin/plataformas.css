@@ -42,7 +42,7 @@
     display: inline-flex;
     background-color: #ffffff;
     border-radius: 12px;
-    padding: 20px;
+    padding: 10px 20px 20px 20px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
     border: 1px solid #eef2f5;
     gap: 50px; /* Espacio entre las dos columnas */

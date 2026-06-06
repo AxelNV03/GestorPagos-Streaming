@@ -1,40 +1,41 @@
 /* ============================================================================================================= */
 /* CSS De la card de status main page admin */
-.dashboard-top-grid {
+/* ============================================================================================================= */
+.dashb-top-grid {
     margin-bottom: 2rem;
 }
 
-.status-summary-card {
+.status-sum-card {
     display: flex;
     background-color: #ffffff;
     border-radius: 12px;
-    padding: 20px;
+    padding: 10px 20px 20px 20px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
     border: 1px solid #eef2f5;
-    gap: 40px; /* Espacio entre las dos columnas */
+    gap: 30px; /* Espacio entre las dos columnas */
 }
 
 /* Columna Izquierda: Resumen */
-.summary-info {
-    flex: 0 0 250px; /* Ancho fijo para la info */
+.sum-info {
+    flex: 0 0 200px; /* Ancho fijo para la info */
     border-right: 2px solid #f1f4f6; /* Línea divisoria */
     padding-right: 20px;
 }
 
-.summary-title {
+.sum-title {
     color: #334155;
-    font-size: 1.25rem;
+    font-size: 1.1rem;
     margin-bottom: 15px;
     font-weight: 700;
 }
 
-.summary-details p {
-    margin: 8px 0; /* Espacio vertical entre los párrafos */
-    font-size: 1.0rem; 
+.sum-details p {
+    margin: 8px 0;
+    font-size: 0.95rem;
     color: #2a3646;
 }
 
-.summary-details span {
+.sum-details span {
     font-weight: 600;
 }
 
@@ -43,13 +44,13 @@
     flex: 1;
     display: grid;
     /* Definimos exactamente 5 filas */
-    grid-template-rows: repeat(5, auto);
+    grid-template-rows: repeat(6, auto);
     /* La magia: cuando llena las 5 filas, crea una nueva columna a la derecha */
     grid-auto-flow: column; 
     /* Ajusta el ancho de las nuevas columnas */
     grid-auto-columns: minmax(300px, 1fr); 
     
-    gap: 9px 40px; /* 10px entre filas, 40px entre columnas */
+    gap: 9px 30px; /* 10px entre filas, 40px entre columnas */
     padding-left: 10px;
     overflow-x: auto; /* Por si tienes muchísimas plataformas, permite scroll lateral */
 }
@@ -113,17 +114,26 @@
     border: 1px solid #fee2e2;
 }
 
+.dot-neutral {
+    background-color: #f8fafc;
+    color: #64748b;
+    border: 1px solid #e2e8f0;
+}
+
 /* Colores de texto auxiliares */
 .text-success { color: #10b981 !important; }
 .text-danger { color: #ef4444 !important; }
+.text-neutral { color: #64748b !important; } /* Auxiliar neutro */
+
 /* ============================================================================================================= */
 /* CSS de los servicios estilo playlist */
+/* ============================================================================================================= */
 
 /* Los rectángulos estilo "Servicios" */
 .horizontal-scroll-container {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 15px;
+    gap: 12px;
 }
 
 .status-rect {
@@ -153,18 +163,43 @@
 }
 
 .rect-title {
-    font-weight: 600;
+    font-weight: 700;
     margin: 0;
-    font-size: 1rem;
+    font-size: 0.90rem;
+    color: #1e1e1e;          /* ─── MODIFICADO: Gris oscuro puro (carbón/grafito), sin matices azules y muy potente */
 }
 
 .rect-subtitle {
-    font-size: 0.85rem;
+    font-size: 0.90rem;
     margin: 0;
+    margin-top: 3px;   /* ─── NUEVO: Separación muy ligera y elegante hacia abajo del título */
+    color: #64748b;
 }
 .highlight-info {
     background-color: #e0e0e0;
     color: #000000 !important;
+}
+
+/* ============================================================================================================= */
+/* RESPONSIVIDAD: El toque maestro para que no se rompa nada */
+/* ============================================================================================================= */
+@media (max-width: 992px) {
+    .status-sum-card {
+        flex-direction: column; /* La info pasa arriba, la lista abajo */
+        gap: 20px;
+    }
+    
+    .sum-info {
+        flex: 1 1 auto;
+        border-right: none;
+        border-bottom: 2px solid var(--divider-color); /* Línea divisoria ahora abajo */
+        padding-right: 0;
+        padding-bottom: 20px;
+    }
+    
+    .mini-status-list {
+        padding-left: 0;
+    }
 }
 /* ============================================================================================================= */
 /* Tabla correspondiente a cobross */

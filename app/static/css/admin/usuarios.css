@@ -370,16 +370,16 @@
 
 
 /* ==================================================================================================================== */
-/* Tabla de Usuarios */
+/* Tabla de Usuarios - Consolidada y Dinámica */
 /* ==================================================================================================================== */
+
 /* CONTAINER DE LA TABLA */
 .users-table {
     width: 100%;
-    border-collapse: separate;
-    border-spacing: 0;
+    border-collapse: collapse; /* Cambiado a collapse para que funcione table-layout: auto de forma óptima */
     background: #ffffff;
-    table-layout: fixed; /* Forzamos el respeto estricto de los anchos */
-     border-radius: 12px;
+    table-layout: auto;        /* 🔥 Permite que el navegador calcule el ancho según el texto más largo */
+    border-radius: 12px;
     overflow: hidden;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
     margin-top: 15px;
@@ -404,15 +404,13 @@
 
 /* Celdas Generales */
 .users-table td {
-    padding: 14px 15px; /* Un poquito más de aire arriba y abajo */
+    padding: 14px 15px; 
     text-align: left;
     vertical-align: middle;
     border-bottom: 1px solid #f1f1f1;
     color: #333;
     font-size: 0.9rem;
-    white-space: nowrap; /* Evita que el texto salte de línea */
-    overflow: hidden;
-    text-overflow: ellipsis; /* Si el texto no cabe, pone "..." */
+    /* Quitamos el white-space: nowrap general para controlar cada columna de manera independiente abajo */
 }
 
 .users-table tr:last-child td {
@@ -420,56 +418,67 @@
 }
 
 .users-table tr:hover {
-    background-color: #f9fbfd; /* Un tono azulado/grisáceo muy sutil al pasar el mouse */
+    background-color: #f9fbfd; 
 }
 
-/* -------------------------------------------------------------------------------------------------------------------- */
-/* Definición de Anchos Asignados (Sumados dan el 100% de una visualización limpia) */
+/* ==================================================================================================================== */
+/* Definición de Comportamiento por Columna */
+/* ==================================================================================================================== */
 
-/* 1. Nombres */
+/* --- 1. Columna de Nombres --- */
 .users-table th:nth-child(1), 
 .users-table td:nth-child(1) { 
-    width: 350px;
-    font-weight: 600; /* Resalta un poco más el nombre del cliente */
+    width: auto;         /* Se adapta al nombre más largo de la base de datos */
+    white-space: nowrap; /* Evita estrictamente que un nombre largo se parta en dos líneas */
+    font-weight: 600;    
+    padding-right: 25px; 
 }
 
-/* Modificamos la celda de plataformas para que permitaマルチlínea */
-/* Aplicamos el ancho de 180px tanto al TH como al TD para que NUNCA se encoja */
+/* --- 2. Columna de Plataformas (Badges Flexibles) --- */
 .users-table th:nth-child(2), 
 .users-table td:nth-child(2) { 
-    width: 180px; 
+    width: auto;         /* Permite que la columna se extienda todo lo necesario hacia la derecha */
 }
 
-/* Conservamos tus propiedades de multilínea exclusivas de la celda de datos */
 .users-table td:nth-child(2) { 
-    white-space: normal;       /* Permite saltos de línea */
-    overflow: visible;         /* Quita el corte */
-    text-overflow: clip;
+    white-space: normal; /* 🟢 Permite el salto de línea sólo cuando el espacio físico de la pantalla se agote */
+    overflow: visible;         
 }
 
-/* Tu contenedor de badges flexible se queda igual */
+/* Contenedor inteligente de badges */
 .users-table td:nth-child(2) .badge-container {
     display: flex;
-    flex-wrap: wrap;           /* Si no caben, los manda abajo en automático */
-    gap: 10px;                 /* Separación perfecta entre badges */
-}
-/* 4. Teléfono */
-.users-table th:nth-child(3), .users-table td:nth-child(3) { 
-    width: 150px; 
+    flex-wrap: wrap;     /* 🔄 ¡La clave! Se extiende horizontalmente, pero si ya no cabe en la pantalla, salta abajo */
+    flex-direction: row; 
+    gap: 8px;            
+    align-items: center;
 }
 
-/* 5. Correo */
-.users-table th:nth-child(4), .users-table td:nth-child(4) { 
-    width: 220px; 
+/* --- 3. Teléfono --- */
+.users-table th:nth-child(3), 
+.users-table td:nth-child(3) { 
+    width: auto;
+    white-space: nowrap; /* El teléfono se queda siempre visible en un solo renglón */
+    padding-right: 15px;
+}
+
+/* --- 4. Correo --- */
+.users-table th:nth-child(4), 
+.users-table td:nth-child(4) { 
+    width: auto; 
+    white-space: nowrap; /* El correo electrónico no se corta ni salta */
     color: #555;
+    padding-right: 20px;
 }
 
-/* 6. Acciones */
-.users-table th:nth-child(5), .users-table td:nth-child(5) { 
-    width: 160px; /* Espacio ideal para que tus 3 botones respiren alineados */
+/* --- 5. Acciones (Botones) --- */
+.users-table th:nth-child(5), 
+.users-table td:nth-child(5) { 
+    width: 1%;           /* Se encoge al mínimo espacio posible de los botones */
+    white-space: nowrap; /* Mantiene tus botones de editar/eliminar en una sola línea horizontal */
     text-align: center;
+    padding-right: 15px; /* ⬅️ Le da un colchón de espacio limpio al título antes del borde final */
 }
-
 /* -------------------------------------------------------------------------------------------------------------------- */
 /* Componentes Internos Modernizados */
 

@@ -1,7 +1,9 @@
 from sqlalchemy import or_
 from app.core.models.usuario import Usuario
 from app.core.models.plataforma_usuario import PlataformaUsuario
-from app.core.db_manager import db, ManagerDB
+from app.services.cobro_service import CobroService
+
+from app.core.db_manager import db
 from app import db
 from sqlalchemy.exc import IntegrityError
 
@@ -58,11 +60,11 @@ class UsuarioService:
     @staticmethod
     def nuevo_usuario(datos):
         nuevo_u = Usuario(
-            nombres=datos.get('nombres'),
-            apeP=datos.get('apeP'),
-            apeM=datos.get('apeM'),
+            nombres=datos.get('nombres').upper(),
+            apeP=datos.get('apeP').upper(),
+            apeM=datos.get('apeM').upper(),
             telefono=datos.get('telefono'),
-            correo=datos.get('correo')
+            correo=datos.get('correo').lower()
         )
         db.session.add(nuevo_u)
         db.session.flush()
@@ -77,7 +79,7 @@ class UsuarioService:
                 )
                 db.session.add(vinculo)
 
-        db.session.commit()
+        db.session.flush()
         return nuevo_u
 
     @staticmethod
@@ -87,34 +89,13 @@ class UsuarioService:
             raise Exception("El usuario que intentas editar no existe.")
         
         # Actualizar los campos básicos
-        u.nombres = datos.get('nombres')
-        u.apeP = datos.get('apeP')
-        u.apeM = datos.get('apeM')
+        u.nombres = datos.get('nombres').upper()
+        u.apeP = datos.get('apeP').upper()
+        u.apeM = datos.get('apeM').upper()
         u.telefono = datos.get('telefono')
-        u.correo = datos.get('correo')
+        u.correo = datos.get('correo').lower()
 
-        # Actualizar plataformas vinculadas
-        plataformas_nuevas = set(datos.get('plataformas', []))
-        plataformas_actuales = set([p.id for p in u.plataformas])
-
-        eliminar = plataformas_actuales - plataformas_nuevas
-        agregar = plataformas_nuevas - plataformas_actuales
-
-        if eliminar:
-            PlataformaUsuario.query.filter(
-                PlataformaUsuario.usuario_id == u.id,
-                PlataformaUsuario.plataforma_id.in_(eliminar)
-            ).delete(synchronize_session=False)
-
-        # Operación B: Si hay plataformas nuevas, las insertamos en la intermedia
-        for p_id in agregar:
-            nueva_vinculacion = PlataformaUsuario(
-                usuario_id=u.id,
-                plataforma_id=p_id
-            )
-            db.session.add(nueva_vinculacion)
-        
-        db.session.commit()
+        db.session.flush()        
         return u
     
     @staticmethod
