@@ -21,22 +21,22 @@ def usuarios():
 @admin_required
 def guardar_usuario():
     usuario_id = request.form.get('usuario_id')
-    plats_raw = request.form.getlist('plataformas[]')    
-    plats_pars = [int(p_id) for p_id in plats_raw if p_id.isdigit()]
+    plataformas_user = request.form.getlist('plataformas[]')    
+    ids_plataformas_user = [int(p_id) for p_id in plataformas_user if p_id.isdigit()]
+    
     datos = {
         'nombres' : request.form.get('nombres'),
         'apeP' : request.form.get('apeP'),
         'apeM' : request.form.get('apeM'),
         'telefono' : request.form.get('telefono'),
         'correo' : request.form.get('correo'),
-        'plataformas' : plats_pars
+        'plataformas' : ids_plataformas_user
     }
     
     try:
         AdminService.guardar_usuario(usuario_id, datos)
-        db.session.commit()
+        flash('¡Usuario guardado correctamente!', 'success')
     except Exception as e:
-        db.session.rollback()
         flash(f'Error al guardar el usuario: {str(e)}', 'danger')       
     
     return redirect(url_for('admin.usuarios'))
@@ -52,3 +52,4 @@ def eliminar_usuario(u_id):
         flash(f"No se pudo eliminar al usuario: {str(e)}", "danger")
     
     return redirect(url_for('admin.usuarios'))
+# ===================================================================================================

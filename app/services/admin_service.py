@@ -7,6 +7,8 @@ from app.services.cobro_service import CobroService
 from app.services.periodo_service import PeriodoService
 from app.core.models.plataforma import Plataforma
 from app.core.models.usuario import Usuario
+from app.core.models.cobro import Cobro
+from app.core.models.plataforma_usuario import PlataformaUsuario
 
 
 from app import db
@@ -16,273 +18,232 @@ from decimal import Decimal, ROUND_HALF_UP
 # ===================================================================================================
 class AdminService:
     @staticmethod
-    def dashboard_data():
-        """Recopila toda la info para la pantalla principal"""
-        # 1. Obtenemos los datos base (mes, año, label)
-        info_p = PeriodoService.obtener_periodo_actual()
-        
-        # 2. Obtenemos los cálculos financieros (recaudado, restante, esperado)
-        finanzas = CobroService.balance_global(info_p['mes'], info_p['anio'])
-
-        # 3. Obtenemos los objetos de plataformas con deudas
-        plataformas = PlataformaService.obtener_todas()
-
-        plataformas_deudoras = []
+    def _inyectar_metricas_plataformas(plataformas, mapa_metricas):
         for p in plataformas:
-            # Ejecutamos tus dos funciones especialistas pasándole el ID de la plataforma en turno
-            p.finanzas = CobroService.finanzas_plataforma(p.id, info_p["mes"], info_p["anio"])
-            p.conteos = CobroService.conteo_pagos_plataforma(p.id, info_p["mes"], info_p["anio"])
-            if p.conteos['no_pagados'] > 0:
-                plataformas_deudoras.append(p)
+            metricas_individuales = mapa_metricas.get(p.id, {
+                "finanzas": {"recaudado": 0.0, "restante": 0.0, "total_esperado": 0.0},
+                "conteos": {"pagados": 0, "no_pagados": 0, "total_usuarios": 0}
+            })            
+            p.finanzas = metricas_individuales["finanzas"]
+            p.conteos = metricas_individuales["conteos"]
+        
+        return plataformas
+# ===================================================================================================
+    @staticmethod
+    def dashboard_data():
+        info_p = PeriodoService.obtener_periodo_actual()
+        mes, anio, label = info_p["mes"], info_p["anio"], info_p["label"]
 
+        finanzas = CobroService.metricas_globales_periodo(mes, anio)
+        mapa_metricas = CobroService.metricas_plataformas_periodo(mes, anio)
+        plataformasB = PlataformaService.obtener_todas()
+        plataformas = AdminService._inyectar_metricas_plataformas(plataformasB, mapa_metricas)
+        plataformas_deudoras = [p for p in plataformas if p.conteos['no_pagados'] > 0]
 
-        # 3. Construimos un objeto unificado
         return {
             "periodo": {
-                "label": info_p['label'],
-                "nombre_mes": info_p['nombre_mes'],
-                "anio": info_p['anio'],
+                "label": label,
                 "total_recaudado": finanzas['recaudado'],
-                "total_restante": finanzas['restante'],
-                "total_esperado": finanzas['total_esperado'],
-                "tiene_datos": finanzas['tiene_datos']
+                "total_restante": finanzas['restante']
             },
-            "plataformas": plataformas,  # <--- Enviamos la lista aquí
+            "plataformas": plataformas,  
             "plataformas_pendientes": plataformas_deudoras
         }
+# ===================================================================================================
 
+
+
+# ===================================================================================================
+# SECCION DE PLATAFORMAS
+# ===================================================================================================
     @staticmethod
     def panel_plataformas():
-
-        # Datos generales del periodo actual
         info_p = PeriodoService.obtener_periodo_actual()
-        finanzas = CobroService.balance_global(info_p['mes'], info_p['anio'])
-        conteo_pagos = CobroService.conteo_pagos_periodo(info_p['mes'], info_p['anio'])
-        
-        # Datos de cada plataforma
-        plataformas = PlataformaService.obtener_todas()
-        plataformas_info = []
-        for p in plataformas:
-            # 2. Obtenemos los datos de CobroService para esta plataforma
-            finanzasP = CobroService.finanzas_plataforma(p.id, info_p["mes"], info_p["anio"])
-            conteos = CobroService.conteo_pagos_plataforma(p.id, info_p["mes"], info_p["anio"])
-            
-            # 3. Armamos el diccionario mezclando los datos del modelo + los cálculos
-            plataformas_info.append({
-                "id": p.id,
-                "nombre": p.nombre,
-                "correo_admin": p.correo_admin,
-                "url_logo": p.url_logo,
-                "precio_total": p.precio_total,
-                "dia_cobro": p.dia_cobro,
-                
-                # Datos de tus @properties del modelo:
-                "cuota": p.cuota,
-                "cupos": p.cupos_disponibles,
-                "total_usersP": p.total_usuarios,
-                
-                # Datos financieros que acabas de calcular en tiempo real:
-                "recaudado": finanzasP["recaudado"],
-                "restante": finanzasP["restante"],
-                "pagados": conteos["pagados"],
-                "no_pagados": conteos["no_pagados"]
-            })
+        mes, anio, label = info_p["mes"], info_p["anio"], info_p["label"]
 
+        metricas_g = CobroService.metricas_globales_periodo(mes, anio)
+        metricas_p = CobroService.metricas_plataformas_periodo(mes, anio)
+        plataformas = PlataformaService.obtener_todas()        
+        plataformas_info = AdminService._inyectar_metricas_plataformas(plataformas, metricas_p)
 
         return {
-            'periodo' : info_p['label'],
+            'periodo' : label, 
             'plataformas' : plataformas_info,
-            'recaudado' : finanzas['recaudado'],
-            'restante' : finanzas['restante'],
-            'total_users' : conteo_pagos['users'],
-            'pagos_realizados' : conteo_pagos['pagos']
+            'metricas': metricas_g 
         }
-
+# ===================================================================================================
     @staticmethod
-    def guardar_plataforma(plataforma_id, datos, archivo_logo):
-        if plataforma_id and plataforma_id.strip():
-            # Edición
-            p = Plataforma.query.get_or_404(plataforma_id)            
-            cuota_anterior = float(p.cuota)
-            cuota_nueva = float(datos['cuota'])
-            
-            debe_actualizar_cobros = (cuota_anterior != cuota_nueva)
-
-            # Actualizamos los datos del modelo
-            p.nombre = datos['nombre']
-            p.precio_total = datos['precio_total']
-            p.dia_cobro = datos['dia_cobro']
-            p.cuota = datos['cuota'] 
-            p.correo_admin = datos['correo_admin']
-
-            p_actualizada = PlataformaService.editar_plataforma(plataforma_id, datos, archivo_logo)
-
-            if debe_actualizar_cobros:
-                plataformas_ids = PlataformaUsuarioService.obtener_ids_por_plataforma(p_actualizada.id)
-                CobroService.actualizar_monto_cobros(plataformas_ids, p_actualizada.cuota)
-
-            # filas_actualizadas = 0
-            # if precio_anterior != precio_nuevo:
-            #     # Tu función que ajusta cobros en la DB:
-            #     filas_actualizadas = CobroService.actualizar_cobros_pendientes_plataforma(
-            #         p.id, precio_nuevo, p.total_usuarios
-            #     ) or 0
-
-            # mensaje = f"¡{p.nombre} actualizada correctamente!"
-            # if filas_actualizadas > 0:
-            #     mensaje += f" Se ajustaron {filas_actualizadas} cobros pendientes."
-                
-            # tipo_flash = "success"
-        else:
-            p = PlataformaService.nueva_plataforma(datos, archivo_logo)
-            mensaje = f"¡{p.nombre} creada correctamente!"
-            tipo_flash = "success"
-
-    @staticmethod
-    def borrar_plataforma(p_id):
-        """
-        Orquesta el borrado físico completo de una plataforma y sus dependencias
-        de manera transaccional (Todo o Nada).
-        """
+    def guardar_plataforma(plataforma_id, datos, archivo_logo):     
         try:
-            # 1. Borrar el logo físico del disco antes de perder el registro
-            PlataformaService.eliminar_archivo_logo(p_id)
+            if plataforma_id and plataforma_id.strip():
+                
+                plataforma = db.session.get(Plataforma, plataforma_id)                            
 
-            # 2. Obtener los IDs de los contratos/usuarios asociados
-            vinculos_ids = PlataformaUsuarioService.obtener_ids_por_plataforma(p_id)
+                debe_actualizar_cobros = (float(plataforma.cuota) != float(datos['cuota']))
+                
+                p_actualizada = PlataformaService.editar_plataforma(plataforma, datos, archivo_logo)
+                
+                if debe_actualizar_cobros:
+                    relaciones_ids = PlataformaUsuarioService.obtener_vinculos_de_plataforma(p_actualizada.id)
+                    CobroService.actualizar_monto_cobros_pendientes(relaciones_ids, p_actualizada.cuota)
+            else:
+                PlataformaService.nueva_plataforma(datos, archivo_logo)
 
-            # 3. Eliminar los Cobros (Nietos) si existen usuarios asociados
-            if vinculos_ids:
-                CobroService.borrado_total_por_ids(vinculos_ids)
-
-            # 4. Eliminar los registros de PlataformaUsuario (Hijos)
-            PlataformaUsuarioService.eliminar_registros_plataforma(p_id)
-
-            # 5. Eliminar la Plataforma (Padre) de la DB
-            PlataformaService.eliminar_registro_base(p_id)
-
-            # 🚀 El toque maestro: Si todo salió bien, guardamos todo de golpe en MariaDB
             db.session.commit()
-            return True
 
         except Exception as e:
-            # 🛡️ Si algo falla en cualquier punto, revertimos todo y no se borra nada
             db.session.rollback()
             raise e
-    
+# ===================================================================================================
+    @staticmethod
+    def borrar_plataforma(plataforma_id):
+        try:
+            p = db.session.get(Plataforma, plataforma_id)
+            if not p:
+                raise Exception("La plataforma que intentas eliminar no existe.")
+            
+            relaciones_ids = PlataformaUsuarioService.obtener_vinculos_de_plataforma(p.id)
+            if relaciones_ids:
+                CobroService.eliminar_cobros_de_plataforma(relaciones_ids)
+            
+            PlataformaUsuarioService.desvincular_usuarios_de_plataforma(p.id)
+            PlataformaService.eliminar_plataforma_db(p)
+            db.session.flush()
+
+            PlataformaService.eliminar_archivo_logo(p)
+            db.session.commit()
+
+            return True
+        except Exception as e:
+            db.session.rollback()
+            raise e
+# ===================================================================================================
+
+
+
+# ===================================================================================================
+# SECCION DE USUARIOS
+# ===================================================================================================
     @staticmethod
     def panel_usuarios(filtros):
-
-        # Lista de plataformas
         plataformas = PlataformaService.obtener_todas()
-        
-        # Extraer valores
-        query_text = filtros.get('query', '').strip()
-        plat_id = filtros.get('plataforma_id', '').strip()
-
-        # Filtro
-        if query_text or plat_id:
-            usuarios = UsuarioService.filtrar_usuarios(
-                busqueda=query_text, 
-                plataforma_id=plat_id
-            )
-        else:
-            usuarios = UsuarioService.obtener_todos()
-
+        usuarios = UsuarioService.filtrar_usuarios(
+            busqueda=filtros.get('query'), 
+            plataforma_id=filtros.get('plataforma_id')
+        )
         return {
-            'listaPlataformas' : plataformas,
-            'listaUsuarios' : usuarios,
-            'filtros_usados' : filtros
+            'listaPlataformas': plataformas,
+            'listaUsuarios': usuarios,
+            'filtros_usados': filtros
         }
-    
+# ===================================================================================================
     @staticmethod
     def guardar_usuario(usuario_id, datos):
-        ahora = datetime.now()
-        mes_actual = ahora.month
-        anio_actual = ahora.year
-        # 1. FLUJO DE ACTUALIZACIÓN (EDITAR)
-        if usuario_id and str(usuario_id).strip():
-            u = UsuarioService.editar_usuario(int(usuario_id), datos)
-            
-            if u:
+        info_p = PeriodoService.obtener_periodo_actual()
+        mes_actual, anio_actual, label = info_p["mes"], info_p["anio"], info_p["label"]
+
+        try:
+            # ================================================================
+            # 1. EDITAR
+            # ================================================================
+            if usuario_id and str(usuario_id).strip():
+                u = UsuarioService.editar_usuario(int(usuario_id), datos)
+                if not u:
+                    raise Exception("El usuario que intentas editar no existe.")
+
                 plataformas_nuevas = set(datos.get('plataformas', []))
                 plataformas_actuales = set([p.id for p in u.plataformas])
 
                 eliminar = plataformas_actuales - plataformas_nuevas
                 agregar = plataformas_nuevas - plataformas_actuales
-                
-                # Eliminar cobros pendientes de las plataformas desvinculadas
-                for p_id in eliminar:
-                    relacion = PlataformaUsuarioService.obtener_relacion(u.id, p_id)
-                    CobroService.desvincular_pagos_pendientes(relacion.id)
 
-                # Actualizar
-                PlataformaUsuarioService.desvincular_plataformas(u.id, eliminar)
-                PlataformaUsuarioService.vincular_plataformas(u.id, agregar)
+                if eliminar:
+                    CobroService.eliminar_pagos_pendientes_de_usuario_en_plataformas(u.id, eliminar)
+                    PlataformaUsuarioService.desvincular_plataformas_de_usuario(u.id, eliminar)
 
-                # Crear cobros de los nuevos vinculos
-                for p_id in agregar:
-                    try:
-                        AdminService.crear_pago(u.id, int(p_id), mes_actual, anio_actual)
-                    except ValueError as e:
-                        flash(f"Aviso en cobros: {str(e)}", "warning")
-
-            flash('Usuario actualizado correctamente.', 'success')        
-            return u
-            
-            
-        # 2. FLUJO DE CREACIÓN (NUEVO)
-        else:
-            u = UsuarioService.nuevo_usuario(datos)
-            if u:
-                mensaje = f"¡{u.nombres} {u.apeP} creado correctamente!"
-                flash(mensaje, "success")
-
-
-
-                # Extraer las plataformas directamente de los datos del formulario/request
-                # Usamos .get() con una lista vacía [] por si el usuario se creó sin plataformas
-                plataformas_ids = datos.get('plataformas', [])
-
-                for p_id in plataformas_ids:
-                    try:
-                        # Orquestamos la creación del cobro estándar para cada plataforma asociada
-                        AdminService.crear_pago(u.id, int(p_id), mes_actual, anio_actual)
-                    except ValueError as e:
-                        # Si un cobro falla (ej. ya existía), lo atrapamos para que no detenga el flujo de las demás
-                        flash(f"Aviso en cobros: {str(e)}", "warning")
-                
-                return u
+                if agregar:
+                    PlataformaUsuarioService.vincular_plataformas_a_usuario(u.id, agregar)                    
+                    db.session.flush()
+                    AdminService.generar_cobros_en_plataformas(u.id, agregar, mes_actual, anio_actual, label)
+                                
+            # 2. FLUJO DE CREACIÓN (NUEVO)
             else:
-                flash("Error al crear el usuario.", "danger")
-                return None
+                u = UsuarioService.nuevo_usuario(datos)
+                if not u:
+                    raise Exception("No se pudo registrar el usuario en el sistema.")
 
+                plataformas_ids = datos.get('plataformas', [])
+                if plataformas_ids:
+                    PlataformaUsuarioService.vincular_plataformas_a_usuario(u.id, plataformas_ids)         
+                    db.session.flush()       
+                    AdminService.generar_cobros_en_plataformas(u.id, plataformas_ids, mes_actual, anio_actual, label)
+            
+            db.session.commit()
+            return u
+        except Exception as e:
+            # 🛡️ Al más mínimo error en CUALQUIERA de los dos flujos, limpiamos la sesión por completo.
+            # No se guardará nada roto, incompleto o a medias. ¡Todo o Nada!
+            db.session.rollback()
+            raise e
+# ===================================================================================================
     @staticmethod
-    def crear_pago(u_id, p_id, mes, anio):
-        fechaCobro = date(int(anio), int(mes), 1)
-        relacion = PlataformaUsuarioService.obtener_relacion(u_id, p_id)
-
-        # Validar relacion usuario-plataforma
-        if not relacion:
-            raise ValueError("El usuario no está asignado a esta plataforma.")
-
-        #  Verificar si ya hay un cobro para ese mes
-        if CobroService.existe_cobro(relacion.id, fechaCobro):
-            raise ValueError("Ya existe un cobro de este usuario para este periodo.")
+    def generar_cobros_en_plataformas(usuario_id, id_plataformas, mes, anio, label):
+        if not id_plataformas:
+            return
         
-        # 3. Obtener la plataforma de forma segura
-        plataforma = db.session.get(Plataforma, p_id)
-        if not plataforma:
-            raise ValueError("La plataforma especificada no existe.")
-        
-        cuota_base = Decimal(str(plataforma.cuota))
+        fecha_cobro = date(int(anio), int(mes), 1)
 
-        # Crear el cobro
-        datos = {
-            "usuario_plataforma_id": relacion.id,
-            "mes_anio": fechaCobro,
-            "monto_deuda": cuota_base,
-            "estado": "pendiente"
+
+        # 1. Traemos de un solo golpe los contratos que se acaban de crear/activar
+        relaciones = db.session.query(PlataformaUsuario).filter(
+            PlataformaUsuario.usuario_id == usuario_id,
+            PlataformaUsuario.plataforma_id.in_(id_plataformas),
+            PlataformaUsuario.activo == 1
+        ).all()
+        mapa_relaciones = {r.plataforma_id: r for r in relaciones}
+
+        # 2. Traemos de un solo golpe los precios de esas plataformas
+        plataformas = db.session.query(Plataforma).filter(
+            Plataforma.id.in_(id_plataformas)
+        ).all()
+
+        nuevos_cobros = []
+
+        for plat in plataformas:
+            relacion = mapa_relaciones.get(plat.id)
+            if not relacion:
+                raise ValueError(f"Error crítico: No se encontró el contrato activo para la plataforma {plat.nombre}.")
+                        
+            if CobroService.existe_cobro(relacion.id, fecha_cobro):
+                continue 
+
+            # Construimos el objeto de cobro con su motivo súper descriptivo
+            cobro_objeto = Cobro(
+                usuario_plataforma_id=relacion.id,
+                mes_anio=fecha_cobro,
+                monto_deuda=Decimal(str(plat.cuota)),
+                estado="pendiente",
+                motivo=f"Mensualidad - {plat.nombre} ({label})"
+            )
+            nuevos_cobros.append(cobro_objeto)
+
+        if nuevos_cobros:
+            db.session.add_all(nuevos_cobros)
+# ===================================================================================================
+
+
+# ===================================================================================================
+# SECCION DE COBROS
+# ===================================================================================================
+    @staticmethod
+    def panel_cobros(filtros):
+        info_p = PeriodoService.obtener_periodo_actual()
+        mes, anio, label = info_p["mes"], info_p["anio"], info_p["label"]
+        
+        plataformas = PlataformaService.obtener_todas()
+        return {
+            'listaPlataformas': plataformas,
+            'mes_actual': mes,
+            'anio_actual': anio,
+            'filtros_usados': filtros 
         }
-
-        return CobroService.crear_pago(datos)

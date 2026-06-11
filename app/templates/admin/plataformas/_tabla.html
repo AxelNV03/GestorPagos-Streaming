@@ -40,10 +40,10 @@
                     <td>Dia {{ p.dia_cobro }}</td>
                     <td>${{ "{:,.2f}".format(p.precio_total) }}</td>
                     <td>${{ "{:,.2f}".format(p.cuota) }}</td>
-                    <td>{{ p.cupos }}</td>
-                    <td>{{ p.pagados }}/{{ p.no_pagados }}</td>
-                    <td>${{ "{:,.2f}".format(p.recaudado|float) }}</td>
-                    <td>${{ "{:,.2f}".format(p.restante|float) }}</td>
+                    <td>{{ p.cupos_disponibles }}</td>
+                    <td>{{ p.conteos.pagados }}/{{ p.conteos.no_pagados }}</td>
+                    <td>${{ "{:,.2f}".format(p.finanzas.recaudado|float) }}</td>
+                    <td>${{ "{:,.2f}".format(p.finanzas.restante|float) }}</td>
                     <td>
                         <button class="btn-action" 
                             onclick='abrirModalFormPlataforma({{ {

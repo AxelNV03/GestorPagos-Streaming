@@ -14,14 +14,14 @@
 
                     <div class="metric-block">
                         <p class="label">Finanzas</p>
-                        <p><strong>Recaudado:</strong> <span class="text-success"><strong>${{ "{:,.2f}".format(recaudado|float) }}</strong></span></p>
-                        <p><strong>Restante:</strong> <span class="text-danger"><strong>${{ "{:,.2f}".format(restante|float) }}</strong></span></p>
+                        <p><strong>Recaudado:</strong> <span class="text-success"><strong>${{ "{:,.2f}".format(metricas.recaudado|float) }}</strong></span></p>
+                        <p><strong>Restante:</strong> <span class="text-danger"><strong>${{ "{:,.2f}".format(metricas.restante|float) }}</strong></span></p>
                     </div>
 
                     <div class="metric-block">
                         <p class="label">Total de Pagos</p>
-                        <div class="user-ratio" title="Progreso global: {{ (pagos_realizados / total_users * 100)|round(1) if total_users > 0 else 0 }}%">
-                            <span class="ratio-number">{{ pagos_realizados }}/{{ total_users }}</span>
+                        <div class="user-ratio" title="Progreso global: {{ (metricas.pagos / metricas.users * 100)|round(1) if metricas.users > 0 else 0 }}%">
+                            <span class="ratio-number">{{ metricas.pagos }}/{{ metricas.users }}</span>
                             <p class="sub-label">Pagos recibidos</p>
                         </div>
                     </div>

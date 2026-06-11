@@ -17,24 +17,20 @@ def plataformas():
 @admin_bp.route('/plataformas/guardar', methods=['POST'])
 @admin_required
 def guardar_plataforma():
-    # Extraer datos del form
     plataforma_id = request.form.get('plataforma_id')
     archivo_logo = request.files.get('logo')
     datos = {
-        'nombre': request.form.get('nombre'),
-        'precio_total': float(request.form.get('precio_total', 0)),
+        'nombre': request.form.get('nombre', ''),
+        'precio_total': float(request.form.get('precio_total', 0.00)),
         'dia_cobro': int(request.form.get('dia_cobro', 1)),
-        'cuota': float(request.form.get('cuota', 30)),
+        'cuota': float(request.form.get('cuota', 0.00)),
         'correo_admin': request.form.get('correo_admin')
     }
-
     try:
-        # 2. Una sola función del Service hace toda la magia
-        AdminService.guardar_plataforma(plataforma_id, datos, archivo_logo)
-        flash('¡Plataforma guardada exitosamente!', 'success')        
+        AdminService.guardar_plataforma(plataforma_id, datos, archivo_logo)    
+        flash('¡Plataforma guardada exitosamente!', 'success') 
     except Exception as e:
-        db.session.rollback()
-        flash(f'Error al guardar la plataforma: {str(e)}', 'danger')
+        flash(f'Error al guardar la plataforma: {str(e)}', 'danger') 
 
     return redirect(url_for('admin.plataformas'))
 # ===================================================================================================
@@ -42,11 +38,11 @@ def guardar_plataforma():
 @admin_required
 def eliminar_plataforma(p_id):
     try:
-        # Llamamos directo al servicio encargado de las plataformas
+        # La ruta solo da la orden y confía en el servicio
         AdminService.borrar_plataforma(p_id)
         flash("¡Plataforma eliminada correctamente!", "success")
     except Exception as e:
-        db.session.rollback()
+        # El rollback ya ocurrió adentro, aquí solo avisamos y redirigimos
         flash(f"No se pudo eliminar la plataforma: {str(e)}", "danger")
         
     return redirect(url_for('admin.plataformas'))

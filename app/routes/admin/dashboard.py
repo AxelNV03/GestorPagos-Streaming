@@ -11,9 +11,5 @@ from app.services.plataforma_service import PlataformaService
 @admin_bp.route('/dashboard')
 @admin_required
 def index():
-        return render_template('admin/dashboard.html', **AdminService.dashboard_data())
+    return render_template('admin/dashboard.html', **AdminService.dashboard_data())
 # ===================================================================================================
-# TEST
-@admin_bp.route('/cobros')
-def cobros(): # <--- ESTE NOMBRE es el que busca url_for
-    return render_template('admin/dashboard.html')

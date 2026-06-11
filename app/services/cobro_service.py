@@ -1,112 +1,72 @@
+# app/services/cobro_service.py
+# ===================================================================================================
 from app.core.models.cobro import Cobro
 from app.core.models.plataforma_usuario import PlataformaUsuario
 from app.services.plataforma_usuario_service import PlataformaUsuarioService
-
+from app.core.models.cobro import Cobro 
 from datetime import date
 from app import db
 from sqlalchemy import func, or_
 from flask import flash
-
-
+# ===================================================================================================
 class CobroService:
     @staticmethod
-    def balance_global(mes, anio):
-        from app.core.models.cobro import Cobro 
-                
-        fecha_filtro = date(anio, int(mes), 1)
-
-        # 1. Suma de Pagados + Pendientes
-        # Si no hay registros, .scalar() es None -> se convierte en 0.0
-        total_esperado = db.session.query(func.sum(Cobro.monto_deuda)).filter(
-            Cobro.mes_anio == fecha_filtro,
-            or_(Cobro.estado == 'pagado', Cobro.estado == 'pendiente')
-        ).scalar() or 0.0
-
-        # 2. Suma de Pagados
-        recaudado = db.session.query(func.sum(Cobro.monto_deuda)).filter(
-            Cobro.mes_anio == fecha_filtro,
-            Cobro.estado == 'pagado'
-        ).scalar() or 0.0
-
-        # 3. Cálculo matemático seguro entre flotantes
-        restante = float(total_esperado) - float(recaudado)
-
-        # Retornamos el diccionario con valores listos para el HTML
-        return {
-            'recaudado': float(recaudado),
-            'restante': restante,
-            'total_esperado': float(total_esperado),
-            'tiene_datos': total_esperado > 0 # Útil para mostrar mensajes en el HTML
-        }
-    
-    @staticmethod
-    def conteo_pagos_periodo(mes, anio):
-        """ Obtiene el total de cobros realizados vs los ya pagados del periodo actual. """
+    def metricas_globales_periodo(mes, anio):
         fecha_filtro = date(int(anio), int(mes), 1)
 
-        # 1. Total de cobros generados para este mes específico (activos del periodo)
-        total_usuarios_periodo = db.session.query(func.count(Cobro.id)).filter(
+        # Resumen general
+        resultado = db.session.query(
+            func.sum(func.if_(Cobro.estado == 'pagado', Cobro.monto_deuda, 0.0)).label('recaudado'),
+            func.sum(func.if_(Cobro.estado != 'pagado', Cobro.monto_deuda, 0.0)).label('restante'),
+            func.count(Cobro.id).label('total_cobros'),
+            func.count(func.if_(Cobro.estado == 'pagado', Cobro.id, None)).label('pagados')
+        ).filter(Cobro.mes_anio == fecha_filtro).first()
+
+        recaudado = float(resultado.recaudado or 0.0)
+        restante = float(resultado.restante or 0.0)
+
+        return {
+            'recaudado':      recaudado,
+            'restante':       restante,
+            'total_esperado': recaudado + restante,
+            'pagos':          int(resultado.pagados or 0),
+            'users':          int(resultado.total_cobros or 0),
+            'tiene_datos':    (resultado.total_cobros or 0) > 0
+        }
+# ===================================================================================================
+    @staticmethod
+    def metricas_plataformas_periodo(mes, anio):
+        fecha_filtro = date(int(anio), int(mes), 1)
+        resultados = db.session.query(
+            PlataformaUsuario.plataforma_id,
+            func.sum(func.if_(Cobro.estado == 'pagado', Cobro.monto_deuda, 0.0)).label('recaudado'),
+            func.sum(func.if_(Cobro.estado != 'pagado', Cobro.monto_deuda, 0.0)).label('restante'),
+            func.count(func.if_(Cobro.estado == 'pagado', Cobro.id, None)).label('pagados'),
+            func.count(PlataformaUsuario.id).label('total_vinculos')
+        ).join(
+            Cobro, Cobro.usuario_plataforma_id == PlataformaUsuario.id
+        ).filter(
             Cobro.mes_anio == fecha_filtro
-        ).scalar() or 0
+        ).group_by(
+            PlataformaUsuario.plataforma_id
+        ).all()
 
-        # 2. Total de cobros que ya cambiaron su estado a 'pagado' en este mismo mes
-        pagos_realizados = db.session.query(func.count(Cobro.id)).filter(
-            Cobro.mes_anio == fecha_filtro,
-            Cobro.estado.ilike('pagado') # 🛡️ Blindado contra mayúsculas/minúsculas
-        ).scalar() or 0
-
-        return {
-            "pagos": pagos_realizados,
-            "users": total_usuarios_periodo  # Refleja los usuarios reales con cobro este mes
-        }
-    
-    @staticmethod
-    def finanzas_plataforma(plataforma_id, mes, anio):
-        fecha_filtro = date(anio, int(mes), 1)
-        
-        recaudado = db.session.query(func.sum(Cobro.monto_deuda))\
-            .join(PlataformaUsuario, Cobro.usuario_plataforma_id == PlataformaUsuario.id)\
-            .filter(
-                PlataformaUsuario.plataforma_id == plataforma_id,
-                Cobro.mes_anio == fecha_filtro,
-                Cobro.estado == 'pagado'
-            ).scalar() or 0.0
-
-        restante = db.session.query(func.sum(Cobro.monto_deuda))\
-            .join(PlataformaUsuario, Cobro.usuario_plataforma_id == PlataformaUsuario.id)\
-            .filter(
-                PlataformaUsuario.plataforma_id == plataforma_id,
-                Cobro.mes_anio == fecha_filtro,
-                Cobro.estado != 'pagado'  # Incluye pendiente y en_revision
-        ).scalar() or 0.0
-
-        return {
-            "recaudado": float(recaudado),
-            "restante": float(restante)
-        }
-    
-    @staticmethod
-    def conteo_pagos_plataforma(plataforma_id, mes, anio):
-        fecha_filtro = date(anio, int(mes), 1)
-        # 1. Total de usuarios asignados a esta plataforma
-        total_usuarios = db.session.query(func.count(PlataformaUsuario.id))\
-            .filter(PlataformaUsuario.plataforma_id == plataforma_id)\
-            .scalar() or 0
-
-        # 2. Total de pagos ya realizados en el mes para esta plataforma
-        pagos_realizados = db.session.query(func.count(Cobro.id))\
-            .join(PlataformaUsuario, Cobro.usuario_plataforma_id == PlataformaUsuario.id)\
-            .filter(
-                PlataformaUsuario.plataforma_id == plataforma_id,
-                Cobro.mes_anio == fecha_filtro,
-                Cobro.estado == 'pagado'
-            ).scalar() or 0
-        
-        return {
-            "pagados" : pagos_realizados,
-            "no_pagados"  : total_usuarios - pagos_realizados
-        }
-    
+        mapa_metricas = {}
+        for r in resultados:
+            mapa_metricas[r.plataforma_id] = {
+                "finanzas": {
+                    "recaudado": float(r.recaudado or 0.0),
+                    "restante": float(r.restante or 0.0),
+                    "total_esperado": float((r.recaudado or 0.0) + (r.restante or 0.0))
+                },
+                "conteos": {
+                    "pagados": int(r.pagados or 0),
+                    "no_pagados": int((r.total_vinculos or 0) - (r.pagados or 0)),
+                    "total_usuarios": int(r.total_vinculos or 0)
+                }
+            }
+        return mapa_metricas
+# ===================================================================================================
     # up_id = usuario_plataforma_id
     @staticmethod
     def existe_cobro(up_id, fecha):
@@ -116,53 +76,59 @@ class CobroService:
                 mes_anio=fecha
             ).exists()
         ).scalar()
-    
+# ===================================================================================================
     @staticmethod
-    def crear_pago(datos):
+    def nuevo_cobro(datos):
         nuevo_cobro = Cobro(
             usuario_plataforma_id=datos["usuario_plataforma_id"],
             comprobante_id=None,
             mes_anio=datos["mes_anio"],
             monto_deuda=datos["monto_deuda"],
-            estado=datos["estado"]
+            estado=datos["estado"],
+            motivo=datos["motivo"]
         )
         db.session.add(nuevo_cobro)
 
         return nuevo_cobro
-    
+# ===================================================================================================
     @staticmethod
-    def desvincular_pagos_pendientes(up_id):
+    def eliminar_pagos_pendientes_de_usuario(up_id):
         db.session.query(Cobro).filter_by(
             usuario_plataforma_id=up_id,
             estado='pendiente'
         ).delete(synchronize_session=False)
-        db.session.flush()
-
+# ===================================================================================================
     @staticmethod
-    def borrado_total_por_ids(vinculos_ids):
-        """Borra físicamente los cobros vinculados a los usuarios provistos"""
+    def eliminar_cobros_de_plataforma(vinculos_ids):
+        """Borra los cobros vinculados a la lista de users recibida"""
         return db.session.query(Cobro).filter(
             Cobro.usuario_plataforma_id.in_(vinculos_ids)
         ).delete(synchronize_session=False)
-    
+# ===================================================================================================
     @staticmethod
-    def actualizar_monto_cobros(lista_up_ids, nuevo_monto):
-        if not lista_up_ids or nuevo_monto is None:
-            return False
-
-        flash(
-            f"IDs obtenidos: {', '.join(map(str, lista_up_ids))}",
-            "info"
-        )
-
-        # Actualiza usando la columna que conecta al contrato
-        filas = db.session.query(Cobro).filter(
-            Cobro.usuario_plataforma_id.in_(lista_up_ids),
+    def actualizar_monto_cobros_pendientes(lista_up_ids, nuevo_monto):
+        """Actualiza todos los cobros pendientes de una lista de plataformas"""
+        if lista_up_ids and nuevo_monto is not None:
+            db.session.query(Cobro).filter(
+                Cobro.usuario_plataforma_id.in_(lista_up_ids),
+                Cobro.estado == 'pendiente'
+            ).update(
+                {Cobro.monto_deuda: float(nuevo_monto)}, 
+                synchronize_session=False
+            )
+# ===================================================================================================
+    @staticmethod
+    def eliminar_pagos_pendientes_de_usuario_en_plataformas(usuario_id, id_plataformas):
+        if not id_plataformas:
+            return
+            
+        db.session.query(Cobro).filter(
+            Cobro.usuario_plataforma_id.in_(
+                db.session.query(PlataformaUsuario.id).filter(
+                    PlataformaUsuario.usuario_id == usuario_id,
+                    PlataformaUsuario.plataforma_id.in_(id_plataformas)
+                )
+            ),
             Cobro.estado == 'pendiente'
-        ).update({Cobro.monto_deuda: float(nuevo_monto)}, synchronize_session=False)
-
-        flash(f"Registros actualizados: {filas}")
-        db.session.flush()
-        db.session.commit()
-        return True
-    
+        ).delete(synchronize_session=False)
+# ===================================================================================================

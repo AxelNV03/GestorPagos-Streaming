@@ -7,3 +7,4 @@ admin_bp = Blueprint('admin', __name__)
 from . import dashboard
 from . import plataformas
 from . import usuarios
+from . import cobros

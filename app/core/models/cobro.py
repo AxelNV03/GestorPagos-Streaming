@@ -24,6 +24,7 @@ class Cobro(db.Model):
         db.Enum('pendiente', 'en_revision', 'pagado', 'rechazado', name='estado_cobro_enum'), 
         default='pendiente'
     )
+    motivo = db.Column(db.String(255), nullable=True)
     # ===================================================================================================
     def __repr__(self):
         return f'<Cobro ID: {self.id} | Deuda: {self.monto_deuda} | Estado: {self.estado}>'

@@ -1,0 +1,14 @@
+{% extends "layouts/admin.html" %}
+{% block title %} Panel Cobros | Admin{% endblock %}
+{% block main_content %}
+    <h2>Panel de Cobros</h2>
+    <!-- Header -->
+    {% include "admin/cobros/_barra_busqueda.html" %}
+    <!-- Tabla de servicios -->
+    {% include "admin/cobros/_tabla.html" %}
+
+{% endblock %}
+{% block scripts %}
+    {{ super() }}    
+    <script src="{{ url_for('static', filename='js/admin/crud_plataformas.js') }}"></script>
+{% endblock %}

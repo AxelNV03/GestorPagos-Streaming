@@ -5,20 +5,19 @@ from flask import Blueprint, render_template, request, redirect, url_for, sessio
 from app.services import UsuarioService
 # ===================================================================================================
 auth_bp = Blueprint('auth', __name__)
+ADMIN_PASSWORD = os.getenv('ADMIN_PASSWORD')
 # ===================================================================================================
 @auth_bp.route('/', methods=['GET', 'POST'])
 def login():
     #  Login automatico
     if 'user_id' in session:
-        return redirect(url_for('admin.index' if session['user_rol'] == 'admin' else 'user.dashboard'))
-      
-    # Credenciales del .env
-    ADMIN_PASSWORD = os.getenv('ADMIN_PASSWORD')
-    
+        destino = 'admin.index' if session.get('user_rol') == 'admin' else 'user.dashboard'
+        return redirect(url_for(destino))
+          
     # Validaciones y redireccion
     if request.method == 'POST':
-        telefono = request.form.get('telefono', '').strip() # .strip() quita espacios accidentales
-        password = request.form.get('password') # Este solo llega si se abrió el modal
+        telefono = request.form.get('telefono', '').strip()
+        password = request.form.get('password')
 
         # 1. Validaciones entrada
         if not telefono:
@@ -32,7 +31,6 @@ def login():
         if user:
             # 4. Verificación de Roles
             if user.rol == 'admin':
-                # Si es admin, validamos la contraseña
                 if password == ADMIN_PASSWORD:
                     crear_sesion(user)
                     return redirect(url_for('admin.index'))
