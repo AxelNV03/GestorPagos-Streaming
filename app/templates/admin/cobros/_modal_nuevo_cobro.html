@@ -1,0 +1,82 @@
+<button type="button" class="btn btn-primary pbc-btn-guardar" onclick="abrirModalCargoExtra()">
+    <i class="bi bi-plus-lg"></i> Generar Cargo extra 
+</button>
+
+<div id="pbc-modal-cargo-extra" class="pbc-modal-overlay">
+    <div class="pbc-modal-content">
+        
+        <div class="pbc-modal-header">
+            <h3>Generar Cargo Extraordinario</h3>
+            <span class="pbc-close-btn" onclick="cerrarModalCargoExtra()">&times;</span>
+        </div>
+        
+        <form action="{{ url_for('admin.generar_cargo_extra') }}" method="POST" id="formCargoExtra">
+            <input type="hidden" name="alcance" id="inputAlcance" value="plataforma">
+
+            <div class="pbc-form-body">
+                
+                <div class="pbc-form-row">
+                    <div class="pbc-form-group">
+                        <label>Monto ($)</label>
+                        <input type="number" step="0.01" name="monto" placeholder="0.00" required>
+                    </div>
+                    <div class="pbc-form-group">
+                        <label>Concepto / Motivo</label>
+                        <input type="text" name="concepto" placeholder="Ej. Ajuste tarifa" required>
+                    </div>
+                </div>
+
+                <div class="pbc-tabs-container">
+                    <button type="button" class="pbc-tab" id="tabUsuario" onclick="cambiarPestana('usuario')">
+                        Usuario específico
+                    </button>
+                    <button type="button" class="pbc-tab active" id="tabPlataforma" onclick="cambiarPestana('plataforma')">
+                        Por Plataforma (Todos sus usuarios)
+                    </button>
+                </div>
+
+
+                <div id="panelUsuario" class="pbc-tab-panel">
+                    <div class="pbc-form-group">
+                        <label>Selecciona el Usuario</label>
+                        <select class="pbc-form-select" name="usuario_id" id="selectUsuario" onchange="mostrarPlataformasLocales(this)">
+                            <option value="" selected disabled>-- Selecciona un usuario --</option>
+                            {% for u in usuarios %}
+                                <option value="{{ u.id }}" data-plataformas='[
+                                    {% for p in u.plataformas %}
+                                        {"id": {{ p.id }}, "nombre": "{{ p.nombre }}"}{% if not loop.last %},{% endif %}
+                                    {% endfor %}
+                                ]'>
+                                    {{ u.nombres }} {{ u.apeP }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div id="divPlataformasDelUsuario" class="pbc-form-group" style="display: none; margin-top: 15px;">
+                        </div>
+                </div>
+
+                <div id="panelPlataforma" class="pbc-tab-panel" style="display: none !important;">
+                    <div class="pbc-form-group">
+                        <label>Selecciona la Plataforma</label>
+                        <select class="pbc-form-select" name="plataforma_id" id="selectPlataforma">
+                            {% for p in listaPlataformas %}
+                                <option value="{{ p.id }}">{{ p.nombre }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+
+
+            </div>
+
+            <div class="pbc-modal-footer">
+                <button type="button" class="btn-secondary" onclick="cerrarModalCargoExtra()">Cancelar</button>
+                <button type="submit" id="btnSubmitCargo" class="btn-primary">Generar Cargos</button>
+            </div>
+        </form>
+
+    </div>
+</div>

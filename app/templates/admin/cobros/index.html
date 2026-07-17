@@ -4,11 +4,18 @@
     <h2>Panel de Cobros</h2>
     <!-- Header -->
     {% include "admin/cobros/_barra_busqueda.html" %}
+
+    <!-- Modal para crear cobros -->
+    {% include "admin/cobros/_modal_nuevo_cobro.html" %}
+
     <!-- Tabla de servicios -->
     {% include "admin/cobros/_tabla.html" %}
+
+    <!-- Modal de edicion -->
+    {% include "admin/cobros/_modal_editar_cobro.html" %}
 
 {% endblock %}
 {% block scripts %}
     {{ super() }}    
-    <script src="{{ url_for('static', filename='js/admin/crud_plataformas.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/admin/seccion_cobros.js') }}"></script>
 {% endblock %}

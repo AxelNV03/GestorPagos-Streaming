@@ -20,4 +20,6 @@ class PeriodoService:
             'nombre_mes': nombre_mes,
             'label': f"{nombre_mes} {hoy.year}"
         }
+    
+    
 # ===================================================================================================   

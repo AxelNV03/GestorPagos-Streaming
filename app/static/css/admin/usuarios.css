@@ -572,3 +572,5 @@
 .users-table tr:has(.user-empty-state-wrapper):hover {
     background-color: transparent !important;
 }
+
+

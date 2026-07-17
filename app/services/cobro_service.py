@@ -2,11 +2,15 @@
 # ===================================================================================================
 from app.core.models.cobro import Cobro
 from app.core.models.plataforma_usuario import PlataformaUsuario
-from app.services.plataforma_usuario_service import PlataformaUsuarioService
+from app.core.models.usuario import Usuario
 from app.core.models.cobro import Cobro 
+from app.core.models.comprobante import Comprobante
+
 from datetime import date
 from app import db
 from sqlalchemy import func, or_
+from sqlalchemy import or_, desc, extract, case
+from sqlalchemy.orm import joinedload
 from flask import flash
 # ===================================================================================================
 class CobroService:
@@ -66,6 +70,32 @@ class CobroService:
                 }
             }
         return mapa_metricas
+# ===================================================================================================
+    @staticmethod
+    def obtener_cobros_de_usuarios(id_usuarios, mes, anio):
+        # Creamos la fecha exacta para comparar contra tu columna 'mes_anio' (Date)
+        fecha_filtro = date(int(anio), int(mes), 1)
+        
+        query = db.session.query(Cobro).join(Cobro.suscripcion)\
+            .options(
+                joinedload(Cobro.comprobante_ref),
+                joinedload(Cobro.suscripcion).joinedload(PlataformaUsuario.perfil_usuario),
+                joinedload(Cobro.suscripcion).joinedload(PlataformaUsuario.plataforma)
+            )
+        
+        # Filtros rápidos indexados
+        query = query.filter(PlataformaUsuario.usuario_id.in_(id_usuarios))
+        query = query.filter(Cobro.mes_anio == fecha_filtro)
+        
+        # Mandamos los cobros pendientes (sin comprobante subido) al inicio de la tabla
+        comprobante_null_primero = case((Cobro.comprobante_id.is_(None), 0), else_=1)
+        query = query.outerjoin(Cobro.comprobante_ref)
+        
+        return query.order_by(
+            comprobante_null_primero,
+            desc(Comprobante.created_at),
+            desc(Cobro.id)
+        ).all()
 # ===================================================================================================
     # up_id = usuario_plataforma_id
     @staticmethod

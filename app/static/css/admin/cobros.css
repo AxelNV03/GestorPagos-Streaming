@@ -1,0 +1,646 @@
+/* ==================================================================================================== */
+/* NAMESPACE FINAL UNIFICADO: TABLA DE COBROS (.pbc-) */
+/* ==================================================================================================== */
+
+/* --- CONTENEDOR DE LA TABLA --- */
+.pbc-table-frame {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: #ffffff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    margin-top: 15px;
+    border: 1px solid #eef2f5;
+    margin-bottom: 2rem;
+}
+
+.pbc-table-core {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 0.85rem;
+    color: #666;
+    table-layout: fixed; /* 🚀 EL TRUCO MAESTRO: Fuerza el respeto absoluto de tus anchos */
+}
+
+/* --- ENCABEZADOS DE LA TABLA --- */
+.pbc-table-core thead {
+    background-color: #f8f9fa;
+}
+
+.pbc-table-core th {
+    padding: 15px 15px;
+    text-align: left;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #666;
+    font-weight: 700;
+    border-bottom: 2px solid #eee;
+}
+
+/* --- ESTRATEGIA DE ANCHOS Y ALINEACIONES MAESTRAS (TH) --- */
+
+
+/* 1. Usuario: Ancho fijo para controlar el quiebre a dos líneas */
+.pbc-table-core th.pbc-col-usuario {
+    width: 180px; 
+    min-width: 180px; 
+    max-width: 180px;
+}
+
+/* 2. Plataforma: Texto corto optimizado */
+.pbc-table-core th.pbc-col-plataforma {
+    width: 130px; 
+    min-width: 130px; 
+    max-width: 130px;
+}
+
+/* 3. Motivo: SE VUELVE ELÁSTICA. Absorbe espacio y permite envolver texto */
+
+.pbc-table-core th.pbc-col-motivo {
+    width: 300px;
+    min-width: 300px;
+    max-width: 300px;
+}
+
+/* 4. Monto: Compacto y alineado quirúrgicamente a la derecha */
+.pbc-table-core th.pbc-col-monto {
+    width: 80px; 
+    min-width: 80px; 
+    max-width: 80px;
+    text-align: center !important;
+}
+
+/* 5. Estado: Justo al tamaño del badge con alineación centrada */
+.pbc-table-core th.pbc-col-estado {
+    width: 130px; 
+    min-width: 130px; 
+    max-width: 130px;
+    text-align: center !important;
+}
+
+/* 6. Fecha Comprobante: Ahora es fija, blindada contra el movimiento */
+.pbc-table-core th.pbc-col-fecha {
+    width: 120px; min-width: 120px; max-width: 120px;
+    text-align: center !important;
+}
+
+/* 7. Gestión: Fija y segura para evitar que se aplaste */
+.pbc-table-core th.pbc-col-gestion {
+    width: 170px;
+    min-width: 170px;
+    max-width: 170px;
+    text-align: center !important;
+}
+
+/* --- FILAS Y CELDAS DE DATOS --- */
+.pbc-table-core tbody td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #edf2f7;
+    vertical-align: middle;
+}
+
+.pbc-row-data {
+    transition: background-color 0.2s;
+}
+
+.pbc-row-data:hover {
+    background-color: #f7fafc;
+}
+
+/* --- CONTROL DE TEXTO LARGO (PERMITE BAJAR DE LÍNEA PERO RESPETA EL ANCHO) --- */
+.pbc-text-wrap-clean {
+    width: 100%;
+    word-break: break-word;  
+    overflow-wrap: break-word;
+    white-space: normal;     
+}
+
+/* --- TEXTOS INTERNOS --- */
+.pbc-user-name-highlight {
+    color: #2d3748;
+    font-weight: 700;
+}
+
+.pbc-platform-text-tag {
+    color: #4a5568;
+    font-weight: 600;
+}
+
+.pbc-monto-bold {
+    font-weight: 700;
+    color: #2d3748;
+}
+
+.pbc-motivo-italic {
+    color: #718096;
+    font-style: normal;
+}
+
+.pbc-txt-muted {
+    color: #a0aec0;
+    font-style: italic;
+}
+
+/* --- ALINEACIONES GENERALES DE CELDAS (TD) --- */
+.pbc-txt-center { text-align: center !important; }
+.pbc-txt-end { text-align: right !important; }
+
+/* --- BADGES DE ESTADO EXCLUSIVOS --- */
+.pbc-badge {
+    display: inline-block;
+    padding: 6px 12px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    text-align: center;
+    min-width: 100px;
+    box-sizing: border-box;
+}
+
+.pbc-badge-pagado {
+    background-color: #28a745;
+    color: #ffffff;
+}
+
+.pbc-badge-rechazado {
+    background-color: #dc3545;
+    color: #ffffff;
+}
+
+.pbc-badge-pendiente {
+    background-color: #ffc107;
+    color: #212529;
+}
+
+.pbc-badge-revision {
+    background-color: #e0f2fe; 
+    color: #0369a1; 
+    border: 1px solid #bae6fd;
+}
+
+/* --- BOTONES DE GESTIÓN --- */
+.pbc-actions-group {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+}
+
+.pbc-action-btn {
+    padding: 5px 10px;
+    font-size: 0.75rem;
+    border-radius: 6px;
+    border: 1px solid #e2e8f0;
+    background: #ffffff;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    box-sizing: border-box;
+    text-decoration: none;
+    color: #4a5568;
+}
+
+.pbc-btn-upload-style:hover {
+    background: #48bb78;
+    color: #ffffff;
+    border-color: #48bb78;
+}
+
+.pbc-btn-view-style:hover {
+    background: #3182ce;
+    color: #ffffff;
+    border-color: #3182ce;
+}
+
+/* --- ESTADO VACÍO --- */
+.pbc-empty-state-cell {
+    text-align: center !important;
+    padding: 3rem 0 !important;
+    color: #a0aec0;
+    background-color: #ffffff !important;
+}
+
+.pbc-empty-state-cell i {
+    font-size: 2.2rem;
+    color: #4a5568;
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.pbc-empty-state-cell p {
+    margin: 0;
+    font-size: 0.85rem;
+    color: #718096;
+}
+/* --- ALINEACIONES GENERALES DE CELDAS (TD) --- */
+.pbc-txt-center { text-align: center !important; }
+.pbc-txt-end    { text-align: right !important; }
+.pbc-txt-right  { text-align: right !important; } /* 🚀 Tu nueva clase para alinear a la derecha */
+
+
+/* ticj */
+.pbc-empty-state-cell {
+    text-align: center !important;
+    padding: 3rem 0 !important;
+    color: #a0aec0;
+}
+.pbc-empty-state-cell i {
+    font-size: 2.2rem; /* Tamaño ideal para el ticket */
+    color: #1e293b;    /* Negro/Gris oscuro pro */
+    display: block;
+    margin-bottom: 0.5rem;
+}
+.pbc-empty-state-cell p {
+    margin: 0;
+    font-size: 0.85rem;
+}
+
+
+
+/* ================================================================================================================ */
+/* MODAL nuevo */
+/* ================================================================================================================ */
+/* --- BOTÓN NUEVO COBRO --- */
+.pbc-btn-guardar {
+    margin-top: 10px !important; /* Ajusta los píxeles a tu gusto */
+    margin-bottom: 10px !important;
+}
+
+
+
+/* ==================================================================================================== */
+/* MODAL NATIVO: CARGOS EXTRAORDINARIOS COBROS (.pbc-) */
+/* ==================================================================================================== */
+/* ==================================================================================================== */
+/* MODAL NATIVO: CARGOS EXTRAORDINARIOS CON PESTAÑAS (.pbc-) */
+/* ==================================================================================================== */
+
+/* 1. Fondo del Modal (Overlay) con Desenfoque */
+.pbc-modal-overlay {
+    display: none; /* 👈 Bloqueado por defecto al cargar la página */
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+}
+
+/* 2. Contenedor Principal */
+.pbc-modal-overlay .pbc-modal-content {
+    background-color: #fff;
+    margin: 5% auto;
+    padding: 0;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    animation: pbcSlideDown 0.3s ease-out;
+    overflow: hidden;
+}
+
+/* 3. Header */
+.pbc-modal-overlay .pbc-modal-header {
+    background: #f8f9fa;
+    padding: 20px;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.pbc-modal-overlay .pbc-modal-header h3 {
+    margin: 0;
+    font-size: 1.25rem;
+    color: #333;
+    font-weight: 600;
+}
+
+.pbc-modal-overlay .pbc-close-btn {
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #aaa;
+}
+.pbc-modal-overlay .pbc-close-btn:hover { color: #333; }
+
+/* 4. Cuerpo del Formulario */
+.pbc-modal-overlay .pbc-form-body {
+    padding: 20px;
+}
+
+.pbc-modal-overlay .pbc-form-group {
+    margin-bottom: 15px;
+}
+
+.pbc-modal-overlay .pbc-form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.pbc-modal-overlay label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #555;
+}
+
+/* Inputs, Selects y Textareas */
+.pbc-modal-overlay input[type="text"],
+.pbc-modal-overlay input[type="number"],
+.pbc-modal-overlay .pbc-form-select {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 1rem;
+    background-color: #fff;
+    color: #333;
+    transition: border-color 0.2s;
+}
+
+/* 🖤 Enfoque (Focus) Minimalista Negro */
+.pbc-modal-overlay input:focus,
+.pbc-modal-overlay .pbc-form-select:focus {
+    outline: none;
+    border-color: #000000 !important;
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.08) !important;
+}
+
+/* ==================================================================================================== */
+/* 🎫 NUEVO SISTEMA DE PESTAÑAS (TABS) */
+/* ==================================================================================================== */
+
+.pbc-tabs-container {
+    display: flex;
+    background: #f4f4f4;
+    border-radius: 8px;
+    padding: 4px;
+    margin-bottom: 20px;
+    margin-top: 5px;
+}
+
+.pbc-tab {
+    flex: 1;
+    background: transparent;
+    border: none;
+    padding: 10px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #666;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+}
+
+.pbc-tab:hover {
+    color: #1a1a1a;
+}
+
+/* 🚀 Pestaña Activa en Negro Sólido */
+.pbc-tab.active {
+    background: #000000 !important;
+    color: #ffffff !important;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+/* Animación sutil al cambiar de pestaña */
+.pbc-tab-panel {
+    animation: pbcFadeIn 0.25s ease-out;
+}
+
+/* ==================================================================================================== */
+
+/* 5. Footer y Botones */
+.pbc-modal-overlay .pbc-modal-footer {
+    padding: 15px 20px;
+    background: #f8f9fa;
+    border-top: 1px solid #eee;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+/* Animaciones */
+@keyframes pbcSlideDown {
+    from { transform: translateY(-50px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes pbcFadeIn {
+    from { opacity: 0; transform: translateY(3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+
+
+
+
+/* Ajuste para el footer del modal (para quitar márgenes extra que no necesites) */
+.pbc-modal-footer .btn-secondary {
+    margin: 0; /* Limpiamos márgenes para que el gap del footer mande */
+}
+
+.pbc-modal-footer .btn-primary {
+    margin-top: 0; /* Quita el margen que usas cuando el botón está solo en una card */
+}
+
+
+
+
+
+.empty-state-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem 1rem;
+    gap: 0.10rem;
+}
+
+.empty-state-wrapper i {
+    font-size: 1.5rem;
+    color: #6c757d;
+    opacity: 0.9;
+}
+
+.empty-state-wrapper h5 {
+    color: #495057;
+    font-size: 0.80rem;
+    margin: 0;
+}
+
+.empty-state-wrapper p {
+    color: #6c757d;
+    font-size: 0.8rem;
+    margin: 0;
+}
+
+
+/* ==================================================================================================== */
+/* MODAL EDITAR COBRO (.pbc-edit-modal) */
+/* ==================================================================================================== */
+
+/* 1. Fondo del Modal (Overlay) */
+.pbc-edit-modal-overlay {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+}
+
+/* 2. Contenedor Principal */
+.pbc-edit-modal-overlay .pbc-edit-modal-content {
+    background-color: #fff;
+    margin: 10% auto;
+    padding: 0;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 450px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    animation: pbcSlideDown 0.3s ease-out;
+    overflow: hidden;
+}
+
+/* 3. Header */
+.pbc-edit-modal-overlay .pbc-edit-modal-header {
+    background: #f8f9fa;
+    padding: 18px 20px;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.pbc-edit-modal-overlay .pbc-edit-modal-header h5 {
+    margin: 0;
+    font-size: 1.1rem;
+    color: #2d3748;
+    font-weight: 700;
+}
+
+.pbc-edit-modal-overlay .pbc-edit-close-btn {
+    font-size: 1.3rem;
+    cursor: pointer;
+    color: #aaa;
+    background: none;
+    border: none;
+}
+.pbc-edit-modal-overlay .pbc-edit-close-btn:hover { 
+    color: #333; 
+}
+
+/* 4. Cuerpo del Formulario */
+.pbc-edit-modal-overlay .pbc-edit-form-body {
+    padding: 20px;
+}
+
+.pbc-edit-modal-overlay .pbc-edit-form-group {
+    margin-bottom: 15px;
+}
+
+.pbc-edit-modal-overlay label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: #555;
+}
+
+/* Inputs */
+.pbc-edit-modal-overlay input[type="text"],
+.pbc-edit-modal-overlay input[type="number"] {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    color: #333;
+    background-color: #fff;
+    transition: border-color 0.2s;
+}
+
+.pbc-edit-modal-overlay input[disabled] {
+    background-color: #f5f5f5;
+    color: #999;
+    cursor: not-allowed;
+}
+
+/* Focus */
+.pbc-edit-modal-overlay input:focus {
+    outline: none;
+    border-color: #000000 !important;
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Texto de ayuda */
+.pbc-edit-modal-overlay .pbc-edit-help-text {
+    display: block;
+    margin-top: 4px;
+    font-size: 0.75rem;
+    color: #a0aec0;
+}
+
+/* 5. Footer y Botones */
+.pbc-edit-modal-overlay .pbc-edit-modal-footer {
+    padding: 15px 20px;
+    background: #f8f9fa;
+    border-top: 1px solid #eee;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+/* Botón Cancelar */
+.pbc-edit-btn-cancel {
+    padding: 8px 18px;
+    font-size: 0.85rem;
+    border-radius: 6px;
+    border: 1px solid #e2e8f0;
+    background: #ffffff;
+    color: #4a5568;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-weight: 600;
+}
+
+.pbc-edit-btn-cancel:hover {
+    background: #f7fafc;
+    border-color: #cbd5e0;
+}
+
+/* Botón Guardar */
+.pbc-edit-btn-save {
+    padding: 8px 18px;
+    font-size: 0.85rem;
+    border-radius: 6px;
+    border: none;
+    background: #000000;
+    color: #ffffff;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-weight: 600;
+}
+
+.pbc-edit-btn-save:hover {
+    background: #333333;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}

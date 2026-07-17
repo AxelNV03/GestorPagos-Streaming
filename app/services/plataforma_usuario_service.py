@@ -18,6 +18,9 @@ class PlataformaUsuarioService:
 
         # Desempaquetamos las tuplas en una lista limpia de Python
         return [id_vinculo for (id_vinculo,) in resultados]
+
+
+
 # ===================================================================================================
     @staticmethod
     def vincular_plataformas_a_usuario(usuario_id, ids_a_agregar):
@@ -69,7 +72,8 @@ class PlataformaUsuarioService:
             return []
 
         resultados = db.session.query(PlataformaUsuario.id).filter_by(
-            plataforma_id=int(plataforma_id)
+            plataforma_id=int(plataforma_id),
+            activo=True
         ).all()
 
         return [id_vinculo for (id_vinculo,) in resultados]

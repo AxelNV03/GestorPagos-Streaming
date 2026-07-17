@@ -1,6 +1,7 @@
 <!-- Barra de busqueda -->
     <div class="card-filters shadow-sm mb-4">
-        <form class="filter-form">
+        <form class="filter-form" action="{{ url_for('admin.cobros') }}" method="get">
+            
             <div class="filter-group buscador">
                 <span class="filter-label">Busqueda</span>
                 <div class="input-wrapper">
