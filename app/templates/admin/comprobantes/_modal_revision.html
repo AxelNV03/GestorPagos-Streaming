@@ -59,12 +59,33 @@
                     </div>
 
                     <!-- Resultado -->
-                    <div id="cpc_rev_resultado" style="display: none;">
-                        <div class="cpc-rev-section">
-                            <label id="cpc_rev_resultado_label"></label>
-                            <p id="cpc_rev_resultado_texto" class="cpc-rev-value-light"></p>
-                        </div>
-                    </div>
+<!-- Resultado (solo lectura, visible en rechazado/aprobado) -->
+<div id="cpc_rev_resultado" style="display: none;">
+    
+    <!-- Fecha de carga -->
+    <div class="cpc-rev-section">
+        <label>Fecha de carga</label>
+        <p id="cpc_rev_fecha" class="cpc-rev-value"></p>
+    </div>
+
+    <!-- Pagos cubiertos -->
+    <div id="cpc_rev_pagos_cubiertos" class="cpc-rev-section">
+        <div class="cpc-divider">Mensualidades cubiertas</div>
+        <div id="cpc_rev_mensualidades_cubiertas"></div>
+        
+        <div class="cpc-divider" style="margin-top: 12px;">Extras cubiertos</div>
+        <div id="cpc_rev_extras_cubiertos"></div>
+    </div>
+
+    <!-- Motivo / Comentario -->
+    <div class="cpc-rev-section">
+        <label id="cpc_rev_resultado_label"></label>
+        <p id="cpc_rev_resultado_texto" class="cpc-rev-value-light"></p>
+    </div>
+
+</div>
+
+
 
                 </div>
 

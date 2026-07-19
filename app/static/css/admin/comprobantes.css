@@ -703,3 +703,45 @@
 .cpc-resumen-valor {
     font-weight: 700;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* --- PAGOS CUBIERTOS --- */
+.cpc-pagos-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.cpc-pago-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    background: #f8fafc;
+    border: 1px solid #eef2f5;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    color: #2d3748;
+}
+
+.cpc-pago-item-plataforma {
+    font-weight: 600;
+}
+
+.cpc-pago-item-detalle {
+    color: #718096;
+    font-size: 0.75rem;
+}

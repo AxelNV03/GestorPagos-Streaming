@@ -64,14 +64,16 @@ function revisarComprobante(comprobanteId) {
     
     const seccionAsignaciones = document.getElementById('cpc_rev_asignaciones');
     const seccionResultado = document.getElementById('cpc_rev_resultado');
+    const seccionComentario = document.getElementById('cpc_rev_seccion_comentario');
+    const resumen = document.getElementById('cpc_rev_resumen');
     const footer = document.querySelector('.cpc-revision-footer');
-    const comentarioTextarea = document.getElementById('cpc_rev_comentario').closest('.cpc-rev-section');
     
     if (comp.estado === 'revision') {
         // Modo revisión: mostrar asignaciones
         seccionAsignaciones.style.display = 'block';
         seccionResultado.style.display = 'none';
-        comentarioTextarea.style.display = 'block';
+        seccionComentario.style.display = 'block';
+        resumen.style.display = 'block';
         footer.style.display = 'flex';
         
         if (pendientes) {
@@ -79,13 +81,31 @@ function revisarComprobante(comprobanteId) {
             renderExtrasRevision(pendientes.extras);
         }
     } else {
-        // Modo solo lectura: mostrar resultado
+        // Modo solo lectura
         seccionAsignaciones.style.display = 'none';
         seccionResultado.style.display = 'block';
-        comentarioTextarea.style.display = 'none';
+        seccionComentario.style.display = 'none';
+        resumen.style.display = 'none';
         footer.style.display = 'none';
         
-        // Mostrar motivo o comentario
+        // Fecha de carga
+        if (comp.fecha_carga) {
+            const fecha = new Date(comp.fecha_carga);
+            const opciones = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('cpc_rev_fecha').textContent = fecha.toLocaleDateString('es-MX', opciones);
+        }
+        
+        // Pagos cubiertos (solo aprobado)
+        const pagosCubiertos = document.getElementById('cpc_rev_pagos_cubiertos');
+        if (comp.estado === 'aprobado' && pendientes) {
+            pagosCubiertos.style.display = 'block';
+            renderMensualidadesCubiertas(pendientes.mensualidades);
+            renderExtrasCubiertos(pendientes.extras);
+        } else {
+            pagosCubiertos.style.display = 'none';
+        }
+        
+        // Motivo / Comentario
         const label = document.getElementById('cpc_rev_resultado_label');
         const texto = document.getElementById('cpc_rev_resultado_texto');
         
@@ -97,7 +117,6 @@ function revisarComprobante(comprobanteId) {
             texto.textContent = comp.comentario || 'Sin comentario';
         }
     }
-    
     // Guardar ID
     document.getElementById('modalRevision').dataset.comprobanteId = comprobanteId;
     document.getElementById('modalRevision').style.display = 'block';
@@ -224,4 +243,37 @@ function actualizarResumen() {
     });
     
     document.getElementById('cpc_resumen_total').textContent = `$${total.toFixed(2)}`;
+}
+
+
+function renderMensualidadesCubiertas(mensualidades) {
+    const div = document.getElementById('cpc_rev_mensualidades_cubiertas');
+    
+    if (!mensualidades || !mensualidades.length) {
+        div.innerHTML = '<p class="pbc-txt-muted">Sin mensualidades</p>';
+        return;
+    }
+    
+    div.innerHTML = '<div class="cpc-pagos-lista">' + mensualidades.map(m => `
+        <div class="cpc-pago-item">
+            <span class="cpc-pago-item-plataforma">${m.plataforma}</span>
+            <span class="cpc-pago-item-detalle">${m.pendientes} ${m.pendientes === 1 ? 'mes' : 'meses'}</span>
+        </div>
+    `).join('') + '</div>';
+}
+
+function renderExtrasCubiertos(extras) {
+    const div = document.getElementById('cpc_rev_extras_cubiertos');
+    
+    if (!extras || !extras.length) {
+        div.innerHTML = '<p class="pbc-txt-muted">Sin extras</p>';
+        return;
+    }
+    
+    div.innerHTML = '<div class="cpc-pagos-lista">' + extras.map(e => `
+        <div class="cpc-pago-item">
+            <span class="cpc-pago-item-plataforma">${e.plataforma}</span>
+            <span class="cpc-pago-item-detalle">${e.concepto}</span>
+        </div>
+    `).join('') + '</div>';
 }
