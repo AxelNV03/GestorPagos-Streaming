@@ -21,42 +21,56 @@
             <!-- COLUMNA DERECHA: Controles -->
             <div class="cpc-revision-controles">
                 
-                <!-- Usuario -->
-                <div class="cpc-rev-section">
-                    <label>Usuario</label>
-                    <p id="cpc_rev_usuario" class="cpc-rev-value"></p>
+                <!-- Contenido con scroll -->
+                <div class="cpc-revision-controles-scroll">
+                    
+                    <!-- Usuario -->
+                    <div class="cpc-rev-section">
+                        <label>Usuario</label>
+                        <p id="cpc_rev_usuario" class="cpc-rev-value"></p>
+                    </div>
+
+                    <!-- Asignaciones (solo en revisión) -->
+                    <div id="cpc_rev_asignaciones">
+                        <div class="cpc-rev-section">
+                            <div class="cpc-divider">Mensualidades</div>
+                            <div id="cpc_rev_mensualidades"></div>
+                        </div>
+                        <div class="cpc-rev-section">
+                            <div class="cpc-divider">Extras</div>
+                            <div id="cpc_rev_extras"></div>
+                        </div>
+                    </div>
+
+                    <!-- Comentario Admin -->
+                    <div id="cpc_rev_seccion_comentario" class="cpc-rev-section">
+                        <label>Comentario (opcional)</label>
+                        <textarea id="cpc_rev_comentario" class="cpc-form-textarea" rows="2" placeholder="Motivo de rechazo o nota interna..."></textarea>
+                    </div>
+
+                    <!-- Resultado -->
+                    <div id="cpc_rev_resultado" style="display: none;">
+                        <div class="cpc-rev-section">
+                            <label id="cpc_rev_resultado_label"></label>
+                            <p id="cpc_rev_resultado_texto" class="cpc-rev-value-light"></p>
+                        </div>
+                    </div>
+
                 </div>
 
-                <!-- Mensualidades -->
-                <div class="cpc-rev-section">
-                    <div class="cpc-divider">Mensualidades</div>
-                    <div id="cpc_rev_mensualidades"></div>
-                </div>
-
-                <!-- Extras -->
-                <div class="cpc-rev-section">
-                    <div class="cpc-divider">Extras</div>
-                    <div id="cpc_rev_extras"></div>
-                </div>
-
-                <!-- Comentario Admin -->
-                <div class="cpc-rev-section">
-                    <label>Comentario (opcional)</label>
-                    <textarea id="cpc_rev_comentario" class="cpc-form-textarea" rows="2" placeholder="Motivo de rechazo o nota interna..."></textarea>
+                <!-- FOOTER FIJO -->
+                <div class="cpc-revision-footer">
+                    <button class="cpc-btn-rechazar" onclick="accionComprobante('rechazar')">
+                        <i class="bi bi-x-circle"></i> Rechazar
+                    </button>
+                    <button class="cpc-btn-aprobar" onclick="accionComprobante('aprobar')">
+                        <i class="bi bi-check-circle"></i> Aprobar Pago
+                    </button>
                 </div>
 
             </div>
         </div>
 
-        <!-- FOOTER -->
-        <div class="cpc-revision-footer">
-            <button class="cpc-btn-rechazar" onclick="accionComprobante('rechazar')">
-                <i class="bi bi-x-circle"></i> Rechazar
-            </button>
-            <button class="cpc-btn-aprobar" onclick="accionComprobante('aprobar')">
-                <i class="bi bi-check-circle"></i> Aprobar Pago
-            </button>
-        </div>
 
     </div>
 </div>

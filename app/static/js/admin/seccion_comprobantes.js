@@ -59,23 +59,52 @@ function revisarComprobante(comprobanteId) {
     estadoEl.textContent = comp.estado === 'revision' ? 'En Revisión' : 
                            comp.estado === 'aprobado' ? 'Aprobado' : 'Rechazado';
     
-    // Mensualidades y extras
-    if (pendientes) {
-        renderMensualidadesRevision(pendientes.mensualidades);
-        renderExtrasRevision(pendientes.extras);
-    }
-    
-    // Botones solo en revisión
-    const footer = document.querySelector('.cpc-revision-footer');
-    footer.style.display = comp.estado === 'revision' ? 'flex' : 'none';
-    
     // Limpiar comentario
     document.getElementById('cpc_rev_comentario').value = '';
+    
+    const seccionAsignaciones = document.getElementById('cpc_rev_asignaciones');
+    const seccionResultado = document.getElementById('cpc_rev_resultado');
+    const footer = document.querySelector('.cpc-revision-footer');
+    const comentarioTextarea = document.getElementById('cpc_rev_comentario').closest('.cpc-rev-section');
+    
+    if (comp.estado === 'revision') {
+        // Modo revisión: mostrar asignaciones
+        seccionAsignaciones.style.display = 'block';
+        seccionResultado.style.display = 'none';
+        comentarioTextarea.style.display = 'block';
+        footer.style.display = 'flex';
+        
+        if (pendientes) {
+            renderMensualidadesRevision(pendientes.mensualidades);
+            renderExtrasRevision(pendientes.extras);
+        }
+    } else {
+        // Modo solo lectura: mostrar resultado
+        seccionAsignaciones.style.display = 'none';
+        seccionResultado.style.display = 'block';
+        comentarioTextarea.style.display = 'none';
+        footer.style.display = 'none';
+        
+        // Mostrar motivo o comentario
+        const label = document.getElementById('cpc_rev_resultado_label');
+        const texto = document.getElementById('cpc_rev_resultado_texto');
+        
+        if (comp.estado === 'rechazado') {
+            label.textContent = 'Motivo de rechazo';
+            texto.textContent = comp.motivo_rechazo || 'Sin motivo';
+        } else {
+            label.textContent = 'Comentario';
+            texto.textContent = comp.comentario || 'Sin comentario';
+        }
+    }
     
     // Guardar ID
     document.getElementById('modalRevision').dataset.comprobanteId = comprobanteId;
     document.getElementById('modalRevision').style.display = 'block';
 }
+
+
+
 
 function cerrarModalRevision() {
     document.getElementById('modalRevision').style.display = 'none';
@@ -148,3 +177,34 @@ window.addEventListener('click', function(event) {
         cerrarModalRevision();
     }
 });
+
+// ===================================================================
+// ACCIONES DEL MODAL
+// ===================================================================
+
+function accionComprobante(accion) {
+    const comprobanteId = document.getElementById('modalRevision').dataset.comprobanteId;
+    const comentario = document.getElementById('cpc_rev_comentario').value;
+    
+    if (accion === 'rechazar') {
+        if (!comentario.trim()) {
+            alert('Debe ingresar un motivo de rechazo');
+            return;
+        }
+        if (!confirm('¿Está seguro de rechazar este comprobante?')) return;
+    }
+    
+    // Crear formulario y enviar
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = `/admin/comprobantes/${accion === 'rechazar' ? 'rechazar' : 'aprobar'}/${comprobanteId}`;
+    
+    const input = document.createElement('input');
+    input.type = 'hidden';
+    input.name = 'comentario';
+    input.value = comentario;
+    form.appendChild(input);
+    
+    document.body.appendChild(form);
+    form.submit();
+}

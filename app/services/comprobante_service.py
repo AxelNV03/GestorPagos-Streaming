@@ -106,53 +106,34 @@ class ComprobanteService:
         db.session.commit()
         return comprobante
 # ===================================================================================================
-@staticmethod
-def cambiar_estado(comprobante, nuevo_estado, comentario=None):
-    """Cambia el estado del comprobante y renombra el archivo"""
-    if nuevo_estado not in ['aprobado', 'rechazado']:
-        raise ValueError('Estado no válido')
-    
-    estado_anterior = comprobante.estado
-    ruta_vieja = os.path.join(current_app.config['UPLOAD_FOLDER'], comprobante.ruta_archivo)
-    
-    # Nuevo nombre con el estado actualizado
-    nombre_actual = os.path.basename(comprobante.ruta_archivo)
-    nombre_nuevo = nombre_actual.replace(f"_{estado_anterior}.", f"_{nuevo_estado}.")
-    ruta_nueva = os.path.join(os.path.dirname(ruta_vieja), nombre_nuevo)
-    
-    # Renombrar archivo
-    if os.path.exists(ruta_vieja):
-        os.rename(ruta_vieja, ruta_nueva)
-    
-    # Actualizar DB
-    comprobante.estado = nuevo_estado
-    comprobante.ruta_archivo = comprobante.ruta_archivo.replace(
-        f"_{estado_anterior}.", f"_{nuevo_estado}."
-    )
-    
-    if nuevo_estado == 'rechazado' and comentario:
-        comprobante.motivo_rechazo = comentario
-    elif comentario:
-        comprobante.comentario = comentario
-        comprobante.motivo_rechazo = 'N/A'
-    
-    db.session.commit()
-# ===================================================================================================
     @staticmethod
-    def obtener_datos_revision(comprobante_id):
-        comprobante = db.session.get(Comprobante, comprobante_id)
-        if not comprobante:
-            raise ValueError('Comprobante no encontrado')
-
-        usuario = comprobante.usuario
-        pendientes = ComprobanteService.obtener_pendientes_para_comprobante(usuario.id)
-
-        return {
-            'comprobante_id': comprobante.id,
-            'usuario': f"{usuario.nombres} {usuario.apeP}",
-            'estado': comprobante.estado,
-            'nota': comprobante.nota_usuario,
-            'imagen_url': url_for('admin.ver_imagen', comprobante_id=comprobante.id),
-            'mensualidades': pendientes['mensualidades'],
-            'extras': pendientes['extras']
-        }
+    def cambiar_estado(comprobante, nuevo_estado, comentario=None):
+        """Cambia el estado del comprobante y renombra el archivo"""
+        if nuevo_estado not in ['aprobado', 'rechazado']:
+            raise ValueError('Estado no válido')
+        
+        estado_anterior = comprobante.estado
+        ruta_vieja = os.path.join(current_app.config['UPLOAD_FOLDER'], comprobante.ruta_archivo)
+        
+        # Nuevo nombre
+        nombre_actual = os.path.basename(comprobante.ruta_archivo)
+        nombre_nuevo = nombre_actual.replace(f"_{estado_anterior}.", f"_{nuevo_estado}.")
+        ruta_nueva = os.path.join(os.path.dirname(ruta_vieja), nombre_nuevo)
+        
+        # Renombrar archivo
+        if os.path.exists(ruta_vieja):
+            os.rename(ruta_vieja, ruta_nueva)
+        
+        # Actualizar DB
+        comprobante.estado = nuevo_estado
+        comprobante.ruta_archivo = comprobante.ruta_archivo.replace(
+            f"_{estado_anterior}.", f"_{nuevo_estado}."
+        )
+        
+        if nuevo_estado == 'rechazado':
+            comprobante.motivo_rechazo = comentario
+        elif comentario:
+            comprobante.comentario = comentario
+        
+        db.session.commit()
+# ===================================================================================================

@@ -5,7 +5,6 @@ from flask import render_template, request, redirect, url_for, flash
 from app.services.admin_service import AdminService
 from app.services.periodo_service import PeriodoService
 from flask import send_file
-import os
 from flask import current_app
 from app import db
 from app.core.models.comprobante import Comprobante
@@ -36,9 +35,19 @@ def subir_comprobante():
 # ===================================================================================================
 @admin_bp.route('/comprobantes/imagen/<int:comprobante_id>')
 def ver_imagen(comprobante_id):
-    comprobante = db.session.get(Comprobante, comprobante_id)
-    if not comprobante:
-        return "No encontrado", 404
+    try:
+        ruta = AdminService.obtener_ruta_imagen(comprobante_id)
+        return send_file(ruta)
+    except Exception as e:
+        return str(e), 404
+# ===================================================================================================
+@admin_bp.route('/comprobantes/rechazar/<int:comprobante_id>', methods=['POST'])
+def rechazar_comprobante(comprobante_id):
+    comentario = request.form.get('comentario', '')
+    try:
+        AdminService.rechazar_comprobante(comprobante_id, comentario)
+        flash('Comprobante rechazado correctamente', 'success')
+    except Exception as e:
+        flash(f'Error: {str(e)}', 'danger')
     
-    ruta = os.path.join(current_app.config['UPLOAD_FOLDER'], comprobante.ruta_archivo)
-    return send_file(ruta)
+    return redirect(url_for('admin.comprobantes'))

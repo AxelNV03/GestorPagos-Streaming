@@ -31,7 +31,9 @@
                 usuario: "{{ comp.usuario.nombres }} {{ comp.usuario.apeP }}",
                 estado: "{{ comp.estado }}",
                 nota: "{{ comp.nota_usuario | replace('\n', ' ') | replace('\r', ' ') | replace('"', '\\"') | trim or '' }}",
-                imagen_url: "{{ url_for('admin.ver_imagen', comprobante_id=comp.id) }}"
+                imagen_url: "{{ url_for('admin.ver_imagen', comprobante_id=comp.id) }}",
+                motivo_rechazo: "{{ comp.motivo_rechazo | replace('\n', ' ') | replace('\r', ' ') | replace('"', '\\"') | trim or '' }}",
+                comentario: "{{ comp.comentario | replace('\n', ' ') | replace('\r', ' ') | replace('"', '\\"') | trim or '' }}"
             };
         {% endfor %}
     </script>

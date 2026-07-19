@@ -452,6 +452,13 @@
     margin: 0;
 }
 
+.cpc-rev-value-light {
+    font-size: 0.9rem;
+    font-weight: 400;
+    color: #4a5568;
+    margin: 0;
+}
+
 /* --- DIVIDER --- */
 .cpc-divider {
     font-size: 0.7rem;
@@ -547,16 +554,6 @@
     transform: translateX(20px);
 }
 
-/* --- FOOTER --- */
-.cpc-revision-footer {
-    display: flex;
-    justify-content: flex-end;
-    gap: 12px;
-    padding: 16px 24px;
-    background: #f8f9fa;
-    border-top: 1px solid #eef2f5;
-    flex-shrink: 0;
-}
 
 /* --- BOTONES --- */
 .cpc-btn-rechazar {
@@ -597,18 +594,6 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
-/* --- RESPONSIVE --- */
-@media (max-width: 768px) {
-    .cpc-revision-body {
-        flex-direction: column;
-    }
-    .cpc-revision-controles {
-        width: 100%;
-        border-left: none;
-        border-top: 1px solid #eef2f5;
-    }
-}
-
 /* --- ANIMACIÓN --- */
 @keyframes cpcSlideDown {
     from { transform: translateY(-30px); opacity: 0; }
@@ -625,7 +610,7 @@
     border: 1px solid #eef2f5;
     text-align: justify;
     max-width: 90%;
-    max-height: 120px;
+    max-height: 125px;
     overflow-y: auto;
     flex-shrink: 0;
     line-height: 1.5;
@@ -638,4 +623,47 @@
     margin-top: 1px;
     text-align: justify;
     word-break: break-word;
+}
+
+/* --- COLUMNA CONTROLES --- */
+.cpc-revision-controles {
+    width: 380px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    border-left: 1px solid #eef2f5;
+    overflow: hidden;
+}
+
+.cpc-revision-controles-scroll {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+}
+
+/* --- FOOTER --- */
+.cpc-revision-footer {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    padding: 14px 20px;
+    background: #f8f9fa;
+    border-top: 1px solid #eef2f5;
+    flex-shrink: 0;
+    margin: 0 -20px -20px -20px;
+    border-radius: 0;
+}
+
+
+/* --- RESPONSIVE --- */
+@media (max-width: 768px) {
+    .cpc-revision-body {
+        flex-direction: column;
+    }
+    .cpc-revision-controles {
+        width: 100%;
+        border-left: none;
+        border-top: 1px solid #eef2f5;
+    }
 }

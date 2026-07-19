@@ -8,12 +8,14 @@ from app.services.periodo_service import PeriodoService
 from app.services.comprobante_service import ComprobanteService
 from app.core.models.plataforma import Plataforma
 from app.core.models.cobro import Cobro
+from app.core.models.comprobante import Comprobante
 from app.core.models.plataforma_usuario import PlataformaUsuario
 
 from itertools import groupby
 from operator import attrgetter
 from app import db
-from flask import flash
+import os
+from flask import flash, current_app
 from datetime import datetime, date
 from decimal import Decimal, ROUND_HALF_UP
 from collections import defaultdict
@@ -441,4 +443,31 @@ class AdminService:
         except Exception as e:
             db.session.rollback()
             raise e
+# ===================================================================================================
+    @staticmethod
+    def obtener_ruta_imagen(comprobante_id):
+        comprobante = db.session.get(Comprobante, comprobante_id)
+        if not comprobante:
+            raise ValueError('Comprobante no encontrado')
+        
+        ruta = os.path.join(current_app.config['UPLOAD_FOLDER'], comprobante.ruta_archivo)
+        if not os.path.exists(ruta):
+            raise ValueError('Archivo no encontrado')
+        
+        return ruta
+# ===================================================================================================
+    @staticmethod
+    def rechazar_comprobante(comprobante_id, comentario):
+        comprobante = db.session.get(Comprobante, comprobante_id)
+        if not comprobante:
+            raise ValueError('Comprobante no encontrado')
+        if comprobante.estado != 'revision':
+            raise ValueError('Solo se pueden rechazar comprobantes en revisión')
+        
+        try:
+            ComprobanteService.cambiar_estado(comprobante, 'rechazado', comentario)
+        except Exception as e:
+            db.session.rollback()
+            raise e
+# ===================================================================================================
 # ===================================================================================================
