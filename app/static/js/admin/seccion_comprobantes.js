@@ -118,26 +118,22 @@ function renderMensualidadesRevision(mensualidades) {
         return;
     }
     
-    div.innerHTML = mensualidades.map(m => `
-        <div class="cpc-form-group">
-            <label>${m.plataforma} <small style="font-weight:400;color:#94a3b8;">| Último: ${m.ultimo_pago || 'N/A'}</small></label>
-            <select name="meses_${m.plataforma_usuario_id}" class="cpc-form-select">
-                <option value="0">0 meses</option>
-                <option value="1">1 mes</option>
-                <option value="2">2 meses</option>
-                <option value="3">3 meses</option>
-                <option value="4">4 meses</option>
-                <option value="5">5 meses</option>
-                <option value="6">6 meses</option>
-                <option value="7">7 meses</option>
-                <option value="8">8 meses</option>
-                <option value="9">9 meses</option>
-                <option value="10">10 meses</option>
-                <option value="11">11 meses</option>
-                <option value="12">12 meses</option>
-            </select>
-        </div>
-    `).join('');
+    div.innerHTML = mensualidades.map(m => {
+        const opciones = Array.from({length: 13}, (_, i) => 
+            `<option value="${i}">${i} ${i === 1 ? 'mes' : 'meses'} - $${(m.costo_mensual * i).toFixed(2)}</option>`
+        ).join('');
+        
+        return `
+            <div class="cpc-form-group">
+                <label>${m.plataforma} <small style="font-weight:400;color:#94a3b8;">| Último: ${m.ultimo_pago || 'N/A'}</small></label>
+                <select name="meses_${m.plataforma_usuario_id}" class="cpc-form-select cpc-mes-select" data-costo="${m.costo_mensual}" onchange="actualizarResumen()">
+                    ${opciones}
+                </select>
+            </div>
+        `;
+    }).join('');
+    
+    actualizarResumen();
 }
 
 function renderExtrasRevision(extras) {
@@ -156,11 +152,13 @@ function renderExtrasRevision(extras) {
             </div>
             <span class="cpc-extra-monto">$${e.monto.toFixed(2)}</span>
             <label class="cpc-extra-switch">
-                <input type="checkbox" name="extra_${e.cobro_id}" value="1">
+                <input type="checkbox" name="extra_${e.cobro_id}" value="${e.monto}" data-monto="${e.monto}" onchange="actualizarResumen()">
                 <span class="cpc-extra-slider"></span>
             </label>
         </div>
     `).join('');
+    
+    actualizarResumen();
 }
 
 // Cerrar con ESC
@@ -207,4 +205,23 @@ function accionComprobante(accion) {
     
     document.body.appendChild(form);
     form.submit();
+}
+
+function actualizarResumen() {
+    let total = 0;
+    
+    // Sumar mensualidades seleccionadas
+    document.querySelectorAll('.cpc-mes-select').forEach(select => {
+        const meses = parseInt(select.value) || 0;
+        const costo = parseFloat(select.dataset.costo) || 0;
+        total += costo * meses;
+    });
+    
+    // Sumar extras con checkbox ON
+    document.querySelectorAll('.cpc-extra-switch input:checked').forEach(checkbox => {
+        const monto = parseFloat(checkbox.dataset.monto) || 0;
+        total += monto;
+    });
+    
+    document.getElementById('cpc_resumen_total').textContent = `$${total.toFixed(2)}`;
 }

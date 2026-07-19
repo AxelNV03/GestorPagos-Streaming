@@ -667,3 +667,39 @@
         border-top: 1px solid #eef2f5;
     }
 }
+
+
+
+
+
+
+
+/* --- RESUMEN FINANCIERO --- */
+.cpc-resumen-card {
+    background: #f8fafc;
+    border: 1px solid #eef2f5;
+    border-radius: 8px;
+    padding: 12px 14px;
+}
+
+.cpc-resumen-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 0;
+    font-size: 0.85rem;
+    color: #2d3748;
+}
+
+.cpc-resumen-cubierto {
+    color: #15803d;
+    font-weight: 600;
+}
+
+.cpc-resumen-restante {
+    color: #dc2626;
+    font-weight: 600;
+}
+
+.cpc-resumen-valor {
+    font-weight: 700;
+}

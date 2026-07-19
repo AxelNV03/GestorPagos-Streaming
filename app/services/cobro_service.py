@@ -143,7 +143,8 @@ class CobroService:
                         'plataforma_usuario_id': vinculo.id,
                         'ultimo_pago': ultimo.mes_anio.strftime('%d/%m/%Y') if ultimo else None,
                         'pendientes': 0,
-                        'cobros_ids': []
+                        'cobros_ids': [],
+                        'costo_mensual': float(c.monto_deuda)  # ← NUEVO
                     }
                 
                 mensualidades_por_plataforma[vinculo.id]['pendientes'] += 1
