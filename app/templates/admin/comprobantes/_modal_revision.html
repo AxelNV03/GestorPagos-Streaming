@@ -1,0 +1,62 @@
+<!-- MODAL REVISIÓN COMPROBANTE -->
+<div class="cpc-revision-overlay" id="modalRevision">
+    <div class="cpc-revision-container">
+        
+        <!-- HEADER -->
+        <div class="cpc-revision-header">
+            <h5><i class="bi bi-search"></i> Revisar Comprobante</h5>
+            <span id="cpc_rev_estado" class="cpc-revision-estado"></span>
+            <button type="button" class="cpc-revision-close" onclick="cerrarModalRevision()">&times;</button>
+        </div>
+
+        <!-- BODY: Panel dividido -->
+        <div class="cpc-revision-body">
+            
+            <!-- COLUMNA IZQUIERDA: Imagen -->
+            <div class="cpc-revision-imagen">
+                <img id="cpc_rev_imagen" src="" alt="Comprobante" class="cpc-revision-img">
+                <div id="cpc_rev_nota" class="cpc-revision-nota"></div>
+            </div>
+
+            <!-- COLUMNA DERECHA: Controles -->
+            <div class="cpc-revision-controles">
+                
+                <!-- Usuario -->
+                <div class="cpc-rev-section">
+                    <label>Usuario</label>
+                    <p id="cpc_rev_usuario" class="cpc-rev-value"></p>
+                </div>
+
+                <!-- Mensualidades -->
+                <div class="cpc-rev-section">
+                    <div class="cpc-divider">Mensualidades</div>
+                    <div id="cpc_rev_mensualidades"></div>
+                </div>
+
+                <!-- Extras -->
+                <div class="cpc-rev-section">
+                    <div class="cpc-divider">Extras</div>
+                    <div id="cpc_rev_extras"></div>
+                </div>
+
+                <!-- Comentario Admin -->
+                <div class="cpc-rev-section">
+                    <label>Comentario (opcional)</label>
+                    <textarea id="cpc_rev_comentario" class="cpc-form-textarea" rows="2" placeholder="Motivo de rechazo o nota interna..."></textarea>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- FOOTER -->
+        <div class="cpc-revision-footer">
+            <button class="cpc-btn-rechazar" onclick="accionComprobante('rechazar')">
+                <i class="bi bi-x-circle"></i> Rechazar
+            </button>
+            <button class="cpc-btn-aprobar" onclick="accionComprobante('aprobar')">
+                <i class="bi bi-check-circle"></i> Aprobar Pago
+            </button>
+        </div>
+
+    </div>
+</div>

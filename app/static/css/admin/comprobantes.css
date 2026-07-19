@@ -1,0 +1,641 @@
+/* ==================================================================================================== */
+/* ENCABEZADO COMPROBANTES (.cpc-) */
+/* ==================================================================================================== */
+
+.cpc-header {
+    background: #ffffff;
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    border: 1px solid #eef2f5;
+}
+
+/* --- FILA DE CARDS --- */
+.cpc-cards-row {
+    display: flex;
+    gap: 14px;
+}
+
+/* --- CARD INDIVIDUAL --- */
+.cpc-card {
+    flex: 1;
+    min-width: 160px;
+    background: #ffffff;
+    border-radius: 10px;
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    border: 1px solid #eef2f5;
+}
+
+/* --- ICONO --- */
+.cpc-card-icon {
+    width: 40px;
+    height: 40px;
+    background: #1a1a1a;
+    color: #ffffff;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+}
+
+/* --- CUERPO --- */
+.cpc-card-body {
+    display: flex;
+    flex-direction: column;
+}
+
+.cpc-card-number {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: #1a1a1a;
+    line-height: 1.2;
+}
+
+.cpc-card-label {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #666;
+    font-weight: 700;
+    margin-top: 1px;
+}
+
+.cpc-header-title {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin-bottom: 18px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid #eef2f5;
+}
+
+.cpc-header-title h3 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #1a1a1a;
+    letter-spacing: 0.5px;
+}
+.cpc-periodo-badge {
+    color: #1a1a1a;
+    font-size: 0.8rem;
+    font-weight: 600;
+    background: #f8f9fa;
+    padding: 3px 10px;
+    border-radius: 4px;
+}
+
+/* ==================================================================================================== */
+/* ANCHOS TABLA COMPROBANTES (.pbc-col-cmp-) */
+/* ==================================================================================================== */
+
+/* 1. Usuario: Igual que en cobros */
+.pbc-table-core th.pbc-col-cmp-usuario {
+    width: 130px;
+    min-width: 130px;
+    max-width: 130px;
+}
+
+/* 2. Fecha: Corta */
+.pbc-table-core th.pbc-col-cmp-fecha {
+    width: 100px;
+    min-width: 100px;
+    max-width: 100px;
+    text-align: center !important;
+}
+
+/* 3. Nota: ELÁSTICA, se lleva todo el espacio sobrante */
+.pbc-table-core th.pbc-col-cmp-nota {
+    /* Sin width definido = elástica */
+}
+.pbc-table-core td.pbc-col-cmp-nota {
+    text-align: justify;
+    word-break: break-word;
+}
+
+/* 4. Estado: Mínimo necesario para el badge */
+.pbc-table-core th.pbc-col-cmp-estado {
+    width: 120px;
+    min-width: 120px;
+    max-width: 120px;
+    text-align: center !important;
+}
+
+/* 5. Acción: Mínimo necesario para el botón */
+.pbc-table-core th.pbc-col-cmp-accion {
+    width: 110px;
+    min-width: 110px;
+    max-width: 110px;
+    text-align: center !important;
+}
+/* ==================================================================================================== */
+/* MODAL NUEVO COMPROBANTE (.cpc-modal) */
+/* ==================================================================================================== */
+
+.cpc-modal-overlay {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+}
+
+.cpc-modal-content {
+    background-color: #fff;
+    margin: 8% auto;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 460px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    animation: cpcSlideDown 0.3s ease-out;
+    overflow: hidden;
+}
+
+.cpc-modal-header {
+    background: #f8f9fa;
+    padding: 16px 20px;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.cpc-modal-header h5 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #2d3748;
+}
+
+.cpc-modal-close {
+    font-size: 1.3rem;
+    cursor: pointer;
+    color: #aaa;
+    background: none;
+    border: none;
+    padding: 0;
+    line-height: 1;
+}
+.cpc-modal-close:hover { color: #333; }
+
+.cpc-modal-body {
+    padding: 20px;
+}
+
+/* --- FORM --- */
+.cpc-form-group {
+    margin-bottom: 16px;
+}
+
+.cpc-form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: #555;
+}
+
+.cpc-form-select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    color: #333;
+    background: #fff;
+    box-sizing: border-box;
+}
+
+.cpc-form-textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    color: #333;
+    resize: vertical;
+    box-sizing: border-box;
+    font-family: inherit;
+}
+
+.cpc-form-select:focus,
+.cpc-form-textarea:focus {
+    outline: none;
+    border-color: #000;
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.08);
+}
+
+/* --- FILE UPLOAD --- */
+.cpc-file-upload input[type="file"] {
+    display: none;
+}
+
+.cpc-file-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    border: 2px dashed #ddd;
+    border-radius: 8px;
+    cursor: pointer;
+    color: #666;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+}
+
+.cpc-file-label:hover {
+    border-color: #000;
+    background: #fafafa;
+}
+
+.cpc-file-label i {
+    font-size: 1.2rem;
+}
+
+.cpc-help-text {
+    display: block;
+    margin-top: 5px;
+    font-size: 0.75rem;
+    color: #a0aec0;
+}
+
+/* --- FOOTER --- */
+.cpc-modal-footer {
+    padding: 14px 20px;
+    background: #f8f9fa;
+    border-top: 1px solid #eee;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.cpc-btn-cancel {
+    padding: 8px 18px;
+    font-size: 0.85rem;
+    border-radius: 6px;
+    border: 1px solid #e2e8f0;
+    background: #fff;
+    color: #4a5568;
+    cursor: pointer;
+    font-weight: 600;
+}
+.cpc-btn-cancel:hover {
+    background: #f7fafc;
+    border-color: #cbd5e0;
+}
+
+.cpc-btn-save {
+    padding: 8px 18px;
+    font-size: 0.85rem;
+    border-radius: 6px;
+    border: none;
+    background: #000;
+    color: #fff;
+    cursor: pointer;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+.cpc-btn-save:hover {
+    background: #333;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* --- ANIMACIÓN --- */
+@keyframes cpcSlideDown {
+    from { transform: translateY(-30px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+/* ==================================================================================================== */
+/* MODAL REVISIÓN COMPROBANTE (.cpc-revision-) */
+/* ==================================================================================================== */
+/* ==================================================================================================== */
+/* MODAL REVISIÓN COMPROBANTE (.cpc-revision-) */
+/* ==================================================================================================== */
+
+/* --- OVERLAY --- */
+.cpc-revision-overlay {
+    display: none;
+    position: fixed;
+    z-index: 1001;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(6px);
+}
+
+/* --- CONTAINER --- */
+.cpc-revision-container {
+    background: #fff;
+    margin: 2% auto;
+    border-radius: 12px;
+    width: 95%;
+    max-width: 1000px;
+    height: 90vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+    animation: cpcSlideDown 0.3s ease-out;
+    overflow: hidden;
+}
+
+/* --- HEADER --- */
+.cpc-revision-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 24px;
+    background: #f8f9fa;
+    border-bottom: 1px solid #eef2f5;
+    flex-shrink: 0;
+}
+
+.cpc-revision-header h5 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #2d3748;
+}
+
+.cpc-revision-estado {
+    font-size: 0.75rem;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-weight: 600;
+}
+
+.cpc-revision-close {
+    margin-left: auto;
+    font-size: 1.4rem;
+    cursor: pointer;
+    color: #aaa;
+    background: none;
+    border: none;
+}
+.cpc-revision-close:hover { color: #333; }
+
+/* --- BODY --- */
+.cpc-revision-body {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+    min-height: 0;
+}
+
+/* --- COLUMNA IMAGEN --- */
+.cpc-revision-imagen {
+    flex: 1;
+    background: #f5f5f5;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 20px;
+    overflow: auto;
+    min-height: 0;
+}
+
+.cpc-revision-img {
+    max-width: 100%;
+    max-height: calc(100% - 60px);
+    object-fit: contain;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    flex-shrink: 1;
+    min-height: 0;
+}
+
+/* --- COLUMNA CONTROLES --- */
+.cpc-revision-controles {
+    width: 380px;
+    flex-shrink: 0;
+    padding: 20px;
+    overflow-y: auto;
+    border-left: 1px solid #eef2f5;
+    background: #fff;
+}
+
+/* --- SECCIONES --- */
+.cpc-rev-section {
+    margin-bottom: 16px;
+}
+
+.cpc-rev-section label {
+    display: block;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #94a3b8;
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+
+.cpc-rev-value {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #2d3748;
+    margin: 0;
+}
+
+/* --- DIVIDER --- */
+.cpc-divider {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 700;
+    margin: 16px 0 10px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid #eef2f5;
+}
+
+/* --- EXTRAS CARD --- */
+.cpc-extra-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    background: #f8fafc;
+    border: 1px solid #eef2f5;
+    border-radius: 8px;
+    margin-bottom: 8px;
+}
+
+.cpc-extra-card-left {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.cpc-extra-plataforma {
+    font-weight: 700;
+    font-size: 0.85rem;
+    color: #2d3748;
+}
+
+.cpc-extra-concepto {
+    font-size: 0.75rem;
+    color: #718096;
+    margin-top: 1px;
+}
+
+.cpc-extra-monto {
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: #2d3748;
+    white-space: nowrap;
+}
+
+/* --- SWITCH TOGGLE --- */
+.cpc-extra-switch {
+    position: relative;
+    display: inline-block;
+    width: 44px;
+    height: 24px;
+    flex-shrink: 0;
+}
+
+.cpc-extra-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.cpc-extra-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #e2e8f0;
+    border-radius: 24px;
+    transition: 0.2s;
+}
+
+.cpc-extra-slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    border-radius: 50%;
+    transition: 0.2s;
+}
+
+.cpc-extra-switch input:checked + .cpc-extra-slider {
+    background-color: #000;
+}
+
+.cpc-extra-switch input:checked + .cpc-extra-slider:before {
+    transform: translateX(20px);
+}
+
+/* --- FOOTER --- */
+.cpc-revision-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding: 16px 24px;
+    background: #f8f9fa;
+    border-top: 1px solid #eef2f5;
+    flex-shrink: 0;
+}
+
+/* --- BOTONES --- */
+.cpc-btn-rechazar {
+    padding: 10px 24px;
+    font-size: 0.9rem;
+    border-radius: 8px;
+    border: 1px solid #dc3545;
+    background: #fff;
+    color: #dc3545;
+    cursor: pointer;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s;
+}
+.cpc-btn-rechazar:hover {
+    background: #dc3545;
+    color: #fff;
+}
+
+.cpc-btn-aprobar {
+    padding: 10px 24px;
+    font-size: 0.9rem;
+    border-radius: 8px;
+    border: none;
+    background: #000;
+    color: #fff;
+    cursor: pointer;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s;
+}
+.cpc-btn-aprobar:hover {
+    background: #15803d;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* --- RESPONSIVE --- */
+@media (max-width: 768px) {
+    .cpc-revision-body {
+        flex-direction: column;
+    }
+    .cpc-revision-controles {
+        width: 100%;
+        border-left: none;
+        border-top: 1px solid #eef2f5;
+    }
+}
+
+/* --- ANIMACIÓN --- */
+@keyframes cpcSlideDown {
+    from { transform: translateY(-30px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.cpc-revision-nota {
+    margin-top: 12px;
+    padding: 12px 16px;
+    background: #fff;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    color: #4a5568;
+    border: 1px solid #eef2f5;
+    text-align: justify;
+    max-width: 90%;
+    max-height: 120px;
+    overflow-y: auto;
+    flex-shrink: 0;
+    line-height: 1.5;
+    word-break: break-word;
+}
+
+.cpc-extra-concepto {
+    font-size: 0.75rem;
+    color: #718096;
+    margin-top: 1px;
+    text-align: justify;
+    word-break: break-word;
+}

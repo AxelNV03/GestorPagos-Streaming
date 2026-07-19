@@ -67,8 +67,6 @@
                             {# Mismo badge de estado que ya tenías #}
                             {% if primer_cobro.estado == 'pendiente' %}
                                 <span class="pbc-badge pbc-badge-pendiente">Pendiente</span>
-                            {% elif primer_cobro.estado == 'en_revision' %}
-                                <span class="pbc-badge pbc-badge-revision">En Revisión</span>
                             {% elif primer_cobro.estado == 'pagado' %}
                                 <span class="pbc-badge pbc-badge-pagado">Pagado</span>
                             {% else %}
@@ -96,11 +94,6 @@
                     <td class="pbc-txt-center">
                         {% if not grupo.es_multiple %}
                             {% if primer_cobro.estado == 'pendiente' %}
-                                <button class="btn-action" onclick="event.stopPropagation();">
-                                    <i class="bi bi-cloud-upload"></i>
-                                </button>
-
-
                                 <button class="btn-action btn-edit" 
                                     onclick="event.stopPropagation(); abrirModalEditar({{ primer_cobro.id }}, '{{ primer_cobro.suscripcion.plataforma.nombre }}', '{{ primer_cobro.motivo or '' }}', {{ primer_cobro.monto_deuda }})">
                                     <i class="bi bi-pencil-square"></i>
@@ -149,8 +142,6 @@
                         <td class="pbc-txt-center">
                             {% if c.estado == 'pendiente' %}
                                 <span class="pbc-badge pbc-badge-pendiente">Pendiente</span>
-                            {% elif c.estado == 'en_revision' %}
-                                <span class="pbc-badge pbc-badge-revision">En Revisión</span>
                             {% elif c.estado == 'pagado' %}
                                 <span class="pbc-badge pbc-badge-pagado">Pagado</span>
                             {% else %}
@@ -172,11 +163,7 @@
                         <!--  SECCION DE GESTION-->
                         <td class="pbc-txt-center">
                             {% if c.estado == 'pendiente' %}
-                                <button class="btn-action">
-                                    <i class="bi bi-cloud-upload"></i>
-                                </button>
-                                
-                                <!-- Editr cobro -->
+                                <!-- Editar cobro -->
                                 <button class="btn-action btn-edit" 
                                         onclick="abrirModalEditar({{ c.id }}, '{{ c.suscripcion.plataforma.nombre }}', '{{ c.motivo or '' }}', {{ c.monto_deuda }})">
                                     <i class="bi bi-pencil-square"></i>

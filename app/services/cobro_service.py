@@ -72,7 +72,7 @@ class CobroService:
         return mapa_metricas
 # ===================================================================================================
     @staticmethod
-    def obtener_cobros_de_usuarios(id_usuarios, mes, anio):
+    def obtener_cobros_de_usuarios(id_usuarios, mes, anio, estado=None):
         # Creamos la fecha exacta para comparar contra tu columna 'mes_anio' (Date)
         fecha_filtro = date(int(anio), int(mes), 1)
         
@@ -86,7 +86,8 @@ class CobroService:
         # Filtros rápidos indexados
         query = query.filter(PlataformaUsuario.usuario_id.in_(id_usuarios))
         query = query.filter(Cobro.mes_anio == fecha_filtro)
-        
+        if estado:
+            query = query.filter(Cobro.estado == estado)       
         # Mandamos los cobros pendientes (sin comprobante subido) al inicio de la tabla
         comprobante_null_primero = case((Cobro.comprobante_id.is_(None), 0), else_=1)
         query = query.outerjoin(Cobro.comprobante_ref)
@@ -96,6 +97,69 @@ class CobroService:
             desc(Comprobante.created_at),
             desc(Cobro.id)
         ).all()
+# ===================================================================================================
+    @staticmethod
+    def obtener_cobros_usuario(usuario_id, estado=None):
+        """Obtiene todos los cobros de un usuario, opcionalmente filtrados por estado"""
+        query = db.session.query(Cobro).join(Cobro.suscripcion)\
+            .options(
+                joinedload(Cobro.comprobante_ref),
+                joinedload(Cobro.suscripcion).joinedload(PlataformaUsuario.perfil_usuario),
+                joinedload(Cobro.suscripcion).joinedload(PlataformaUsuario.plataforma)
+            )\
+            .filter(PlataformaUsuario.usuario_id == usuario_id)
+        
+        if estado:
+            query = query.filter(Cobro.estado == estado)
+        
+        return query.order_by(Cobro.mes_anio.asc()).all()
+# ===================================================================================================
+    @staticmethod
+    def clasificar_pendientes_por_tipo(usuario_id):
+        """
+        Devuelve los cobros pendientes de un usuario separados en:
+        - mensualidades: agrupados por plataforma
+        - extras: cobros únicos no recurrentes
+        """
+        cobros_pendientes = CobroService.obtener_cobros_usuario(usuario_id, estado='pendiente')
+        
+        mensualidades_por_plataforma = {}
+        extras = []
+        
+        for c in cobros_pendientes:
+            vinculo = c.suscripcion
+            
+            if c.motivo and c.motivo.startswith('Mensualidad'):
+                if vinculo.id not in mensualidades_por_plataforma:
+                    # Último pago de mensualidad de esta plataforma
+                    todos_pagados = CobroService.obtener_cobros_usuario(usuario_id, estado='pagado')
+                    ultimo = [x for x in todos_pagados 
+                            if x.usuario_plataforma_id == vinculo.id 
+                            and x.motivo and x.motivo.startswith('Mensualidad')]
+                    ultimo = ultimo[-1] if ultimo else None
+                    
+                    mensualidades_por_plataforma[vinculo.id] = {
+                        'plataforma': vinculo.plataforma.nombre,
+                        'plataforma_usuario_id': vinculo.id,
+                        'ultimo_pago': ultimo.mes_anio.strftime('%d/%m/%Y') if ultimo else None,
+                        'pendientes': 0,
+                        'cobros_ids': []
+                    }
+                
+                mensualidades_por_plataforma[vinculo.id]['pendientes'] += 1
+                mensualidades_por_plataforma[vinculo.id]['cobros_ids'].append(c.id)
+            else:
+                extras.append({
+                    'cobro_id': c.id,
+                    'plataforma': vinculo.plataforma.nombre,
+                    'concepto': c.motivo or 'Sin concepto',
+                    'monto': float(c.monto_deuda)
+                })
+        
+        return {
+            'mensualidades': list(mensualidades_por_plataforma.values()),
+            'extras': extras
+        }
 # ===================================================================================================
     # up_id = usuario_plataforma_id
     @staticmethod

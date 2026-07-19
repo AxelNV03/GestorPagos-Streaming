@@ -5,8 +5,8 @@ from app.services.plataforma_service import PlataformaService
 from app.services.plataforma_usuario_service import PlataformaUsuarioService
 from app.services.cobro_service import CobroService
 from app.services.periodo_service import PeriodoService
+from app.services.comprobante_service import ComprobanteService
 from app.core.models.plataforma import Plataforma
-from app.core.models.usuario import Usuario
 from app.core.models.cobro import Cobro
 from app.core.models.plataforma_usuario import PlataformaUsuario
 
@@ -234,6 +234,7 @@ class AdminService:
 # ===================================================================================================
 
 
+
 # ===================================================================================================
 # SECCION DE COBROS
 # ===================================================================================================
@@ -257,7 +258,7 @@ class AdminService:
         
         lista_ids = [u.id for u in usuariosF]
         cobros = CobroService.obtener_cobros_de_usuarios(
-            lista_ids, filtros["mes"], filtros["anio"]
+            lista_ids, filtros["mes"], filtros["anio"], filtros["estado"]
         )
         
         cobros_ordenados = sorted(cobros, key=lambda c: c.suscripcion.perfil_usuario.id)        
@@ -391,3 +392,53 @@ class AdminService:
         except Exception as e:
             db.session.rollback()
             raise e
+# ===================================================================================================
+
+
+
+# ===================================================================================================
+# SECCION DE COMPROBANTES
+# ===================================================================================================
+    @staticmethod
+    def panel_comprobantes(filtros):
+        info_p = PeriodoService.obtener_periodo_actual()
+        plataformas = PlataformaService.obtener_todas()
+        usuarios = UsuarioService.obtener_todos()
+        
+        comprobantes = ComprobanteService.obtener_comprobantes_del_mes(
+            filtros["mes"], 
+            filtros["anio"], 
+            filtros.get("estado") or None
+        )
+        
+        metricas = ComprobanteService.metricas_mes(filtros["mes"], filtros["anio"])
+        
+        datos_revision = {}
+        for comp in comprobantes:
+            datos_revision[comp.id] = CobroService.clasificar_pendientes_por_tipo(comp.usuario_id)
+
+        return {
+            'listaPlataformas': plataformas,
+            'usuarios': usuarios,
+            'mes_actual': filtros["mes"],
+            'anio_actual': filtros["anio"],
+            'label': info_p["label"],
+            'filtros_usados': filtros,
+            'comprobantes': comprobantes,
+            'metricas': metricas,
+            'datos_revision': datos_revision  # ← Datos precargados
+        }
+# ===================================================================================================
+    @staticmethod
+    def subir_comprobante(usuario_id, archivo, nota):
+        if not usuario_id:
+            raise ValueError('Debe seleccionar un usuario')
+        if not archivo or archivo.filename == '':
+            raise ValueError('Debe seleccionar una imagen')
+        
+        try:
+            ComprobanteService.guardar_comprobante(usuario_id, archivo, nota)
+        except Exception as e:
+            db.session.rollback()
+            raise e
+# ===================================================================================================
