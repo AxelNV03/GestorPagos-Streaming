@@ -116,10 +116,16 @@ class CobroService:
         return query.order_by(Cobro.mes_anio.asc()).all()
 # ===================================================================================================
     @staticmethod
-    def clasificar_pendientes_bulk(usuarios_ids):
+    def clasificar_pendientes_bulk(usuarios_ids, mes=None, anio=None):
         """Trae todos los pendientes de varios usuarios en una sola query"""
         if not usuarios_ids:
             return {}
+        
+        from datetime import date
+        if mes and anio:
+            inicio_mes = date(int(anio), int(mes), 1)
+        else:
+            inicio_mes = date.today().replace(day=1)
         
         cobros = db.session.query(Cobro).join(Cobro.suscripcion)\
             .options(
@@ -128,7 +134,8 @@ class CobroService:
             )\
             .filter(
                 PlataformaUsuario.usuario_id.in_(usuarios_ids),
-                Cobro.estado == 'pendiente'
+                Cobro.estado == 'pendiente',
+                Cobro.mes_anio == inicio_mes
             )\
             .order_by(Cobro.mes_anio.asc()).all()
         
@@ -292,3 +299,19 @@ class CobroService:
         if cobro and cobro.estado == 'pendiente':
             cobro.comprobante_id = comprobante_id
             cobro.estado = 'pagado'
+# ===================================================================================================
+    @staticmethod
+    def cobros_del_mes(usuario_id, mes, anio):
+        """Obtiene los cobros de un usuario en un mes específico como diccionarios"""
+        cobros = CobroService.obtener_cobros_usuario(usuario_id)
+        
+        fecha_filtro = date(int(anio), int(mes), 1)
+        
+        return [{
+            'id': c.id,
+            'plataforma': c.suscripcion.plataforma.nombre,
+            'motivo': c.motivo,
+            'monto': float(c.monto_deuda),
+            'estado': c.estado,
+            'comprobante_id': c.comprobante_id
+        } for c in cobros if c.mes_anio == fecha_filtro]

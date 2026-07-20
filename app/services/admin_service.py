@@ -516,8 +516,12 @@ class AdminService:
         
         # ✅ Bulk: traer todos los pendientes de todos los usuarios de los comprobantes
         usuarios_ids = list(set(comp.usuario_id for comp in comprobantes))
-        pendientes_por_usuario = CobroService.clasificar_pendientes_bulk(usuarios_ids) if usuarios_ids else {}
-        
+        pendientes_por_usuario = CobroService.clasificar_pendientes_bulk(
+            usuarios_ids, 
+            mes=filtros["mes"], 
+            anio=filtros["anio"]
+        ) if usuarios_ids else {}
+                        
         datos_revision = {}
         for comp in comprobantes:
             datos_revision[comp.id] = pendientes_por_usuario.get(comp.usuario_id, {'mensualidades': [], 'extras': []})

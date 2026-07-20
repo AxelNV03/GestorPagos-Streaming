@@ -1,0 +1,379 @@
+/* ==================================================================================================== */
+/* USER LAYOUT & DASHBOARD - CLEAN */
+/* ==================================================================================================== */
+
+/* --- Contenedor principal --- */
+.user-container {
+    min-height: 100vh;
+    background-color: #eef0f2;
+}
+
+.user-content {
+    padding-bottom: 30px;
+}
+
+/* --- Card de perfil --- */
+.user-card-section {
+    width: 100%;
+    padding: 0px 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.tidal-profile-card {
+    width: 100%;
+    max-width: 500px;
+    background-color: #ffffff;
+    border-radius: 24px;
+    padding: 20px 20px 0px 20px;    
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+}
+
+/* --- Header: Nombre + Meta --- */
+.profile-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.profile-names {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.3;
+}
+
+.user-main-name {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: 1.2rem;
+    margin: 0;
+    text-transform: capitalize;
+    color: #1a1a1a;
+}
+
+.user-phone {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 400;
+    font-size: 0.8rem;
+    color: #8E959B;
+}
+
+.profile-meta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: center;
+}
+
+.meta-item {
+    font-size: 0.7rem;
+    color: #8E959B;
+    text-align: right;
+    line-height: 1.4;
+}
+
+/* --- Monto a Pagar --- */
+.profile-monto {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-top: 1px solid #F0F3F5;
+    margin-bottom: 12px;
+}
+
+.info-label {
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: #8E959B;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.info-price-pendiente { color: #FF9500; font-weight: 700; font-size: 1.1rem; }
+.info-price-pendiente small { display: block; font-size: 0.7rem; font-weight: 500; color: #FF9500; }
+
+.info-price-revision { color: #007AFF; font-weight: 700; font-size: 1.1rem; }
+.info-price-revision small { display: block; font-size: 0.7rem; font-weight: 500; color: #007AFF; }
+
+.info-price-rechazado { color: #FF3B30; font-weight: 700; font-size: 1.1rem; }
+.info-price-rechazado small { display: block; font-size: 0.7rem; font-weight: 500; color: #FF3B30; }
+
+.info-price-completo { color: #00ba13; font-weight: 700; font-size: 1rem; }
+
+
+
+
+/* --- Plataformas --- */
+.plataformas-chips-container .info-label {
+    display: block;
+    margin-bottom: 10px;
+}
+
+.plataformas-chips {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.plataforma-chip {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #f8fafc;
+    border: 1px solid #eef2f5;
+    border-radius: 10px;
+    padding: 10px 12px;
+    width: 100%;
+}
+
+.plataforma-chip-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.plataforma-chip-img {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    object-fit: contain;
+}
+
+.plataforma-chip-nombre {
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: #1d1d1f;
+}
+
+.plataforma-chip-cuota {
+    font-weight: 600;
+    font-size: 0.8rem;
+    color: #8E959B;
+}
+
+
+
+/* --- Alertas --- */
+/* --- Alertas --- */
+.alert-card-container {
+    padding: 10px 40px 0 40px;
+    margin-top: 4px;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+}
+.alert-card {
+    display: flex;
+    align-items: center;
+    padding: 10px 14px;
+    border-radius: 12px;
+    gap: 10px;
+}
+
+.alert-icon {
+    font-size: 1rem;
+    flex-shrink: 0;
+}
+
+.alert-card.vencido {
+    background-color: rgba(255, 59, 48, 0.08);
+    border: 1px solid rgba(255, 59, 48, 0.15);
+}
+.alert-card.vencido .alert-icon { color: #FF3B30; }
+.alert-card.vencido .alert-text strong { color: #FF3B30; }
+
+.alert-card.urgente {
+    background-color: rgba(255, 149, 0, 0.08);
+    border: 1px solid rgba(255, 149, 0, 0.15);
+}
+.alert-card.urgente .alert-icon { color: #FF9500; }
+.alert-card.urgente .alert-text strong { color: #FF9500; }
+
+.alert-card.revision {
+    background-color: rgba(0, 122, 255, 0.08);
+    border: 1px solid rgba(0, 122, 255, 0.15);
+}
+.alert-card.revision .alert-icon,
+.alert-card.revision .alert-text strong { color: #007AFF; }
+
+.alert-card.aprobado {
+    background-color: rgba(0, 186, 19, 0.08);
+    border: 1px solid rgba(0, 186, 19, 0.15);
+}
+.alert-card.aprobado .alert-icon,
+.alert-card.aprobado .alert-text strong { color: #00ba13; }
+
+.alert-text {
+    display: flex;
+    flex-direction: column;
+    font-size: 0.75rem;
+    color: #555;
+}
+
+.alert-text strong {
+    font-size: 0.8rem;
+    margin-bottom: 1px;
+}
+
+
+
+
+
+
+
+/* --- Menú --- */
+.menu-cards-container {
+    max-width: 500px;
+    margin: 20px auto;
+    padding: 0 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.menu-card {
+    background: #ffffff;
+    border-radius: 24px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    text-decoration: none;
+    color: inherit;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+}
+
+.menu-card-content {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.menu-icon {
+    width: 45px;
+    height: 45px;
+    background: #f5f5f7;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    color: #1d1d1f;
+}
+
+.menu-text h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    margin: 0;
+    color: #1d1d1f;
+}
+
+.menu-text span {
+    font-size: 0.8rem;
+    color: #8e959b;
+}
+
+.menu-arrow {
+    color: #c1c1c1;
+    font-size: 1.1rem;
+}
+
+/* --- Navbar --- */
+/* --- Navbar --- */
+.tidal-navbar {
+    width: 100%;
+    background-color: #0d0d0d;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
+}
+
+.tidal-logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+}
+
+.tidal-wordmark {
+    font-size: 16px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+}
+
+.tidal-icon-custom {
+    color: #00ba13;
+    font-size: 1.1rem;
+}
+
+.tidal-logout-btn {
+    color: #fff;
+    font-size: 1.3rem;
+    text-decoration: none;
+}
+
+
+/* --- Barra de regreso --- */
+.bb-navbar {
+    width: 100%;
+    background-color: #0d0d0d;
+    display: flex;
+    align-items: center;
+    padding: 21px 20px;
+}
+
+.bb-btn-return {
+    color: #fff !important;
+    font-size: 1.3rem;
+    text-decoration: none;
+}
+
+/* --- Responsive PC --- */
+@media (min-width: 950px) {
+    .tidal-profile-card {
+        max-width: 600px;
+        padding: 30px;
+        border-radius: 28px;
+    }
+    
+    .alert-card-container {
+        max-width: 600px;
+    }
+    
+    .menu-cards-container {
+        max-width: 600px;
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+    
+    .menu-card {
+        flex: 1;
+        min-width: 250px;
+    }
+    
+    .tidal-navbar {
+        height: 60px;
+        padding: 0 40px;
+    }
+    
+    .tidal-wordmark {
+        font-size: 20px;
+    }
+
+}
+
+.plataformas-section {
+    padding-top: 12px;
+    border-top: 1px solid #F0F3F5;
+    margin-bottom: 12px;
+}
+
+.plataformas-section .info-label {
+    display: block;
+    margin-bottom: 10px;
+}
