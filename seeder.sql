@@ -19,4 +19,8 @@ VALUES
 ('ChatGPT Plus', 400.00, 80.00, 14, 'chatgpt.png', 'admin@streaming.com', 5),
 ('Deezer Family', 179.00, 30.00, 22, 'deezer.png', 'admin@streaming.com', 5);
 
-delete from plataformas WHERE id > 1;
+delete from plataformas;
+delete from cobros;
+delete from comprobantes;
+delete from plataforma_usuario;
+delete from usuarios;

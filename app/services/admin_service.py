@@ -457,6 +457,31 @@ class AdminService:
         return ruta
 # ===================================================================================================
     @staticmethod
+    def aprobar_comprobante(comprobante_id, form_data):
+        comprobante = db.session.get(Comprobante, comprobante_id)
+        if not comprobante:
+            raise ValueError('Comprobante no encontrado')
+        if comprobante.estado != 'revision':
+            raise ValueError('Solo se pueden aprobar comprobantes en revisión')
+        
+        comentario = form_data.get('comentario', '')
+        
+        try:
+            for key, value in form_data.items():
+                if key.startswith('meses_') and int(value) > 0:
+                    plataforma_usuario_id = int(key.replace('meses_', ''))
+                    CobroService.generar_pagos_futuros(plataforma_usuario_id, int(value))
+                    CobroService.cubrir_mensualidades(plataforma_usuario_id, int(value), comprobante.id)
+                elif key.startswith('extra_'):
+                    cobro_id = int(key.replace('extra_', ''))
+                    CobroService.asignar_extra(cobro_id, comprobante.id)
+            
+            ComprobanteService.cambiar_estado(comprobante, 'aprobado', comentario)
+        except Exception as e:
+            db.session.rollback()
+            raise e
+# ===================================================================================================
+    @staticmethod
     def rechazar_comprobante(comprobante_id, comentario):
         comprobante = db.session.get(Comprobante, comprobante_id)
         if not comprobante:

@@ -99,8 +99,8 @@ function revisarComprobante(comprobanteId) {
         const pagosCubiertos = document.getElementById('cpc_rev_pagos_cubiertos');
         if (comp.estado === 'aprobado' && pendientes) {
             pagosCubiertos.style.display = 'block';
-            renderMensualidadesCubiertas(pendientes.mensualidades);
-            renderExtrasCubiertos(pendientes.extras);
+            pagosCubiertos.style.display = 'block';
+            renderCobrosAsociados(comp.cobros_asociados);
         } else {
             pagosCubiertos.style.display = 'none';
         }
@@ -203,6 +203,7 @@ function accionComprobante(accion) {
     const comprobanteId = document.getElementById('modalRevision').dataset.comprobanteId;
     const comentario = document.getElementById('cpc_rev_comentario').value;
     
+    // Validaciones
     if (accion === 'rechazar') {
         if (!comentario.trim()) {
             alert('Debe ingresar un motivo de rechazo');
@@ -211,16 +212,57 @@ function accionComprobante(accion) {
         if (!confirm('¿Está seguro de rechazar este comprobante?')) return;
     }
     
-    // Crear formulario y enviar
+    if (accion === 'aprobar') {
+        // Verificar que al menos haya algo seleccionado
+        let haySeleccion = false;
+        
+        document.querySelectorAll('.cpc-mes-select').forEach(select => {
+            if (parseInt(select.value) > 0) haySeleccion = true;
+        });
+        document.querySelectorAll('.cpc-extra-switch input:checked').forEach(() => {
+            haySeleccion = true;
+        });
+        
+        if (!haySeleccion) {
+            alert('Debe seleccionar al menos un mes o un extra para aprobar');
+            return;
+        }
+        
+        if (!confirm('¿Está seguro de aprobar este comprobante?')) return;
+    }
+    
+    // Crear formulario
     const form = document.createElement('form');
     form.method = 'POST';
     form.action = `/admin/comprobantes/${accion === 'rechazar' ? 'rechazar' : 'aprobar'}/${comprobanteId}`;
     
-    const input = document.createElement('input');
-    input.type = 'hidden';
-    input.name = 'comentario';
-    input.value = comentario;
-    form.appendChild(input);
+    // Comentario
+    const inputComentario = document.createElement('input');
+    inputComentario.type = 'hidden';
+    inputComentario.name = 'comentario';
+    inputComentario.value = comentario;
+    form.appendChild(inputComentario);
+    
+    // Mensualidades y extras (solo para aprobar)
+    if (accion === 'aprobar') {
+        document.querySelectorAll('.cpc-mes-select').forEach(select => {
+            if (parseInt(select.value) > 0) {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = select.name;
+                input.value = select.value;
+                form.appendChild(input);
+            }
+        });
+        
+        document.querySelectorAll('.cpc-extra-switch input:checked').forEach(checkbox => {
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = checkbox.name;
+            input.value = '1';
+            form.appendChild(input);
+        });
+    }
     
     document.body.appendChild(form);
     form.submit();
@@ -246,34 +288,28 @@ function actualizarResumen() {
 }
 
 
-function renderMensualidadesCubiertas(mensualidades) {
-    const div = document.getElementById('cpc_rev_mensualidades_cubiertas');
+function renderCobrosAsociados(cobros) {
+    const mensualidades = cobros.filter(c => c.motivo.startsWith('Mensualidad'));
+    const extras = cobros.filter(c => !c.motivo.startsWith('Mensualidad'));
     
-    if (!mensualidades || !mensualidades.length) {
-        div.innerHTML = '<p class="pbc-txt-muted">Sin mensualidades</p>';
-        return;
-    }
+    const divMen = document.getElementById('cpc_rev_mensualidades_cubiertas');
+    const divExt = document.getElementById('cpc_rev_extras_cubiertos');
     
-    div.innerHTML = '<div class="cpc-pagos-lista">' + mensualidades.map(m => `
-        <div class="cpc-pago-item">
-            <span class="cpc-pago-item-plataforma">${m.plataforma}</span>
-            <span class="cpc-pago-item-detalle">${m.pendientes} ${m.pendientes === 1 ? 'mes' : 'meses'}</span>
-        </div>
-    `).join('') + '</div>';
-}
-
-function renderExtrasCubiertos(extras) {
-    const div = document.getElementById('cpc_rev_extras_cubiertos');
+    divMen.innerHTML = mensualidades.length 
+        ? '<div class="cpc-pagos-lista">' + mensualidades.map(c => `
+            <div class="cpc-pago-item">
+                <span class="cpc-pago-item-plataforma">${c.plataforma}</span>
+                <span class="cpc-pago-item-detalle">${c.mes_anio}</span>
+            </div>
+        `).join('') + '</div>'
+        : '<p class="pbc-txt-muted">Sin mensualidades</p>';
     
-    if (!extras || !extras.length) {
-        div.innerHTML = '<p class="pbc-txt-muted">Sin extras</p>';
-        return;
-    }
-    
-    div.innerHTML = '<div class="cpc-pagos-lista">' + extras.map(e => `
-        <div class="cpc-pago-item">
-            <span class="cpc-pago-item-plataforma">${e.plataforma}</span>
-            <span class="cpc-pago-item-detalle">${e.concepto}</span>
-        </div>
-    `).join('') + '</div>';
+    divExt.innerHTML = extras.length 
+        ? '<div class="cpc-pagos-lista">' + extras.map(c => `
+            <div class="cpc-pago-item">
+                <span class="cpc-pago-item-plataforma">${c.plataforma}</span>
+                <span class="cpc-pago-item-detalle">${c.motivo}</span>
+            </div>
+        `).join('') + '</div>'
+        : '<p class="pbc-txt-muted">Sin extras</p>';
 }

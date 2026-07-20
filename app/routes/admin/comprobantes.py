@@ -41,6 +41,16 @@ def ver_imagen(comprobante_id):
     except Exception as e:
         return str(e), 404
 # ===================================================================================================
+@admin_bp.route('/comprobantes/aprobar/<int:comprobante_id>', methods=['POST'])
+def aprobar_comprobante(comprobante_id):
+    try:
+        AdminService.aprobar_comprobante(comprobante_id, request.form)
+        flash('Comprobante aprobado correctamente', 'success')
+    except Exception as e:
+        flash(f'Error: {str(e)}', 'danger')
+    
+    return redirect(url_for('admin.comprobantes'))
+# ===================================================================================================
 @admin_bp.route('/comprobantes/rechazar/<int:comprobante_id>', methods=['POST'])
 def rechazar_comprobante(comprobante_id):
     comentario = request.form.get('comentario', '')
@@ -51,3 +61,4 @@ def rechazar_comprobante(comprobante_id):
         flash(f'Error: {str(e)}', 'danger')
     
     return redirect(url_for('admin.comprobantes'))
+# ===================================================================================================

@@ -7,6 +7,7 @@ from app.core.models.cobro import Cobro
 from app.core.models.comprobante import Comprobante
 
 from datetime import date
+from dateutil.relativedelta import relativedelta
 from app import db
 from sqlalchemy import func, or_
 from sqlalchemy import or_, desc, extract, case
@@ -121,7 +122,11 @@ class CobroService:
         - mensualidades: agrupados por plataforma
         - extras: cobros únicos no recurrentes
         """
+
+        # Solo cobros del mes actual
         cobros_pendientes = CobroService.obtener_cobros_usuario(usuario_id, estado='pendiente')
+        inicio_mes = date.today().replace(day=1)
+        cobros_pendientes = [c for c in cobros_pendientes if c.mes_anio == inicio_mes]
         
         mensualidades_por_plataforma = {}
         extras = []
@@ -227,3 +232,52 @@ class CobroService:
             Cobro.estado == 'pendiente'
         ).delete(synchronize_session=False)
 # ===================================================================================================
+    @staticmethod
+    def generar_pagos_futuros(plataforma_usuario_id, cantidad_meses):
+        """Genera cobros de mensualidad pendientes para los próximos N meses"""
+        
+        ultimo = Cobro.query.filter(
+            Cobro.usuario_plataforma_id == plataforma_usuario_id,
+            Cobro.motivo.like('Mensualidad%')
+        ).order_by(Cobro.mes_anio.desc()).first()
+        
+        if not ultimo:
+            return
+        
+        vinculo = ultimo.suscripcion
+        
+        for i in range(1, cantidad_meses + 1):
+            siguiente_mes = ultimo.mes_anio + relativedelta(months=i)
+            label = siguiente_mes.strftime('%B %Y')
+            
+            if CobroService.existe_cobro(plataforma_usuario_id, siguiente_mes):
+                continue
+            
+            cobro = Cobro(
+                usuario_plataforma_id=plataforma_usuario_id,
+                mes_anio=siguiente_mes,
+                monto_deuda=ultimo.monto_deuda,
+                estado='pendiente',
+                motivo=f"Mensualidad - {vinculo.plataforma.nombre} ({label})"
+            )
+            db.session.add(cobro)
+# ===================================================================================================
+    @staticmethod
+    def cubrir_mensualidades(plataforma_usuario_id, cantidad_meses, comprobante_id):
+        """Asigna los N cobros pendientes más antiguos al comprobante y los marca como pagado"""
+        cobros = Cobro.query.filter(
+            Cobro.usuario_plataforma_id == plataforma_usuario_id,
+            Cobro.estado == 'pendiente',
+            Cobro.motivo.like('Mensualidad%')
+        ).order_by(Cobro.mes_anio.asc()).limit(cantidad_meses).all()
+        
+        for cobro in cobros:
+            cobro.comprobante_id = comprobante_id
+            cobro.estado = 'pagado'
+# ===================================================================================================
+    @staticmethod
+    def asignar_extra(cobro_id, comprobante_id):
+        cobro = db.session.get(Cobro, cobro_id)
+        if cobro and cobro.estado == 'pendiente':
+            cobro.comprobante_id = comprobante_id
+            cobro.estado = 'pagado'
