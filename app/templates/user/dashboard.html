@@ -111,36 +111,6 @@
 </div>
 {% endif %}
 
-
-<!-- Cobros del Mes
-{% if data.cobros_mes %}
-<div class="cobros-mes-container">
-    <h3 class="section-title">Mis Cobros - {{ data.periodo.nombre_mes }} {{ data.periodo.anio }}</h3>
-    
-    <div class="cobros-totales">
-        {% if data.total_pendiente > 0 %}
-        <span class="total-pendiente">⏳ Pendiente: ${{ "%.2f"|format(data.total_pendiente) }}</span>
-        {% endif %}
-        {% if data.total_pagado > 0 %}
-        <span class="total-pagado">✅ Pagado: ${{ "%.2f"|format(data.total_pagado) }}</span>
-        {% endif %}
-    </div>
-    
-    {% for cobro in data.cobros_mes %}
-    <div class="cobro-card {{ 'cobro-pagado' if cobro.estado == 'pagado' else 'cobro-pendiente' }}">
-        <div class="cobro-card-left">
-            <span class="cobro-plataforma">{{ cobro.plataforma }}</span>
-            <span class="cobro-motivo">{{ cobro.motivo or 'Mensualidad' }}</span>
-        </div>
-        <div class="cobro-card-right">
-            <span class="cobro-monto">${{ "%.2f"|format(cobro.monto) }}</span>
-            <span class="cobro-estado">{{ '✅' if cobro.estado == 'pagado' else '⏳' }}</span>
-        </div>
-    </div>
-    {% endfor %}
-</div>
-{% endif %} -->
-
 <!-- Menú -->
 <div class="menu-cards-container">
     <a href="{{ url_for('user.historial') }}" class="menu-card">
@@ -167,8 +137,8 @@
         </a>
     {% endif %}
 
-    <a href="https://wa.me/527774399424?text=Hola!%20Soy%20{{ data.user.nombres | lower | title }},%20tengo%20dudas%20con%20el%20servicio" 
-       target="_blank" class="menu-card">
+    <a href="https://wa.me/527774399424?text=Hola%20Axel,%20soy%20{{ data.user.nombres | lower | title | urlencode }}%20y%20tengo%20una%20duda%20sobre%20mi%20cuenta" 
+        target="_blank" class="menu-card">
         <div class="menu-card-content">
             <div class="menu-icon icon-green"><i class="bi bi-whatsapp"></i></div>
             <div class="menu-text">

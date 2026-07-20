@@ -1,0 +1,56 @@
+{% extends "layouts/user.html" %}
+{% block header %}
+    {% include 'user/components/bar_back.html' %}
+{% endblock %}
+{% block title %}Historial | Access Stream{% endblock %}
+
+{% block main_content %}
+
+<div class="historial-container">
+    <div class="historial-nav">
+        <a href="?mes={{ data.mes_anterior }}&anio={{ data.anio_anterior }}" class="historial-nav-btn">
+            <i class="bi bi-chevron-left"></i>
+        </a>
+        <span class="historial-nav-label">{{ data.label }}</span>
+        <a href="?mes={{ data.mes_siguiente }}&anio={{ data.anio_siguiente }}" class="historial-nav-btn">
+            <i class="bi bi-chevron-right"></i>
+        </a>
+    </div>
+
+    {% for cobro in data.historial %}
+    <div class="historial-item {{ 'historial-pagado' if cobro.estado == 'pagado' else 'historial-pendiente' }}">
+        <div class="historial-item-left">
+            <span class="historial-plataforma">{{ cobro.plataforma }}</span>
+            <span class="historial-motivo">{{ cobro.motivo }}</span>
+            {% if cobro.fecha_subida %}
+            <span class="historial-fecha">📅 {{ cobro.fecha_subida }}</span>
+            {% endif %}
+        </div>
+        <div class="historial-item-right">
+            <span class="historial-monto">${{ "%.2f"|format(cobro.monto) }}</span>
+            <span class="historial-estado">
+                {% if cobro.comprobante_estado == 'revision' %}
+                    🔵 En revisión
+                {% elif cobro.comprobante_estado == 'rechazado' %}
+                    🔴 Rechazado
+                {% elif cobro.estado == 'pagado' %}
+                    ✅ Pagado
+                {% else %}
+                    ⏳ Pendiente
+                {% endif %}
+            </span>
+            {% if cobro.ruta_archivo %}
+            <a href="{{ url_for('user.ver_recibo', id=cobro.id) }}" class="historial-ver">Ver</a>
+            {% endif %}
+        </div>
+    </div>
+    {% else %}
+    <div class="empty-state-wrapper">
+        <i class="bi bi-receipt"></i>
+        <h5>Sin historial</h5>
+        <p>No tienes pagos registrados este mes.</p>
+    </div>
+    {% endfor %}
+</div>
+
+{% endblock %}

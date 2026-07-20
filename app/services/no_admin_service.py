@@ -5,6 +5,8 @@ from app.services.periodo_service import PeriodoService
 from app.services.cobro_service import CobroService
 from app.services.usuario_service import UsuarioService
 from app.core.models.comprobante import Comprobante
+from app.core.models.cobro import Cobro
+
 
 class NoAdminService:
     @staticmethod
@@ -76,4 +78,86 @@ class NoAdminService:
             'extras_pendientes_count': extras_pendientes_count,
             'plataformas_activas': plataformas_activas,
             'plataformas_lista': plataformas_lista
+        }
+    
+    @staticmethod
+    def historial_data(mes=None, anio=None):
+        u_id = session.get('user_id')
+        
+        if not mes or not anio:
+            info_p = PeriodoService.obtener_periodo_actual()
+            mes = info_p['mes']
+            anio = info_p['anio']
+        
+        mes = int(mes)
+        anio = int(anio)
+        
+        # Navegación
+        if mes == 1:
+            mes_anterior, anio_anterior = 12, anio - 1
+        else:
+            mes_anterior, anio_anterior = mes - 1, anio
+        
+        if mes == 12:
+            mes_siguiente, anio_siguiente = 1, anio + 1
+        else:
+            mes_siguiente, anio_siguiente = mes + 1, anio
+        
+        MESES_ES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre']
+        
+        cobros = CobroService.obtener_cobros_usuario(u_id)
+        
+        # Filtrar solo el mes solicitado
+        fecha_filtro = date(anio, mes, 1)
+        cobros_mes = [c for c in cobros if c.mes_anio == fecha_filtro]
+        
+        historial = []
+        for c in cobros_mes:
+            comp = c.comprobante_ref
+            historial.append({
+                'id': c.id,
+                'plataforma': c.suscripcion.plataforma.nombre,
+                'motivo': c.motivo or 'Mensualidad',
+                'monto': float(c.monto_deuda),
+                'estado': c.estado,
+                'mes_anio': c.mes_anio.strftime('%B %Y') if c.mes_anio else '',
+                'fecha_subida': comp.created_at.strftime('%d/%m/%Y') if comp else None,
+                'comprobante_id': c.comprobante_id,
+                'ruta_archivo': comp.ruta_archivo if comp else None,
+                'comprobante_estado': comp.estado if comp else None
+            })
+
+        # Ordenar: pendientes primero, luego pagados, por fecha ascendente
+        historial.sort(key=lambda x: (0 if x['estado'] == 'pendiente' else 1, x['mes_anio']))
+
+        return {
+            'historial': historial,
+            'label': f"{MESES_ES[mes-1]} {anio}",
+            'mes_actual': mes,
+            'anio_actual': anio,
+            'mes_anterior': mes_anterior,
+            'anio_anterior': anio_anterior,
+            'mes_siguiente': mes_siguiente,
+            'anio_siguiente': anio_siguiente
+        }
+
+
+    @staticmethod
+    def ver_recibo_data(cobro_id):
+        cobro = Cobro.query.get(cobro_id)
+        if not cobro:
+            raise ValueError('Cobro no encontrado')
+        
+        comp = cobro.comprobante_ref
+        
+        return {
+            'id': cobro.id,
+            'plataforma': cobro.suscripcion.plataforma.nombre,
+            'motivo': cobro.motivo,
+            'monto': float(cobro.monto_deuda),
+            'estado': cobro.estado,
+            'fecha_subida': comp.created_at.strftime('%d/%m/%Y') if comp else None,
+            'ruta_archivo': comp.ruta_archivo if comp else None,
+            'comprobante_estado': comp.estado if comp else None,
+            'nota': comp.nota_usuario if comp else None
         }

@@ -332,22 +332,6 @@
     text-decoration: none;
 }
 
-
-/* --- Barra de regreso --- */
-.bb-navbar {
-    width: 100%;
-    background-color: #0d0d0d;
-    display: flex;
-    align-items: center;
-    padding: 21px 20px;
-}
-
-.bb-btn-return {
-    color: #fff !important;
-    font-size: 1.3rem;
-    text-decoration: none;
-}
-
 /* --- Responsive PC --- */
 @media (min-width: 950px) {
     .tidal-profile-card {

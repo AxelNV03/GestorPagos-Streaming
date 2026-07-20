@@ -1,0 +1,57 @@
+{% extends "layouts/user.html" %}
+{% block header %}
+    {% include 'user/components/bar_back.html' %}
+{% endblock %}
+{% block title %}Recibo | Access Stream{% endblock %}
+
+{% block main_content %}
+
+<div class="receipt-viewer">
+    <div class="viewer-header">
+        <h3>Tu Comprobante</h3>
+    </div>
+    
+    <div class="receipt-card">
+        <img src="{{ url_for('user.servir_comprobante_user', filename=data.ruta_archivo) }}" 
+             alt="Recibo de pago" class="receipt-img">
+        
+        <div class="receipt-info">
+            <div class="info-group">
+                <label>Plataforma</label>
+                <span>{{ data.plataforma }}</span>
+            </div>
+            <div class="info-group">
+                <label>Monto</label>
+                <span>${{ "%.2f"|format(data.monto) }}</span>
+            </div>
+            <div class="info-group">
+                <label>Fecha de Subida</label>
+                <span>{{ data.fecha_subida or 'N/A' }}</span>
+            </div>
+            <div class="info-group">
+                <label>Estado</label>
+                <span class="status-text-inline {{ data.comprobante_estado or data.estado }}">
+                    {% if data.comprobante_estado == 'revision' %}
+                        En revisión
+                    {% elif data.comprobante_estado == 'rechazado' %}
+                        Rechazado
+                    {% elif data.estado == 'pagado' %}
+                        Pagado
+                    {% else %}
+                        Pendiente
+                    {% endif %}
+                </span>
+            </div>
+            {% if data.nota %}
+            <div class="info-group full-width">
+                <label>Nota</label>
+                <p class="receipt-note">{{ data.nota }}</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <a href="{{ url_for('user.historial') }}" class="btn-back">Volver al historial</a>
+</div>
+
+{% endblock %}

@@ -1,0 +1,188 @@
+/* ==================================================================================================== */
+/* HISTORIAL DE PAGOS */
+/* ==================================================================================================== */
+
+.bb-navbar {
+    width: 100%;
+    background-color: #0d0d0d;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 12px 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    box-sizing: border-box;
+}
+
+.bb-btn-return {
+    color: #ffffff !important;
+    font-size: 1.2rem;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+}
+
+.historial-container {
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 16px 20px;
+}
+
+.section-title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #8E959B;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 16px;
+}
+
+/* --- Grupo por mes --- */
+.historial-mes {
+    margin-bottom: 20px;
+}
+
+.historial-mes-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid #F0F3F5;
+    margin-bottom: 8px;
+}
+
+.historial-mes-nombre {
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: #1a1a1a;
+}
+
+.historial-mes-total {
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: #8E959B;
+}
+
+/* --- Item de cobro --- */
+.historial-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 14px;
+    background: #fff;
+    border: 1px solid #eef2f5;
+    border-radius: 10px;
+    margin-bottom: 6px;
+    border-left: 3px solid #FF9500;
+}
+.historial-item.historial-pagado {
+    border-left-color: #00ba13;
+    opacity: 0.85;
+}
+
+.historial-item-left {
+    display: flex;
+    flex-direction: column;
+}
+
+.historial-plataforma {
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: #1d1d1f;
+}
+
+.historial-motivo {
+    font-size: 0.72rem;
+    color: #8E959B;
+    margin-top: 1px;
+}
+
+.historial-fecha {
+    font-size: 0.68rem;
+    color: #A1AAB2;
+    margin-top: 2px;
+}
+
+.historial-item-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+}
+
+.historial-monto {
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: #1d1d1f;
+}
+
+.historial-estado {
+    font-size: 0.72rem;
+}
+
+.historial-ver {
+    font-size: 0.75rem;
+    color: #007AFF;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+/* --- Empty --- */
+.empty-state-wrapper {
+    text-align: center;
+    padding: 40px 20px;
+    color: #8E959B;
+}
+
+.empty-state-wrapper i {
+    font-size: 2rem;
+    display: block;
+    margin-bottom: 10px;
+}
+
+.empty-state-wrapper h5 {
+    font-size: 0.9rem;
+    margin: 0 0 5px;
+    color: #555;
+}
+
+.empty-state-wrapper p {
+    font-size: 0.75rem;
+    margin: 0;
+}
+
+/* --- Responsive PC --- */
+@media (min-width: 950px) {
+    .historial-container {
+        max-width: 600px;
+    }
+}
+
+
+
+
+
+
+
+/* BARRA NAV */
+.historial-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+}
+
+.historial-nav-btn {
+    color: #1a1a1a;
+    text-decoration: none;
+    font-size: 1.1rem;
+    padding: 6px 10px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+}
+
+.historial-nav-label {
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: #1a1a1a;
+}
