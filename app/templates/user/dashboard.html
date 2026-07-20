@@ -23,39 +23,40 @@
             <span class="info-label">Plataformas Activas · {{ data.plataformas_activas }}</span>
             <div class="plataformas-chips">
                 {% for p in data.plataformas_lista %}
-                <div class="plataforma-chip">
-                    <div class="plataforma-chip-left">
-                        <img src="{{ url_for('static', filename='uploads/' ~ p.logo) }}" alt="{{ p.nombre }}" class="plataforma-chip-img">
-                        <span class="plataforma-chip-nombre">{{ p.nombre }}</span>
+                    <div class="plataforma-chip">
+                        <div class="plataforma-chip-left">
+                            <img src="{{ url_for('static', filename='uploads/' ~ p.logo) }}" alt="{{ p.nombre }}" class="plataforma-chip-img">
+                            <div>
+                                <span class="plataforma-chip-nombre">{{ p.nombre }}</span>
+                                <span class="plataforma-chip-correo">{{ p.correo or 'Sin correo asociado' }}</span>
+                            </div>
+                        </div>
+                        <span class="plataforma-chip-cuota">${{ "%.2f"|format(p.cuota) }}/mes</span>
                     </div>
-                    <span class="plataforma-chip-cuota">${{ "%.2f"|format(p.cuota) }}/mes</span>
-                </div>
                 {% endfor %}
             </div>
         </div>
         {% endif %}
 
         <!-- Monto a Pagar -->
-<!-- Monto a Pagar -->
-<!-- Monto a Pagar -->
-<div class="profile-monto">
-    <span class="info-label">Monto a Pagar</span>
-    <span class="info-value {{ 'info-price-completo' if data.total_pendiente == 0 else 
-        'info-price-revision' if data.comprobante_en_revision else 
-        'info-price-rechazado' if data.comprobante_rechazado else 
-        'info-price-pendiente' }}">
-        {% if data.total_pendiente == 0 %}
-            Completo
-        {% else %}
-            ${{ "%.2f"|format(data.total_pendiente) }}
-            {% if data.comprobante_en_revision %}
-                <small>En revisión</small>
-            {% elif data.comprobante_rechazado %}
-                <small>Reintentar pago</small>
-            {% endif %}
-        {% endif %}
-    </span>
-</div>
+        <div class="profile-monto">
+            <span class="info-label">Monto a Pagar</span>
+            <span class="info-value {{ 'info-price-completo' if data.total_pendiente == 0 else 
+                'info-price-revision' if data.comprobante_en_revision else 
+                'info-price-rechazado' if data.comprobante_rechazado else 
+                'info-price-pendiente' }}">
+                {% if data.total_pendiente == 0 %}
+                    Completo
+                {% else %}
+                    ${{ "%.2f"|format(data.total_pendiente) }}
+                    {% if data.comprobante_en_revision %}
+                        <small>En revisión</small>
+                    {% elif data.comprobante_rechazado %}
+                        <small>Reintentar pago</small>
+                    {% endif %}
+                {% endif %}
+            </span>
+        </div>
 
     </div>
 </section>
@@ -153,16 +154,18 @@
         <div class="menu-arrow"><i class="bi bi-chevron-right"></i></div>
     </a>
 
-    <a href="{{ url_for('user.seccion_comprobante') }}" class="menu-card">
-        <div class="menu-card-content">
-            <div class="menu-icon icon-blue"><i class="bi bi-plus-circle-fill"></i></div>
-            <div class="menu-text">
-                <h3>Agregar Pago</h3>
-                <span>Reporta tu transferencia aquí</span>
+    {% if data.total_pendiente > 0 %}
+        <a href="{{ url_for('user.seccion_comprobante') }}" class="menu-card">
+            <div class="menu-card-content">
+                <div class="menu-icon icon-blue"><i class="bi bi-plus-circle-fill"></i></div>
+                <div class="menu-text">
+                    <h3>Agregar Pago</h3>
+                    <span>Reporta tu transferencia aquí</span>
+                </div>
             </div>
-        </div>
-        <div class="menu-arrow"><i class="bi bi-chevron-right"></i></div>
-    </a>
+            <div class="menu-arrow"><i class="bi bi-chevron-right"></i></div>
+        </a>
+    {% endif %}
 
     <a href="https://wa.me/527774399424?text=Hola!%20Soy%20{{ data.user.nombres | lower | title }},%20tengo%20dudas%20con%20el%20servicio" 
        target="_blank" class="menu-card">

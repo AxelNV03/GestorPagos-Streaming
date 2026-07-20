@@ -20,20 +20,21 @@
     justify-content: center;
 }
 
+/* --- Card principal --- */
 .tidal-profile-card {
     width: 100%;
     max-width: 500px;
     background-color: #ffffff;
-    border-radius: 24px;
-    padding: 20px 20px 0px 20px;    
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+    border-radius: 0 0 16px 16px;
+    padding: 20px 20px 8px 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    border: 1px solid #e5e7eb;
 }
-
 /* --- Header: Nombre + Meta --- */
 .profile-header {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-end;
     margin-bottom: 12px;
 }
 
@@ -153,6 +154,19 @@
     color: #8E959B;
 }
 
+.plataforma-chip-left div {
+    display: flex;
+    flex-direction: column;
+}
+
+.plataforma-chip-correo {
+    font-size: 0.7rem;
+    color: #8E959B;
+    margin-top: 1px;
+}
+
+
+
 
 
 /* --- Alertas --- */
@@ -235,14 +249,15 @@
 
 .menu-card {
     background: #ffffff;
-    border-radius: 24px;
-    padding: 20px;
+    border-radius: 14px;
+    padding: 16px 20px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     text-decoration: none;
     color: inherit;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    border: 1px solid #e5e7eb;
 }
 
 .menu-card-content {

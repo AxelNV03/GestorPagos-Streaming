@@ -58,7 +58,8 @@ class NoAdminService:
         plataformas_lista = [{
             'nombre': s.plataforma.nombre,
             'logo': s.plataforma.url_logo,
-            'cuota': float(s.plataforma.cuota)
+            'cuota': float(s.plataforma.cuota),
+            'correo': s.correo_plataforma or ''
         } for s in usuario.suscripciones if s.activo]
 
         return {
