@@ -28,7 +28,15 @@
                             </div>
                         {% endif %}
                     </td>
-                    <td><strong>{{ p.nombre }}</strong></td>
+
+                    <td>
+                        <a href="{{ url_for('admin.detalle_plataforma', plataforma_id=p.id) }}" 
+                        style="text-decoration: none; color: inherit;">
+                            <strong>{{ p.nombre }}</strong>
+                        </a>
+                    </td>
+
+
                     <td>
                         <div class="email-container">
                             <code class="user-email">{{ p.correo_admin }}</code>
@@ -42,8 +50,25 @@
                     <td>${{ "{:,.2f}".format(p.cuota) }}</td>
                     <td>{{ p.cupos_disponibles }}</td>
                     <td>{{ p.conteos.pagados }}/{{ p.conteos.total_usuarios }}</td>
-                    <td>${{ "{:,.2f}".format(p.finanzas.recaudado|float) }}</td>
-                    <td>${{ "{:,.2f}".format(p.finanzas.restante|float) }}</td>
+                    
+
+                    <td class="text-end">
+                        {% if p.finanzas.recaudado|float > 0 and p.finanzas.restante|float == 0 %}
+                            <strong style="color: #00d54e; font-weight: 800;">${{ "{:,.2f}".format(p.finanzas.recaudado|float) }}</strong>
+                        {% else %}
+                            ${{ "{:,.2f}".format(p.finanzas.recaudado|float) }}
+                        {% endif %}
+                    </td>
+                    <td class="text-end">
+                        {% if p.finanzas.restante|float > 0 %}
+                            <strong style="color: #ea0000; font-weight: 800;">${{ "{:,.2f}".format(p.finanzas.restante|float) }}</strong>
+                        {% else %}
+                            ${{ "{:,.2f}".format(p.finanzas.restante|float) }}
+                        {% endif %}
+                    </td>
+
+
+
                     <td>
                         <button class="btn-action" 
                             onclick='abrirModalFormPlataforma({{ {

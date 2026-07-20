@@ -13,9 +13,11 @@
             {% for comp in comprobantes %}
             <tr class="pbc-row-data">
                 <td>
-                    <strong class="pbc-user-name-highlight">
-                        {{ comp.usuario.nombres }} {{ comp.usuario.apeP }}
-                    </strong>
+                    <a href="{{ url_for('admin.detalle_usuario', usuario_id=comp.usuario.id) }}" style="text-decoration: none;">
+                        <strong class="pbc-user-name-highlight">
+                            {{ comp.usuario.nombres }} {{ comp.usuario.apeP }}
+                        </strong>
+                    </a>
                 </td>
                 <td class="pbc-txt-center">
                     {{ comp.created_at.strftime('%d/%m/%Y - %H:%M:%S') }}

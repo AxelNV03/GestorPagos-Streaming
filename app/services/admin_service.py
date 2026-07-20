@@ -125,6 +125,57 @@ class AdminService:
             db.session.rollback()
             raise e
 # ===================================================================================================
+    @staticmethod
+    def panel_plataforma(plataforma_id, params):
+        info_p = PeriodoService.obtener_periodo_actual()
+        mes = int(params.get('mes') or info_p['mes'])
+        anio = int(params.get('anio') or info_p['anio'])
+        
+        plataforma = db.session.get(Plataforma, plataforma_id)
+        if not plataforma:
+            raise ValueError('Plataforma no encontrada')
+        
+        vinculos = PlataformaUsuario.query.filter_by(
+            plataforma_id=plataforma_id, activo=True
+        ).options(joinedload(PlataformaUsuario.perfil_usuario)).all()
+        
+        usuarios_data = []
+        total_pagado = 0
+        total_pendiente = 0
+        
+        for v in vinculos:
+            cobros = Cobro.query.filter(
+                Cobro.usuario_plataforma_id == v.id,
+                func.extract('month', Cobro.mes_anio) == int(mes),
+                func.extract('year', Cobro.mes_anio) == int(anio)
+            ).all()
+            
+            pagado = sum(c.monto_deuda for c in cobros if c.estado == 'pagado')
+            pendiente = sum(c.monto_deuda for c in cobros if c.estado == 'pendiente')
+            
+            total_pagado += pagado
+            total_pendiente += pendiente
+            
+            usuarios_data.append({
+                'usuario': v.perfil_usuario,
+                'pagado': pagado,
+                'pendiente': pendiente
+            })
+        
+        MESES_ES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre']
+        label = f"{MESES_ES[int(mes)-1]} {anio}"
+        
+        return {
+            'plataforma': plataforma,
+            'usuarios_data': usuarios_data,
+            'total_pagado': total_pagado,
+            'total_pendiente': total_pendiente,
+            'total_usuarios': len(vinculos),
+            'label': label,
+            'mes_actual': mes,
+            'anio_actual': anio
+        }
+# ===================================================================================================
 
 
 

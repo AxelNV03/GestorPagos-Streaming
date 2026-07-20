@@ -47,3 +47,8 @@ def eliminar_plataforma(p_id):
         
     return redirect(url_for('admin.plataformas'))
 # ===================================================================================================
+# app/routes/admin/plataformas.py
+@admin_bp.route('/plataformas/<int:plataforma_id>')
+def detalle_plataforma(plataforma_id):
+    data = AdminService.panel_plataforma(plataforma_id, request.args)
+    return render_template('admin/plataformas/detalle.html', **data)

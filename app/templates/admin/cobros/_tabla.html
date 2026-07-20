@@ -25,11 +25,13 @@
                     
                     <!-- NOMBRE DEL USUARIO -->
                     <td>
-                        <strong class="pbc-user-name-highlight">
-                            {{ usuario.nombres }} {{ usuario.apeP }}
-                        </strong>
+                        <a href="{{ url_for('admin.detalle_usuario', usuario_id=usuario.id) }}" style="text-decoration: none;">
+                            <strong class="pbc-user-name-highlight">
+                                {{ usuario.nombres }} {{ usuario.apeP }}
+                            </strong>
+                        </a>
                     </td>
-                    
+                                        
 
                     <!-- PLATAFORMAS (Si son varias se expande) -->
                     <td>

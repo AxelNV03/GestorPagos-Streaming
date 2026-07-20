@@ -1,0 +1,118 @@
+{% extends "layouts/admin.html" %}
+{% block title %}{{ plataforma.nombre }} | Admin{% endblock %}
+
+{% block main_content %}
+
+<!-- Encabezado -->
+<div class="cpc-header">
+    <div class="cpc-header-title">
+        <img src="{{ url_for('static', filename='uploads/' ~ plataforma.url_logo) }}" 
+             alt="{{ plataforma.nombre }}" style="width: 36px; height: 36px; border-radius: 6px; object-fit: contain;">
+        <h3>{{ plataforma.nombre }}</h3>
+        <span class="cpc-periodo-badge">{{ label }}</span>
+    </div>
+
+    <div class="cpc-cards-row">
+        <div class="cpc-card">
+            <div class="cpc-card-icon"><i class="bi bi-people"></i></div>
+            <div class="cpc-card-body">
+                <span class="cpc-card-number">{{ total_usuarios }}</span>
+                <span class="cpc-card-label">Usuarios</span>
+            </div>
+        </div>
+        <div class="cpc-card">
+            <div class="cpc-card-icon"><i class="bi bi-check-circle"></i></div>
+            <div class="cpc-card-body">
+                <span class="cpc-card-number">${{ "%.2f"|format(total_pagado) }}</span>
+                <span class="cpc-card-label">Recaudado</span>
+            </div>
+        </div>
+        <div class="cpc-card">
+            <div class="cpc-card-icon"><i class="bi bi-cash-stack"></i></div>
+            <div class="cpc-card-body">
+                <span class="cpc-card-number">${{ "%.2f"|format(total_pendiente) }}</span>
+                <span class="cpc-card-label">Pendiente</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Info adicional -->
+<div class="cpc-header" style="margin-bottom: 20px; padding: 16px 20px;">
+    <div style="display: flex; gap: 30px; font-size: 0.85rem; color: #4a5568;">
+        <span><strong>Cuota:</strong> ${{ "%.2f"|format(plataforma.cuota) }}</span>
+        <span><strong>Día de cobro:</strong> {{ plataforma.dia_cobro }}</span>
+        <span><strong>Precio total:</strong> ${{ "%.2f"|format(plataforma.precio_total) }}</span>
+    </div>
+</div>
+
+<!-- Navegación -->
+<div class="card-filters shadow-sm mb-4">
+    <form class="filter-form" method="get">
+        <div class="filter-group small">
+            <span class="filter-label">Mes</span>
+            <select name="mes" class="minimal-input">
+                {% set meses = [(1,'Enero'),(2,'Febrero'),(3,'Marzo'),(4,'Abril'),(5,'Mayo'),(6,'Junio'),(7,'Julio'),(8,'Agosto'),(9,'Septiembre'),(10,'Octubre'),(11,'Noviembre'),(12,'Diciembre')] %}
+                {% for num, nombre in meses %}
+                    <option value="{{ num }}" {{ 'selected' if mes_actual|int == num }}>{{ nombre }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="filter-group small">
+            <span class="filter-label">Año</span>
+            <select name="anio" class="minimal-input">
+                {% for anio in range(2026, 2040) %}
+                    <option value="{{ anio }}" {{ 'selected' if anio_actual|int == anio }}>{{ anio }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="filter-group-btn">
+            <button type="submit" class="btn-filter"><i class="bi bi-search"></i> Filtrar</button>
+        </div>
+    </form>
+</div>
+
+<!-- Tabla de Usuarios -->
+<div class="pbc-table-frame shadow-sm">
+    <table class="pbc-table-core">
+        <thead>
+            <tr>
+                <th>Usuario</th>
+                <th class="pbc-txt-center">Pagado</th>
+                <th class="pbc-txt-center">Pendiente</th>
+                <th class="pbc-txt-center">Estado</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for u in usuarios_data %}
+            <tr class="pbc-row-data">
+                <td>
+                    <a href="{{ url_for('admin.detalle_usuario', usuario_id=u.usuario.id) }}" style="text-decoration: none;">
+                        <strong class="pbc-user-name-highlight">{{ u.usuario.nombres }} {{ u.usuario.apeP }}</strong>
+                    </a>
+                </td>
+                <td class="pbc-txt-center">${{ "%.2f"|format(u.pagado) }}</td>
+                <td class="pbc-txt-center">${{ "%.2f"|format(u.pendiente) }}</td>
+                <td class="pbc-txt-center">
+                    {% if u.pendiente == 0 %}
+                        <span class="pbc-badge pbc-badge-pagado">Al día</span>
+                    {% else %}
+                        <span class="pbc-badge pbc-badge-pendiente">Pendiente</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="4" class="pbc-empty-state-cell">
+                    <div class="empty-state-wrapper">
+                        <i class="bi bi-people"></i>
+                        <h5>Sin usuarios en esta plataforma</h5>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}
