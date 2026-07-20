@@ -12,6 +12,7 @@ class PlataformaUsuario(db.Model):
     plataforma_id = db.Column(db.Integer, db.ForeignKey('plataformas.id', ondelete='CASCADE'), nullable=False)    
     fecha_ingreso = db.Column(db.Date, default=date.today)
     activo = db.Column(db.Boolean, default=True)
+    correo_plataforma = db.Column(db.String(255), nullable=True)  # ← NUEVO
     __table_args__ = (
         db.UniqueConstraint('usuario_id', 'plataforma_id', name='uq_usuario_plataforma'),
     )

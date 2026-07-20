@@ -32,19 +32,26 @@
                         <i class="bi bi-whatsapp"></i>
                     </a>
 
+                    {% set correos_data = [] %}
+                    {% for s in u.suscripciones %}
+                        {% if s.activo %}
+                            {% set _ = correos_data.append({"plataforma_id": s.plataforma_id, "correo": s.correo_plataforma or ""}) %}
+                        {% endif %}
+                    {% endfor %}
+
                     <button class="btn-action btn-edit" 
                         onclick='abrirModalUsuario({{ {
                             "id": u.id,
                             "nombres": u.nombres,
                             "apeP": u.apeP,
-                            "apeM": u.apeM,
+                            "apeM": u.apeM or "",
                             "telefono": u.telefono,
-                            "correo": u.correo,
-                            "plataformas": u.plataformas | map(attribute="id") | list
+                            "correo": u.correo or "",
+                            "plataformas": u.plataformas | map(attribute='id') | list,
+                            "correos_plataforma": correos_data
                         } | tojson | safe }})'>
                         <i class="bi bi-pencil-square"></i>
-                    </button>
-                                                        
+                    </button>                                                                
                     <button class="btn-action btn-delete" 
                         onclick="confirmarEliminarUsuario('{{ u.id }}', '{{ url_for('admin.eliminar_usuario', u_id=u.id) }}')">
                         <i class="bi bi-trash3-fill"></i>

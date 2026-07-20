@@ -63,17 +63,26 @@ function abrirModalUsuario(data = {}) {
         if (data.plataformas && data.plataformas.length > 0) {
             const molde = document.getElementById('molde-plataforma');
 
+            // Mapa de correos: { plataforma_id: correo }
+            const correosMap = {};
+            if (data.correos_plataforma) {
+                data.correos_plataforma.forEach(s => {
+                    correosMap[s.plataforma_id] = s.correo || '';
+                });
+            }
+
+
             data.plataformas.forEach(platId => {
-                // 1. Clonamos el contenido del molde HTML
                 const clon = molde.content.cloneNode(true);
-                
-                // 2. Buscamos el elemento <select> dentro del clon
                 const select = clon.querySelector('select[name="plataformas[]"]');
-                
-                // 3. Le asignamos el ID de la plataforma para que aparezca seleccionada
                 select.value = platId;
                 
-                // 4. Lo inyectamos en el contenedor visual del modal
+                // Llenar el correo si existe
+                const inputCorreo = clon.querySelector('input[name="correos_plataforma[]"]');
+                if (inputCorreo && correosMap[platId]) {
+                    inputCorreo.value = correosMap[platId];
+                }
+                
                 contenedorPlat.appendChild(clon);
             });
         }

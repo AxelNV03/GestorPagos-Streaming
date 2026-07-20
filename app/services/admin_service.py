@@ -201,9 +201,6 @@ class AdminService:
         mes_actual, anio_actual, label = info_p["mes"], info_p["anio"], info_p["label"]
 
         try:
-            # ================================================================
-            # 1. EDITAR
-            # ================================================================
             if usuario_id and str(usuario_id).strip():
                 u = UsuarioService.editar_usuario(int(usuario_id), datos)
                 if not u:
@@ -220,11 +217,21 @@ class AdminService:
                     PlataformaUsuarioService.desvincular_plataformas_de_usuario(u.id, eliminar)
 
                 if agregar:
-                    PlataformaUsuarioService.vincular_plataformas_a_usuario(u.id, agregar)                    
+                    PlataformaUsuarioService.vincular_plataformas_a_usuario(
+                        u.id, agregar, datos.get('correos_plataforma', {})
+                    )               
                     db.session.flush()
                     AdminService.generar_cobros_en_plataformas(u.id, agregar, mes_actual, anio_actual, label)
+
+                # ✅ Actualizar correos de plataformas existentes
+                correos_dict = datos.get('correos_plataforma', {})
+                for p_id in plataformas_nuevas:
+                    vinculo = PlataformaUsuario.query.filter_by(
+                        usuario_id=u.id, plataforma_id=p_id, activo=1
+                    ).first()
+                    if vinculo and p_id in correos_dict:
+                        vinculo.correo_plataforma = correos_dict.get(p_id)
                                 
-            # 2. FLUJO DE CREACIÓN (NUEVO)
             else:
                 u = UsuarioService.nuevo_usuario(datos)
                 if not u:
@@ -232,15 +239,15 @@ class AdminService:
 
                 plataformas_ids = datos.get('plataformas', [])
                 if plataformas_ids:
-                    PlataformaUsuarioService.vincular_plataformas_a_usuario(u.id, plataformas_ids)         
+                    PlataformaUsuarioService.vincular_plataformas_a_usuario(
+                        u.id, plataformas_ids, datos.get('correos_plataforma', {})
+                    )
                     db.session.flush()       
                     AdminService.generar_cobros_en_plataformas(u.id, plataformas_ids, mes_actual, anio_actual, label)
             
             db.session.commit()
             return u
         except Exception as e:
-            # 🛡️ Al más mínimo error en CUALQUIERA de los dos flujos, limpiamos la sesión por completo.
-            # No se guardará nada roto, incompleto o a medias. ¡Todo o Nada!
             db.session.rollback()
             raise e
 # ===================================================================================================
