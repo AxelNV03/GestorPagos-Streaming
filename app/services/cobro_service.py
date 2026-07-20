@@ -236,6 +236,9 @@ class CobroService:
     def generar_pagos_futuros(plataforma_usuario_id, cantidad_meses):
         """Genera cobros de mensualidad pendientes para los próximos N meses"""
         
+        MESES_ES = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+                    'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
+        
         ultimo = Cobro.query.filter(
             Cobro.usuario_plataforma_id == plataforma_usuario_id,
             Cobro.motivo.like('Mensualidad%')
@@ -248,7 +251,7 @@ class CobroService:
         
         for i in range(1, cantidad_meses + 1):
             siguiente_mes = ultimo.mes_anio + relativedelta(months=i)
-            label = siguiente_mes.strftime('%B %Y')
+            label = f"{MESES_ES[siguiente_mes.month - 1]} {siguiente_mes.year}"
             
             if CobroService.existe_cobro(plataforma_usuario_id, siguiente_mes):
                 continue

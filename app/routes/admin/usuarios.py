@@ -53,3 +53,8 @@ def eliminar_usuario(u_id):
     
     return redirect(url_for('admin.usuarios'))
 # ===================================================================================================
+@admin_bp.route('/usuarios/<int:usuario_id>')
+def detalle_usuario(usuario_id):
+    data = AdminService.panel_usuario(usuario_id, request.args)
+    return render_template('admin/usuarios/detalle.html', **data)
+# ===================================================================================================

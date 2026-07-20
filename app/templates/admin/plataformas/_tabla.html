@@ -41,7 +41,7 @@
                     <td>${{ "{:,.2f}".format(p.precio_total) }}</td>
                     <td>${{ "{:,.2f}".format(p.cuota) }}</td>
                     <td>{{ p.cupos_disponibles }}</td>
-                    <td>{{ p.conteos.pagados }}/{{ p.conteos.no_pagados }}</td>
+                    <td>{{ p.conteos.pagados }}/{{ p.conteos.total_usuarios }}</td>
                     <td>${{ "{:,.2f}".format(p.finanzas.recaudado|float) }}</td>
                     <td>${{ "{:,.2f}".format(p.finanzas.restante|float) }}</td>
                     <td>

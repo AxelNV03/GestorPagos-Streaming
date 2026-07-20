@@ -10,8 +10,11 @@ from app.core.models.plataforma import Plataforma
 from app.core.models.cobro import Cobro
 from app.core.models.comprobante import Comprobante
 from app.core.models.plataforma_usuario import PlataformaUsuario
+from app.core.models.usuario import Usuario
 
 from itertools import groupby
+from sqlalchemy.orm import joinedload
+from sqlalchemy import func
 from operator import attrgetter
 from app import db
 import os
@@ -51,7 +54,7 @@ class AdminService:
                 "total_restante": finanzas['restante']
             },
             "plataformas": plataformas,  
-            "plataformas_pendientes": plataformas_deudoras
+            "plataformas_pendientes": plataformas_deudoras,
         }
 # ===================================================================================================
 
@@ -234,6 +237,48 @@ class AdminService:
         if nuevos_cobros:
             db.session.add_all(nuevos_cobros)
 # ===================================================================================================
+    @staticmethod
+    def panel_usuario(usuario_id, params):
+        info_p = PeriodoService.obtener_periodo_actual()
+        mes = int(params.get('mes') or info_p['mes'])
+        anio = int(params.get('anio') or info_p['anio'])
+        
+        usuario = db.session.get(Usuario, usuario_id)
+        if not usuario:
+            raise ValueError('Usuario no encontrado')
+        
+        # Cobros del mes
+        cobros = Cobro.query.join(Cobro.suscripcion).filter(
+            PlataformaUsuario.usuario_id == usuario_id,
+            func.extract('month', Cobro.mes_anio) == int(mes),
+            func.extract('year', Cobro.mes_anio) == int(anio)
+        ).options(
+            joinedload(Cobro.comprobante_ref),
+            joinedload(Cobro.suscripcion).joinedload(PlataformaUsuario.plataforma)
+        ).order_by(Cobro.mes_anio.asc()).all()
+        
+        total_deuda = sum(c.monto_deuda for c in cobros if c.estado == 'pendiente')
+        total_pagado = sum(c.monto_deuda for c in cobros if c.estado == 'pagado')
+        plataformas_activas = len([s for s in usuario.suscripciones if s.activo])
+        
+        comprobantes = Comprobante.query.filter_by(usuario_id=usuario_id)\
+            .order_by(Comprobante.created_at.desc()).limit(5).all()
+        
+        label = f"{mes}/{anio}"
+        
+        return {
+            'usuario': usuario,
+            'cobros': cobros,
+            'total_deuda': total_deuda,
+            'total_pagado': total_pagado,
+            'plataformas_activas': plataformas_activas,
+            'comprobantes': comprobantes,
+            'label': label,
+            'mes_actual': mes,
+            'anio_actual': anio
+        }
+# ===================================================================================================
+
 
 
 
@@ -499,5 +544,4 @@ class AdminService:
         except Exception as e:
             db.session.rollback()
             raise e
-# ===================================================================================================
 # ===================================================================================================

@@ -13,7 +13,7 @@ from app.core.models.comprobante import Comprobante
 def comprobantes():
     info_p = PeriodoService.obtener_periodo_actual()
     filtros = {
-        'estado': request.args.get('estado', ''),
+        'estado': request.args.get('estado', '') , #revision
         'mes': request.args.get('mes') or info_p['mes'],
         'anio': request.args.get('anio') or info_p['anio']
     }
@@ -43,22 +43,24 @@ def ver_imagen(comprobante_id):
 # ===================================================================================================
 @admin_bp.route('/comprobantes/aprobar/<int:comprobante_id>', methods=['POST'])
 def aprobar_comprobante(comprobante_id):
+    next_url = request.form.get('next', url_for('admin.comprobantes'))
     try:
         AdminService.aprobar_comprobante(comprobante_id, request.form)
         flash('Comprobante aprobado correctamente', 'success')
     except Exception as e:
         flash(f'Error: {str(e)}', 'danger')
-    
+
     return redirect(url_for('admin.comprobantes'))
 # ===================================================================================================
 @admin_bp.route('/comprobantes/rechazar/<int:comprobante_id>', methods=['POST'])
 def rechazar_comprobante(comprobante_id):
+    next_url = request.form.get('next', url_for('admin.comprobantes'))
     comentario = request.form.get('comentario', '')
     try:
         AdminService.rechazar_comprobante(comprobante_id, comentario)
         flash('Comprobante rechazado correctamente', 'success')
     except Exception as e:
         flash(f'Error: {str(e)}', 'danger')
-    
+
     return redirect(url_for('admin.comprobantes'))
 # ===================================================================================================

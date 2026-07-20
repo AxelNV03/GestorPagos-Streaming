@@ -10,7 +10,12 @@
     <tbody>
         {% for u in listaUsuarios %}
             <tr>
-                <td>{{ u.nombres }} {{ u.apeP }} {{ u.apeM }}</td>
+                <td>
+                    <a href="{{ url_for('admin.detalle_usuario', usuario_id=u.id) }}" style="text-decoration: none;">
+                        <strong class="pbc-user-name-highlight">{{ u.nombres }} {{ u.apeP }} {{ u.apeM or '' }}</strong>
+                    </a>
+                </td>
+
                 <td>
                     <div class="badge-container">
                         {% for p in u.plataformas %}
