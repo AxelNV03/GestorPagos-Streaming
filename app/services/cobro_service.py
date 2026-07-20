@@ -116,56 +116,64 @@ class CobroService:
         return query.order_by(Cobro.mes_anio.asc()).all()
 # ===================================================================================================
     @staticmethod
-    def clasificar_pendientes_por_tipo(usuario_id):
-        """
-        Devuelve los cobros pendientes de un usuario separados en:
-        - mensualidades: agrupados por plataforma
-        - extras: cobros únicos no recurrentes
-        """
-
-        # Solo cobros del mes actual
-        cobros_pendientes = CobroService.obtener_cobros_usuario(usuario_id, estado='pendiente')
-        inicio_mes = date.today().replace(day=1)
-        cobros_pendientes = [c for c in cobros_pendientes if c.mes_anio == inicio_mes]
+    def clasificar_pendientes_bulk(usuarios_ids):
+        """Trae todos los pendientes de varios usuarios en una sola query"""
+        if not usuarios_ids:
+            return {}
         
-        mensualidades_por_plataforma = {}
-        extras = []
+        cobros = db.session.query(Cobro).join(Cobro.suscripcion)\
+            .options(
+                joinedload(Cobro.suscripcion).joinedload(PlataformaUsuario.plataforma),
+                joinedload(Cobro.suscripcion).joinedload(PlataformaUsuario.perfil_usuario)
+            )\
+            .filter(
+                PlataformaUsuario.usuario_id.in_(usuarios_ids),
+                Cobro.estado == 'pendiente'
+            )\
+            .order_by(Cobro.mes_anio.asc()).all()
         
-        for c in cobros_pendientes:
-            vinculo = c.suscripcion
+        # Agrupar por usuario
+        resultado = {}
+        for u_id in usuarios_ids:
+            resultado[u_id] = {'mensualidades': [], 'extras': []}
+        
+        # Clasificar en un solo recorrido
+        pendientes_por_plataforma = {}
+        for c in cobros:
+            u_id = c.suscripcion.perfil_usuario.id
+            v_id = c.usuario_plataforma_id
             
             if c.motivo and c.motivo.startswith('Mensualidad'):
-                if vinculo.id not in mensualidades_por_plataforma:
-                    # Último pago de mensualidad de esta plataforma
-                    todos_pagados = CobroService.obtener_cobros_usuario(usuario_id, estado='pagado')
-                    ultimo = [x for x in todos_pagados 
-                            if x.usuario_plataforma_id == vinculo.id 
-                            and x.motivo and x.motivo.startswith('Mensualidad')]
-                    ultimo = ultimo[-1] if ultimo else None
+                key = (u_id, v_id)
+                if key not in pendientes_por_plataforma:
+                    ultimo_pagado = Cobro.query.filter(
+                        Cobro.usuario_plataforma_id == v_id,
+                        Cobro.estado == 'pagado',
+                        Cobro.motivo.like('Mensualidad%')
+                    ).order_by(Cobro.mes_anio.desc()).first()
                     
-                    mensualidades_por_plataforma[vinculo.id] = {
-                        'plataforma': vinculo.plataforma.nombre,
-                        'plataforma_usuario_id': vinculo.id,
-                        'ultimo_pago': ultimo.mes_anio.strftime('%d/%m/%Y') if ultimo else None,
+                    pendientes_por_plataforma[key] = {
+                        'plataforma': c.suscripcion.plataforma.nombre,
+                        'plataforma_usuario_id': v_id,
+                        'ultimo_pago': ultimo_pagado.mes_anio.strftime('%d/%m/%Y') if ultimo_pagado else None,
                         'pendientes': 0,
                         'cobros_ids': [],
-                        'costo_mensual': float(c.monto_deuda)  # ← NUEVO
+                        'costo_mensual': float(c.monto_deuda)
                     }
-                
-                mensualidades_por_plataforma[vinculo.id]['pendientes'] += 1
-                mensualidades_por_plataforma[vinculo.id]['cobros_ids'].append(c.id)
+                pendientes_por_plataforma[key]['pendientes'] += 1
+                pendientes_por_plataforma[key]['cobros_ids'].append(c.id)
             else:
-                extras.append({
+                resultado[u_id]['extras'].append({
                     'cobro_id': c.id,
-                    'plataforma': vinculo.plataforma.nombre,
+                    'plataforma': c.suscripcion.plataforma.nombre,
                     'concepto': c.motivo or 'Sin concepto',
                     'monto': float(c.monto_deuda)
                 })
         
-        return {
-            'mensualidades': list(mensualidades_por_plataforma.values()),
-            'extras': extras
-        }
+        for (u_id, _), data in pendientes_por_plataforma.items():
+            resultado[u_id]['mensualidades'].append(data)
+        
+        return resultado
 # ===================================================================================================
     # up_id = usuario_plataforma_id
     @staticmethod

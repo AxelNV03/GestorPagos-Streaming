@@ -289,22 +289,32 @@ function actualizarResumen() {
 
 
 function renderCobrosAsociados(cobros) {
+    const MESES_ES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+    const MESES_EN = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    
+    const traducirMes = (fecha) => {
+        if (!fecha) return '';
+        const partes = fecha.split(' ');
+        if (partes.length === 2) {
+            const idx = MESES_EN.indexOf(partes[0]);
+            return idx !== -1 ? `${MESES_ES[idx]} ${partes[1]}` : fecha;
+        }
+        return fecha;
+    };
+    
     const mensualidades = cobros.filter(c => c.motivo.startsWith('Mensualidad'));
     const extras = cobros.filter(c => !c.motivo.startsWith('Mensualidad'));
     
-    const divMen = document.getElementById('cpc_rev_mensualidades_cubiertas');
-    const divExt = document.getElementById('cpc_rev_extras_cubiertos');
-    
-    divMen.innerHTML = mensualidades.length 
+    document.getElementById('cpc_rev_mensualidades_cubiertas').innerHTML = mensualidades.length 
         ? '<div class="cpc-pagos-lista">' + mensualidades.map(c => `
             <div class="cpc-pago-item">
                 <span class="cpc-pago-item-plataforma">${c.plataforma}</span>
-                <span class="cpc-pago-item-detalle">${c.mes_anio}</span>
+                <span class="cpc-pago-item-detalle">${traducirMes(c.mes_anio)}</span>
             </div>
         `).join('') + '</div>'
         : '<p class="pbc-txt-muted">Sin mensualidades</p>';
     
-    divExt.innerHTML = extras.length 
+    document.getElementById('cpc_rev_extras_cubiertos').innerHTML = extras.length 
         ? '<div class="cpc-pagos-lista">' + extras.map(c => `
             <div class="cpc-pago-item">
                 <span class="cpc-pago-item-plataforma">${c.plataforma}</span>

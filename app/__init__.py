@@ -57,5 +57,5 @@ def create_app():
             user_css=get_css_from_folder('user'),
             public_css=get_css_from_folder('public')
         )
-
+    
     return app

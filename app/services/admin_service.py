@@ -509,17 +509,19 @@ class AdminService:
         usuarios = UsuarioService.obtener_todos()
         
         comprobantes = ComprobanteService.obtener_comprobantes_del_mes(
-            filtros["mes"], 
-            filtros["anio"], 
-            filtros.get("estado") or None
+            filtros["mes"], filtros["anio"], filtros.get("estado") or None
         )
         
         metricas = ComprobanteService.metricas_mes(filtros["mes"], filtros["anio"])
         
+        # ✅ Bulk: traer todos los pendientes de todos los usuarios de los comprobantes
+        usuarios_ids = list(set(comp.usuario_id for comp in comprobantes))
+        pendientes_por_usuario = CobroService.clasificar_pendientes_bulk(usuarios_ids) if usuarios_ids else {}
+        
         datos_revision = {}
         for comp in comprobantes:
-            datos_revision[comp.id] = CobroService.clasificar_pendientes_por_tipo(comp.usuario_id)
-
+            datos_revision[comp.id] = pendientes_por_usuario.get(comp.usuario_id, {'mensualidades': [], 'extras': []})
+        
         return {
             'listaPlataformas': plataformas,
             'usuarios': usuarios,
@@ -529,7 +531,7 @@ class AdminService:
             'filtros_usados': filtros,
             'comprobantes': comprobantes,
             'metricas': metricas,
-            'datos_revision': datos_revision  # ← Datos precargados
+            'datos_revision': datos_revision
         }
 # ===================================================================================================
     @staticmethod
