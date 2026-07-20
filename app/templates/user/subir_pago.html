@@ -1,0 +1,165 @@
+{% extends "layouts/user.html" %}
+{% block header %}
+    {% include 'user/components/bar_back.html' %}
+{% endblock %}
+{% block title %}Subir Comprobante | Access Stream{% endblock %}
+
+{% block main_content %}
+
+{% if data.en_revision %}
+<!-- Ya hay comprobante en revisión -->
+<div class="revision-block">
+    <div class="revision-icon">🔵</div>
+    <h3>Comprobante en revisión</h3>
+    <p>Ya tienes un comprobante siendo verificado. Debes esperar a que sea aprobado o rechazado antes de subir otro.</p>
+    <a href="{{ url_for('user.dashboard') }}" class="btn-back-menu">Volver al inicio</a>
+</div>
+
+{% else %}
+<!-- Formulario de subida -->
+<div class="form-white-body">
+    <div class="dp-card">
+        <div class="dp-header">
+            <i class="bi bi-shield-check"></i>
+            <span>Datos de pago</span>
+        </div>
+        <div class="dp-grid">
+            <div class="dp-item">
+                <span class="dp-label">Entidad</span>
+                <span class="dp-value">NU MÉXICO</span>
+            </div>
+            <div class="dp-item">
+                <span class="dp-label">Nombre</span>
+                <span class="dp-value">Axel Nava Sánchez</span>
+            </div>
+            <div class="dp-item full">
+                <span class="dp-label">CLABE</span>
+                <div class="dp-copy-box">
+                    <span class="dp-value clabe-text" id="clabeNum">638180010141524646</span>
+                    <button class="dp-copy-btn" onclick="copyClabe()">
+                        <i class="bi bi-copy"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        <div class="alerts-wrapper">
+            {% for category, message in messages %}
+            <div class="alert alert-{{ category }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endwith %}
+<form action="{{ url_for('user.subir_comprobante') }}" method="POST" enctype="multipart/form-data" class="payment-form">
+    <div class="upload-section">
+        <label class="upload-label">Comprobante de transferencia</label>
+        <label for="file-upload" class="custom-file-upload" id="drop-container">
+            <input type="file" id="file-upload" name="comprobante" accept=".jpg,.jpeg,.png" required onchange="previewImage(event)">
+            <div id="placeholder-content">
+                <i class="bi bi-cloud-arrow-up"></i>
+                <span>Seleccionar captura o foto</span>
+                <p>Formato JPG, PNG o Captura de pantalla</p>
+            </div>
+            <div id="preview-container" style="display: none;">
+                <img id="image-preview" src="#" alt="Vista previa">
+                <div class="change-photo-badge">Tap para cambiar</div>
+            </div>
+        </label>
+    </div>
+
+    <div class="notes-section">
+        <label class="upload-label">Notas adicionales (Opcional)</label>
+        <textarea name="notas" class="payment-notes" placeholder="Ej: Pago de 2 meses, etc." rows="2"></textarea>
+    </div>
+
+    <button type="submit" class="btn-confirm-payment">Enviar</button>
+</form>
+{% endif %}
+
+
+{% block scripts %}
+<script>
+function previewImage(event) {
+    const reader = new FileReader();
+    reader.onload = function() {
+        document.getElementById('image-preview').src = reader.result;
+        document.getElementById('placeholder-content').style.display = 'none';
+        document.getElementById('preview-container').style.display = 'block';
+    };
+    reader.readAsDataURL(event.target.files[0]);
+}
+
+function copyClabe() {
+    const clabeTexto = document.getElementById('clabeNum').innerText;
+    const btn = document.querySelector('.dp-copy-btn');
+    const icon = btn.querySelector('i');
+
+    // Fallback para móviles
+    if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(clabeTexto).then(() => {
+            icon.classList.replace('bi-copy', 'bi-check2');
+            btn.style.backgroundColor = '#00ba13';
+            showToast('CLABE copiada');
+            setTimeout(() => {
+                icon.classList.replace('bi-check2', 'bi-copy');
+                btn.style.backgroundColor = '#000';
+            }, 2000);
+        });
+    } else {
+        // Fallback: seleccionar texto manualmente
+        const textArea = document.createElement('textarea');
+        textArea.value = clabeTexto;
+        textArea.style.position = 'fixed';
+        textArea.style.left = '-9999px';
+        document.body.appendChild(textArea);
+        textArea.select();
+        try {
+            document.execCommand('copy');
+            icon.classList.replace('bi-copy', 'bi-check2');
+            btn.style.backgroundColor = '#00ba13';
+            showToast('CLABE copiada');
+            setTimeout(() => {
+                icon.classList.replace('bi-check2', 'bi-copy');
+                btn.style.backgroundColor = '#000';
+            }, 2000);
+        } catch (err) {
+            showToast('Selecciona y copia manualmente');
+        }
+        document.body.removeChild(textArea);
+    }
+}
+
+function showToast(message) {
+    let toast = document.getElementById('copy-toast');
+    if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'copy-toast';
+        Object.assign(toast.style, {
+            position: 'fixed',
+            bottom: '20px',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            background: '#1a1a1a',
+            color: '#fff',
+            padding: '10px 20px',
+            borderRadius: '10px',
+            fontSize: '0.85rem',
+            fontWeight: '600',
+            zIndex: '9999',
+            opacity: '0',
+            transition: 'all 0.3s ease'
+        });
+        document.body.appendChild(toast);
+    }
+    toast.textContent = message;
+    toast.style.opacity = '1';
+    setTimeout(() => { toast.style.opacity = '0'; }, 2000);
+}
+</script>
+{% endblock %}
+
+{% endblock %}

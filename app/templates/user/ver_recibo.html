@@ -28,10 +28,14 @@
                     {% endif %}
                 </span>
             </div>
-            <div class="receipt-row">
-                <span class="receipt-label">Concepto</span>
-                <span class="receipt-value receipt-value-light">{{ data.motivo }}</span>
-            </div>
+            
+{% if data.comprobante_estado != 'revision' and data.comprobante_estado != 'rechazado' %}
+<div class="receipt-row full-width">
+    <span class="receipt-label">Concepto</span>
+    <span class="receipt-value receipt-value-light">{{ data.motivo }}</span>
+</div>
+{% endif %}
+
             <div class="receipt-row">
                 <span class="receipt-label">Monto</span>
                 <span class="receipt-value 

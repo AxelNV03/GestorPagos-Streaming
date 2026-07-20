@@ -1,15 +1,19 @@
-# app/services/no_admin_service.py
+# app/services/cliente_service.py
 # ===================================================================================================
 from flask import session
 from datetime import datetime, date
 from app.services.periodo_service import PeriodoService
 from app.services.cobro_service import CobroService
 from app.services.usuario_service import UsuarioService
+from app.services.comprobante_service import ComprobanteService
+
 from app.core.models.comprobante import Comprobante
 from app.core.models.cobro import Cobro
+from app.core.models.usuario import Usuario
+
 from app import db
 # ===================================================================================================
-class NoAdminService:
+class ClienteService:
     @staticmethod
     def dashboard_data():
         u_id = session.get('user_id')
@@ -228,3 +232,41 @@ class NoAdminService:
             'comprobante_id': comp.id
         }
 # ===================================================================================================
+    @staticmethod
+    def data_subida():
+        u_id = session.get('user_id')
+        info_p = PeriodoService.obtener_periodo_actual()
+        
+        # Verificar si ya hay un comprobante en revisión este mes
+        inicio_mes = datetime(info_p['anio'], info_p['mes'], 1)
+        if info_p['mes'] == 12:
+            fin_mes = datetime(info_p['anio'] + 1, 1, 1)
+        else:
+            fin_mes = datetime(info_p['anio'], info_p['mes'] + 1, 1)
+        
+        en_revision = Comprobante.query.filter(
+            Comprobante.usuario_id == u_id,
+            Comprobante.estado == 'revision',
+            Comprobante.created_at >= inicio_mes,
+            Comprobante.created_at < fin_mes
+        ).first()
+        
+        return {
+            'en_revision': en_revision is not None,
+            'total_pendiente': ClienteService.dashboard_data()['total_pendiente']
+        }
+# ===================================================================================================
+    @staticmethod
+    def procesar_comprobante(usuario_id, archivo, nota):
+        if not archivo or archivo.filename == '':
+            raise ValueError('Debe seleccionar una imagen')
+        
+        usuario = db.session.get(Usuario, int(usuario_id))
+        if not usuario:
+            raise ValueError('Usuario no encontrado')
+        
+        try:
+            ComprobanteService.guardar_comprobante(usuario_id, archivo, nota)
+        except Exception as e:
+            db.session.rollback()
+            raise e

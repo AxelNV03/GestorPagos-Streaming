@@ -4,4 +4,4 @@ from .comprobante_service import ComprobanteService
 from .plataforma_service import PlataformaService
 from .plataforma_usuario_service import PlataformaUsuarioService
 from .periodo_service import PeriodoService
-from .no_admin_service import NoAdminService
+from .cliente_service import ClienteService
