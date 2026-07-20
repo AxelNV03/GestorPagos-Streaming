@@ -273,6 +273,10 @@ class AdminService:
                 'total_grupo': sum(c.monto_deuda for c in grupo_cobros),
                 'es_multiple': len(grupo_cobros) > 1
             })
+
+        comprobantes_mes = ComprobanteService.obtener_comprobantes_del_mes(
+            filtros["mes"], filtros["anio"]
+        )
         
         return {
             'listaPlataformas': plataformas,
@@ -280,7 +284,8 @@ class AdminService:
             'anio_actual': filtros["anio"],
             'filtros_usados': filtros,
             'cobros': cobros_agrupados,  
-            'usuarios': usuarios
+            'usuarios': usuarios,
+            'comprobantes_mes': comprobantes_mes
         }
 # ===================================================================================================
     @staticmethod
