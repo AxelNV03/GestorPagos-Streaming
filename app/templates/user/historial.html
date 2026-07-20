@@ -51,6 +51,52 @@
         <p>No tienes pagos registrados este mes.</p>
     </div>
     {% endfor %}
+
+
+
+
+    <!-- En revision -->
+    {% if data.en_revision %}
+        <div class="historial-mes-header" style="margin-top: 24px;">
+            <span class="historial-mes-nombre">En Revisión</span>
+        </div>
+        
+        {% for r in data.en_revision %}
+        <div class="historial-item" style="border-left: 3px solid #007AFF;">
+            <div class="historial-item-left">
+                <span class="historial-plataforma">📎 Comprobante #{{ r.id }}</span>
+                <span class="historial-fecha">📅 {{ r.fecha }}</span>
+            </div>
+            <div class="historial-item-right">
+                <span class="historial-estado">🔵 En revisión</span>
+                <a href="{{ url_for('user.ver_comprobante_rechazado', id=r.id) }}" class="historial-ver">Ver</a>
+            </div>
+        </div>
+        {% endfor %}
+    {% endif %}
+
+
+
+    <!-- Comprobantes rechazados -->
+    {% if data.rechazados %}
+        <div class="historial-mes-header" style="margin-top: 24px;">
+            <span class="historial-mes-nombre">Comprobantes Rechazados</span>
+        </div>
+
+        {% for r in data.rechazados %}
+            <div class="historial-item" style="border-left: 3px solid #FF3B30;">
+                <div class="historial-item-left">
+                    <span class="historial-plataforma">📎 Comprobante #{{ r.id }}</span>
+                    <span class="historial-fecha">📅 {{ r.fecha }}</span>
+                </div>
+                <div class="historial-item-right">
+                    <span class="historial-estado">🔴 Rechazado</span>
+                    <a href="{{ url_for('user.ver_comprobante_rechazado', id=r.id) }}" class="historial-ver">Ver</a>
+                </div>
+            </div>
+        {% endfor %}
+    {% endif %}
+
 </div>
 
 {% endblock %}

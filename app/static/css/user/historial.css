@@ -8,17 +8,21 @@
     display: flex;
     align-items: center;
     justify-content: flex-end;
-    padding: 12px 20px;
-    border-bottom: 1px solid rgba(255,255,255,0.06);
-    box-sizing: border-box;
+    padding: 10px 20px;
 }
 
 .bb-btn-return {
-    color: #ffffff !important;
-    font-size: 1.2rem;
+    color: #ffffff;
+    font-size: 0.85rem;
     text-decoration: none;
     display: flex;
     align-items: center;
+    gap: 4px;
+    opacity: 0.9;
+}
+
+.bb-btn-return i {
+    font-size: 1rem;
 }
 
 .historial-container {
