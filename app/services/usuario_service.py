@@ -2,6 +2,7 @@
 # ===================================================================================================
 from sqlalchemy import or_
 from app.core.models.usuario import Usuario
+from app.core.models.comprobante import Comprobante
 from app.core.models.plataforma_usuario import PlataformaUsuario
 from app.services.cobro_service import CobroService
 
@@ -90,7 +91,10 @@ class UsuarioService:
         if not u:
             raise Exception("El usuario que intentas eliminar no existe.")
         
-        # Primero borramos todas las plataformas vinculadas
+        # Eliminar comprobantes asociados
+        Comprobante.query.filter_by(usuario_id=u.id).delete(synchronize_session=False)
+        
+        # Eliminar plataformas vinculadas
         PlataformaUsuario.query.filter(PlataformaUsuario.usuario_id == u.id).delete(synchronize_session=False)
 
         db.session.delete(u)

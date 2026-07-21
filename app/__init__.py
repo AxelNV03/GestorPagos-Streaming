@@ -16,6 +16,10 @@ def create_app():
     app.config['BANCO_CLABE'] = os.getenv('BANCO_CLABE', '638180010141524646')
     app.config['ADMIN_WHATSAPP'] = os.getenv('ADMIN_WHATSAPP', '527774399424')
     
+    backup_path = os.getenv('BACKUP_FOLDER', os.path.join(os.getcwd(), 'storage', 'backups'))
+    app.config['BACKUP_FOLDER'] = os.path.abspath(backup_path)
+    os.makedirs(app.config['BACKUP_FOLDER'], exist_ok=True)
+    
     # --- CONFIGURACIÓN PARA SESIÓN INFINITA ---
     # Definimos una duración exageradamente larga (ej. 10 años)
     app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=3650)
@@ -65,6 +69,7 @@ def create_app():
     @app.context_processor
     def inject_config():
         return {
+            'BACKUP_FOLDER': app.config['BACKUP_FOLDER'],
             'BANCO_ENTIDAD': app.config['BANCO_ENTIDAD'],
             'BANCO_TITULAR': app.config['BANCO_TITULAR'],
             'BANCO_CLABE': app.config['BANCO_CLABE'],

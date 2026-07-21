@@ -31,5 +31,10 @@
             <span>Comprobantes</span>
         </a>
 
+        <a href="{{ url_for('admin.respaldos') }}" class="menu-item {{ 'active' if request.endpoint == 'admin.respaldos' }}">
+            <i class="bi bi-database-fill-gear"></i>
+            <span>Respaldos</span>
+        </a>
+
     </nav>
 </aside>

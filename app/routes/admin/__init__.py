@@ -24,3 +24,4 @@ from . import plataformas
 from . import usuarios
 from . import cobros
 from . import comprobantes
+from . import respaldos

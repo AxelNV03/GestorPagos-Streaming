@@ -1,0 +1,97 @@
+{% extends "layouts/admin.html" %}
+{% block title %}Respaldos | Admin{% endblock %}
+
+{% block main_content %}
+<h2>💾 Respaldos de Base de Datos</h2>
+
+{% include "admin/alerts.html" %}
+
+<!-- Generar Backup -->
+<!-- Generar Backup -->
+<div class="card-filters shadow-sm" style="margin-bottom: 20px;">
+    <form action="{{ url_for('admin.generar_backup') }}" method="POST" class="filter-form">
+        <div class="filter-group" style="flex: 1;">
+            <span class="filter-label">Nombre del backup (opcional)</span>
+            <input type="text" name="nombre" class="minimal-input" placeholder="Dejar vacío para nombre automático">
+        </div>
+        <div class="filter-group-btn">
+            <button type="submit" class="btn-filter">
+                <i class="bi bi-database-fill-add"></i> Generar Backup
+            </button>
+        </div>
+    </form>
+</div>
+
+<!-- Restaurar Backup -->
+<div class="card-filters shadow-sm" style="margin-top: 30px; border-left: 4px solid #000000;">
+    <div style="display: flex; align-items: flex-start; gap: 12px; margin-bottom: 15px;">
+        <i class="bi bi-exclamation-triangle-fill" style="color: #000000; font-size: 1.2rem;"></i>
+        <div>
+            <h4 style="font-size: 0.9rem; font-weight: 700; color: #2d3748; margin: 0 0 4px 0;">Restaurar Backup</h4>
+            <p style="font-size: 0.8rem; color: #666; margin: 0;">Esta acción reemplazará todos los datos actuales.</p>
+        </div>
+    </div>
+    
+    <form action="{{ url_for('admin.restaurar_backup') }}" method="POST" enctype="multipart/form-data" class="filter-form">
+        <div class="filter-group" style="flex: 1;">
+            <input type="file" name="backup_file" accept=".sql" required class="minimal-input">
+        </div>
+        <div class="filter-group-btn">
+            <button type="submit" class="btn-filter" style="background: #000000;" onclick="return confirm('¿Estás SEGURO?')">
+                <i class="bi bi-arrow-clockwise"></i> Restaurar
+            </button>
+        </div>
+    </form>
+</div>
+
+<!-- Lista de Backups -->
+<div class="pbc-table-frame shadow-sm">
+    <table class="pbc-table-core">
+        <thead>
+            <tr>
+                <th>Archivo</th>
+                <th class="pbc-txt-center">Fecha</th>
+                <th class="pbc-txt-center">Tamaño</th>
+                <th class="pbc-txt-center">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for b in backups %}
+            <tr class="pbc-row-data">
+                <td><strong>{{ b.nombre }}</strong></td>
+                <td class="pbc-txt-center">{{ b.fecha }}</td>
+                <td class="pbc-txt-center">{{ b.size }}</td>
+                <td class="pbc-txt-center">
+                    <a href="{{ url_for('admin.descargar_backup', nombre=b.nombre) }}" class="btn-action" title="Descargar">
+                        <i class="bi bi-download"></i>
+                    </a>
+                    <form action="{{ url_for('admin.restaurar_backup_archivo', nombre=b.nombre) }}" method="POST" style="display: inline;">
+                        <button type="submit" class="btn-action" title="Restaurar" onclick="return confirm('¿Restaurar este backup? Se perderán los datos actuales.')">
+                            <i class="bi bi-arrow-clockwise"></i>
+                        </button>
+                    </form>
+                    <form action="{{ url_for('admin.eliminar_backup', nombre=b.nombre) }}" method="POST" style="display: inline;">
+                        <button type="submit" class="btn-action btn-delete" title="Eliminar" onclick="return confirm('¿Eliminar este backup?')">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </form>
+                </td>
+
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="4" class="pbc-empty-state-cell">
+                    <div class="empty-state-wrapper">
+                        <i class="bi bi-database"></i>
+                        <h5>Sin backups</h5>
+                        <p>Genera tu primer backup.</p>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+
+{% endblock %}

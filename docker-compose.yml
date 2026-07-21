@@ -25,10 +25,6 @@ services:
     ports:
       - "5000:5000"
     env_file: .env
-    environment:
-      - FLASK_ENV=development
-      - FLASK_DEBUG=1
-      - TZ=America/Mexico_City
     depends_on:
       - db
 

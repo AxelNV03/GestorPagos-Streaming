@@ -6,6 +6,7 @@ RUN apt-get update && apt-get install -y \
     gcc \
     libmariadb-dev \
     pkg-config \
+    default-mysql-client \
     && rm -rf /var/lib/apt/lists/*
 
 # Definimos el directorio donde vivirá el código dentro del contenedor
