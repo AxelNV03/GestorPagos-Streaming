@@ -11,6 +11,10 @@ def create_app():
 
     # --- Configuración de Seguridad y Almacenamiento ---
     app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'dev_key_123')
+    app.config['BANCO_ENTIDAD'] = os.getenv('BANCO_ENTIDAD', 'NU MÉXICO')
+    app.config['BANCO_TITULAR'] = os.getenv('BANCO_TITULAR', 'Axel Nava Sánchez')
+    app.config['BANCO_CLABE'] = os.getenv('BANCO_CLABE', '638180010141524646')
+    app.config['ADMIN_WHATSAPP'] = os.getenv('ADMIN_WHATSAPP', '527774399424')
     
     # --- CONFIGURACIÓN PARA SESIÓN INFINITA ---
     # Definimos una duración exageradamente larga (ej. 10 años)
@@ -58,4 +62,12 @@ def create_app():
             public_css=get_css_from_folder('public')
         )
     
+    @app.context_processor
+    def inject_config():
+        return {
+            'BANCO_ENTIDAD': app.config['BANCO_ENTIDAD'],
+            'BANCO_TITULAR': app.config['BANCO_TITULAR'],
+            'BANCO_CLABE': app.config['BANCO_CLABE'],
+            'ADMIN_WHATSAPP': app.config['ADMIN_WHATSAPP']
+        }
     return app

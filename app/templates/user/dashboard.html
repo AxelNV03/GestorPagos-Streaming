@@ -137,7 +137,7 @@
         </a>
     {% endif %}
 
-    <a href="https://wa.me/527774399424?text=Hola%20Axel,%20soy%20{{ data.user.nombres | lower | title | urlencode }}%20y%20tengo%20una%20duda%20sobre%20mi%20cuenta" 
+    <a href="https://wa.me/{{ config.ADMIN_WHATSAPP }}?text=Hola!%20Soy%20{{ data.user.nombres | lower | title | urlencode }},%20tengo%20una%20duda%20sobre%20mi%20cuenta" 
         target="_blank" class="menu-card">
         <div class="menu-card-content">
             <div class="menu-icon icon-green"><i class="bi bi-whatsapp"></i></div>

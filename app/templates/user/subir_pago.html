@@ -26,16 +26,16 @@
         <div class="dp-grid">
             <div class="dp-item">
                 <span class="dp-label">Entidad</span>
-                <span class="dp-value">NU MÉXICO</span>
+                <span class="dp-value">{{ config.BANCO_ENTIDAD }}</span>
             </div>
             <div class="dp-item">
                 <span class="dp-label">Nombre</span>
-                <span class="dp-value">Axel Nava Sánchez</span>
+                <span class="dp-value">{{ config.BANCO_TITULAR }}</span>
             </div>
             <div class="dp-item full">
                 <span class="dp-label">CLABE</span>
                 <div class="dp-copy-box">
-                    <span class="dp-value clabe-text" id="clabeNum">638180010141524646</span>
+                    <span class="dp-value clabe-text" id="clabeNum">{{ config.BANCO_CLABE }}</span>
                     <button class="dp-copy-btn" onclick="copyClabe()">
                         <i class="bi bi-copy"></i>
                     </button>
