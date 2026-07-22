@@ -1,0 +1,120 @@
+{% extends "layouts/admin.html" %}
+
+{% block title %}Dashboard Principal | Admin{% endblock %}
+
+{% block main_content %}
+    <h2>Panel Principal</h2>
+
+    <!-- Card de Resumen Mensual-->
+    <div class="dash-top-grid">
+        <header class="status-sum-card">
+            <div class="sum-info">
+                <h3 class="sum-title">Resumen Mensual</h3>
+                <div class="sum-details">
+                    <!-- Periodo -->
+                    <p><strong>Periodo:</strong> {{ periodo.label }}</p>
+
+                    <!-- Recaudado mes actual -->
+                    <p>
+                        <strong>Recaudado:</strong> 
+                        <span class="text-success">
+                            {% if periodo and periodo.total_recaudado > 0 %}
+                                ${{ "{:,.2f}".format(periodo.total_recaudado) }}
+                            {% else %}
+                                $0.00
+                            {% endif %}
+                        </span>
+                    </p>
+
+                    <!-- Restante del mes actual -->
+                    <p>
+                        <strong>Restante:</strong> 
+                        <span class="text-danger">
+                            {% if periodo and periodo.total_restante > 0 %}
+                                ${{ "{:,.2f}".format(periodo.total_restante) }}
+                            {% else %}
+                                $0.00
+                            {% endif %}
+                        </span>
+                    </p>
+                </div>
+            </div>
+        
+            <div class="mini-status-list">
+                {% for p in plataformas_pendientes %}
+                    <div class="mini-status-item">
+                        <div class="item-brand">
+                            <img src="{{ url_for('static', filename='uploads/' ~ p.url_logo) }}" alt="{{ p.nombre }}" class="table-logo">
+                            <span class="mini-name">{{ p.nombre }}</span>
+                            <p class="text-muted">Día Cobro: {{ p.dia_cobro }}</p>
+                        </div>
+                        
+                        <div class="item-status">
+                            {% if p.conteos.no_pagados == 0 and p.conteos.pagados == 0 %}                                
+                                <span class="dot-status dot-neutral">SIN DATOS</span>
+                            {% elif p.conteos.no_pagados > 0  %}
+                                <span class="dot-status dot-error">PENDIENTE</span>
+                            {% else %}
+                                <span class="dot-status dot-error">PENDIENTE</span>    
+                            {% endif %}
+                                
+                        </div>
+                    </div>
+                {% else %}
+                    <p class="text-muted">No hay plataformas restantes todavía. ¡A cobrar!</p>
+                {% endfor %}
+            </div>
+        </header>
+    </div>
+
+
+
+    
+
+    <!-- Servicios estilo playlist -->
+<!-- Servicios estilo playlist -->
+<section class="platform-status-section">
+    <h2>Acceso Rapido</h2>
+    <div class="horizontal-scroll-container">
+        
+        {% set hay_deudoras = namespace(value=false) %}
+        {% for p in plataformas %}
+            {% if p.conteos.no_pagados > 0 %}
+                {% set hay_deudoras.value = true %}
+                <a href="{{ url_for('admin.detalle_plataforma', plataforma_id=p.id) }}" style="text-decoration: none; color: inherit;">
+                    <div class="status-rect">
+                        <div class="rect-img-container">
+                            <img src="{{ url_for('static', filename='uploads/' ~ p.url_logo) }}" alt="{{ p.nombre }}" class="table-logo">
+                        </div>
+                        <div class="rect-text">
+                            <p class="rect-title">{{ p.nombre }}</p>
+                            <p class="rect-subtitle">
+                                {{ p.conteos.pagados }}/{{ p.conteos.total_usuarios }} Pagos
+                            </p>
+                        </div>
+                    </div>
+                </a>
+            {% endif %}
+        {% endfor %}
+        
+        {% if not hay_deudoras.value and plataformas|length > 0 %}
+            <div class="status-rect empty-state">
+                <div class="rect-text">
+                    <p class="rect-subtitle">🎉 Todos los pagos están al día.</p>
+                </div>
+            </div>
+        {% elif plataformas|length == 0 %}
+            <div class="status-rect empty-state">
+                <div class="rect-text">
+                    <p class="rect-subtitle">No hay plataformas registradas.</p>
+                </div>
+            </div>
+        {% endif %}
+
+    </div>
+</section>
+
+{% endblock %}
+{% block scripts %}
+
+{% endblock %}

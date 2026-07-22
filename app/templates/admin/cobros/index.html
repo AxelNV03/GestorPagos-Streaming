@@ -1,0 +1,47 @@
+{% extends "layouts/admin.html" %}
+{% block title %} Panel Cobros | Admin{% endblock %}
+{% block main_content %}
+    <h2>Panel de Cobros</h2>
+    <!-- Header -->
+    {% include "admin/cobros/_barra_busqueda.html" %}
+
+    <!-- Modal para crear cobros -->
+    {% include "admin/cobros/_modal_nuevo_cobro.html" %}
+
+    <!-- Tabla de servicios -->
+    {% include "admin/cobros/_tabla.html" %}
+
+    <!-- Modal de edicion -->
+    {% include "admin/cobros/_modal_editar_cobro.html" %}
+
+    <!-- Modal de revisión de comprobante -->
+    {% include "admin/comprobantes/_modal_revision.html" %}
+
+{% endblock %}
+{% block scripts %}
+    {{ super() }}  
+    <script>
+        const datosRevision = {};  // ← Agregar esto
+        const infoComprobantes = {};
+        {% for comp in comprobantes_mes %}
+            infoComprobantes[{{ comp.id }}] = {
+                usuario: "{{ comp.usuario.nombres }} {{ comp.usuario.apeP }}",
+                estado: "{{ comp.estado }}",
+                nota: "{{ comp.nota_usuario | replace('\n', ' ') | replace('\r', ' ') | replace('"', '\\"') | trim or '' }}",
+                imagen_url: "{{ url_for('admin.ver_imagen', comprobante_id=comp.id) }}",
+                motivo_rechazo: "{{ comp.motivo_rechazo | replace('\n', ' ') | replace('\r', ' ') | replace('"', '\\"') | trim or '' }}",
+                comentario: "{{ comp.comentario | replace('\n', ' ') | replace('\r', ' ') | replace('"', '\\"') | trim or '' }}",
+                fecha_carga: "{{ comp.created_at.isoformat() if comp.created_at else '' }}",
+                cobros_asociados: []
+            }{% if not loop.last %},{% endif %}
+        {% endfor %}
+        window.addEventListener('click', function(event) {
+            const modal = document.getElementById('modalRevision');
+            if (modal && event.target === modal) {
+                cerrarModalRevision();
+            }
+        });
+    </script>
+    <script src="{{ url_for('static', filename='js/admin/seccion_comprobantes.js') }}"></script>  
+    <script src="{{ url_for('static', filename='js/admin/seccion_cobros.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,46 @@
+<!-- Card Info -->
+<div class="servicios top-grid">
+    <header class="status-summary-card-srv">
+        <div class="profile-content-servicios">
+            <div class="info-group">
+                <h3 class="summary-title">Resumen Operativo</h3>
+
+                <div class="metrics-container">
+                    <div class="metric-block">
+                        <p class="label">Calendario</p>
+                        <p><strong>Periodo:</strong> {{ periodo }}</p>
+                        <p><strong>Periodo Corte:</strong> Día 1-5</p>
+                    </div>
+
+                    <div class="metric-block">
+                        <p class="label">Finanzas</p>
+                        <p><strong>Recaudado:</strong> <span class="text-success"><strong>${{ "{:,.2f}".format(metricas.recaudado|float) }}</strong></span></p>
+                        <p><strong>Restante:</strong> <span class="text-danger"><strong>${{ "{:,.2f}".format(metricas.restante|float) }}</strong></span></p>
+                    </div>
+
+                    <div class="metric-block">
+                        <p class="label">Total de Pagos</p>
+                        <div class="user-ratio" title="Progreso global: {{ (metricas.pagos / metricas.users * 100)|round(1) if metricas.users > 0 else 0 }}%">
+                            <span class="ratio-number">{{ metricas.pagos }}/{{ metricas.users }}</span>
+                            <p class="sub-label">Pagos recibidos</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+</div>
+
+<!-- Boton de agregar servicio y bitwarden-->
+<div class="header-actions-wrapper">
+    <button class="btn-primary" onclick="abrirModalFormPlataforma({})">
+        <i class="bi bi-plus-lg"></i> Nueva Plataforma
+    </button>
+
+    <a href="https://vault.bitwarden.com/" target="_blank" class="btn-bitwarden">
+        <i class="bi bi-shield-lock"></i> Bitwarden
+    </a>
+</div>
+
+<!-- Alertas -->
+{% include "admin/alerts.html" %}

@@ -1,0 +1,89 @@
+/* --- Visor de Recibo --- */
+.receipt-viewer {
+    max-width: 500px;
+    margin: 16px auto;
+    padding: 0 20px;
+}
+
+.receipt-card {
+    background: #fff;
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.receipt-img {
+    width: 100%;
+    display: block;
+    border-bottom: 1px solid #eef2f5;
+}
+
+.receipt-info {
+    padding: 16px;
+}
+
+.receipt-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid #F0F3F5;
+}
+
+.receipt-row:last-child {
+    border-bottom: none;
+}
+
+.receipt-row.full-width {
+    flex-direction: column;
+    gap: 4px;
+}
+
+.receipt-label {
+    font-size: 0.72rem;
+    font-weight: 400;
+    color: #8E959B;
+    text-transform: uppercase;
+}
+
+.receipt-value {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #1a1a1a;
+}
+
+.receipt-value-light {
+    font-weight: 400;
+    color: #4a5568;
+}
+
+.receipt-monto-verde {
+    font-weight: 700;
+    color: #00ba13;
+    font-size: 1rem;
+}
+
+.receipt-monto-azul {
+    font-weight: 600;
+    color: #007AFF;
+    font-size: 0.9rem;
+}
+
+.receipt-monto-rojo {
+    font-weight: 600;
+    color: #FF3B30;
+    font-size: 0.9rem;
+}
+
+.receipt-value.revision { color: #007AFF; }
+.receipt-value.rechazado { color: #FF3B30; }
+
+.btn-back {
+    display: block;
+    text-align: center;
+    margin-top: 20px;
+    color: #8E959B;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.85rem;
+}

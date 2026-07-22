@@ -1,0 +1,51 @@
+{% extends "layouts/admin.html" %}
+{% block title %} Panel Comprobantes | Admin{% endblock %}
+{% block main_content %}
+    <h2>Panel de Comprobantes</h2>
+
+    <!-- Header -->
+    {% include "admin/comprobantes/_encabezado.html" %}    
+
+    <!-- Tabla de busquedas -->
+    {% include "admin/comprobantes/_barra_busqueda.html" %}    
+
+    <!-- Tabla de servicios -->
+    {% include "admin/comprobantes/_tabla.html" %}
+
+    <!-- Modal Nuevo Comprobante  -->
+    {% include "admin/comprobantes/_modal_nuevo_comp.html" %}    
+
+    <!-- Revisar Comprobante  -->
+    {% include "admin/comprobantes/_modal_revision.html" %}   
+
+{% endblock %}
+{% block scripts %}
+    {{ super() }}    
+<!-- Datos precargados para revisión -->
+<script>
+    const datosRevision = {{ datos_revision | tojson }};
+    const infoComprobantes = {};
+    {% for comp in comprobantes %}
+        infoComprobantes[{{ comp.id }}] = {
+            usuario: "{{ comp.usuario.nombres }} {{ comp.usuario.apeP }}",
+            estado: "{{ comp.estado }}",
+            nota: "{{ comp.nota_usuario | replace('\n', ' ') | replace('\r', ' ') | replace('"', '\\"') | trim or '' }}",
+            imagen_url: "{{ url_for('admin.ver_imagen', comprobante_id=comp.id) }}",
+            motivo_rechazo: "{{ comp.motivo_rechazo | replace('\n', ' ') | replace('\r', ' ') | replace('"', '\\"') | trim or '' }}",
+            comentario: "{{ comp.comentario | replace('\n', ' ') | replace('\r', ' ') | replace('"', '\\"') | trim or '' }}",
+            fecha_carga: "{{ comp.created_at.isoformat() if comp.created_at else '' }}",
+            cobros_asociados: [
+                {% for cobro in comp.cobros_asociados %}
+                    {
+                        plataforma: "{{ cobro.suscripcion.plataforma.nombre }}",
+                        motivo: "{{ cobro.motivo | replace('\n', ' ') | replace('"', '\\"') | trim or '' }}",
+                        monto: {{ cobro.monto_deuda }},
+                        mes_anio: "{{ cobro.mes_anio.strftime('%B %Y') if cobro.mes_anio else '' }}"
+                    }{% if not loop.last %},{% endif %}
+                {% endfor %}
+            ]
+        };
+    {% endfor %}
+</script>
+    <script src="{{ url_for('static', filename='js/admin/seccion_comprobantes.js') }}"></script>
+{% endblock %}

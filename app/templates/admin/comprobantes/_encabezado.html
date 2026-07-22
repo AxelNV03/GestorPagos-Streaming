@@ -1,0 +1,40 @@
+<!-- ENCABEZADO COMPROBANTES -->
+<div class="cpc-header">
+    <div class="cpc-header-title">
+        <h3>Periodo: </h3>
+        <span class="cpc-periodo-badge">{{ label }}</span>
+    </div>
+
+    <div class="cpc-cards-row">
+        <div class="cpc-card cpc-card-revision">
+            <div class="cpc-card-icon">
+                <i class="bi bi-hourglass-split"></i>
+            </div>
+            <div class="cpc-card-body">
+                <span class="cpc-card-number">{{ metricas.revision }}</span>
+                <span class="cpc-card-label">En Revisión</span>
+            </div>
+        </div>
+
+        <div class="cpc-card cpc-card-aprobado">
+            <div class="cpc-card-icon">
+                <i class="bi bi-check-circle"></i>
+            </div>
+            <div class="cpc-card-body">
+                <span class="cpc-card-number">{{ metricas.aprobado }}</span>
+                <span class="cpc-card-label">Aprobados</span>
+            </div>
+        </div>
+
+        <div class="cpc-card cpc-card-rechazado">
+            <div class="cpc-card-icon">
+                <i class="bi bi-x-circle"></i>
+            </div>
+            <div class="cpc-card-body">
+                <span class="cpc-card-number">{{ metricas.rechazado }}</span>
+                <span class="cpc-card-label">Rechazados</span>
+            </div>
+        </div>
+    </div>
+</div>
+{% include "admin/alerts.html" %}

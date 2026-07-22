@@ -1,33 +1,78 @@
-from flask import Flask
 import os
-from .core.db_manager import ManagerDB
-from dotenv import load_dotenv # <--- Agregar esto
-from .routes import all_blueprints 
+from datetime import timedelta  # <--- IMPORTANTE: Para definir la duración
+from flask import Flask
+from dotenv import load_dotenv
+from app.core.db_manager import db, ManagerDB
+from app.routes import register_blueprints
 
 def create_app():
-    load_dotenv() # <--- Cargar variables al inicio
+    load_dotenv()
     app = Flask(__name__)
 
-    app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
-    app.config['UPLOAD_FOLDER'] = os.path.join(os.getcwd(), 'storage', 'comprobantes')
+    # --- Configuración de Seguridad y Almacenamiento ---
+    app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'dev_key_123')
+    app.config['BANCO_ENTIDAD'] = os.getenv('BANCO_ENTIDAD', 'NU MÉXICO')
+    app.config['BANCO_TITULAR'] = os.getenv('BANCO_TITULAR', 'Axel Nava Sánchez')
+    app.config['BANCO_CLABE'] = os.getenv('BANCO_CLABE', '638180010141524646')
+    app.config['ADMIN_WHATSAPP'] = os.getenv('ADMIN_WHATSAPP', '527774399424')
+    
+    backup_path = os.getenv('BACKUP_FOLDER', os.path.join(os.getcwd(), 'storage', 'backups'))
+    app.config['BACKUP_FOLDER'] = os.path.abspath(backup_path)
+    os.makedirs(app.config['BACKUP_FOLDER'], exist_ok=True)
+    
+    # --- CONFIGURACIÓN PARA SESIÓN INFINITA ---
+    # Definimos una duración exageradamente larga (ej. 10 años)
+    app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=3650)
+    # Asegura que la cookie se refresque para mantener la fecha de expiración lejos
+    app.config['SESSION_REFRESH_EACH_REQUEST'] = True 
+    # ------------------------------------------
+
+    # Directorio de comprobantes
+    upload_path = os.getenv('UPLOAD_FOLDER', os.path.join(os.getcwd(), 'storage', 'comprobantes'))
+    app.config['UPLOAD_FOLDER'] = os.path.abspath(upload_path)
     os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
-    # Inyectar os al contexto de Jinja2 correctamente
-    @app.context_processor
-    def inject_os():
-        return {'os': os}
+    # === NUEVO: Directorio para logos de plataformas (Público) ===
+    # Apunta directamente a: app/static/uploads
+    logos_path = os.path.join(app.root_path, 'static', 'uploads')
+    app.config['UPLOAD_LOGOS'] = os.path.abspath(logos_path)
+    os.makedirs(app.config['UPLOAD_LOGOS'], exist_ok=True)
 
-    # Crear instancia DB usando variables de entorno
-    app.db = ManagerDB(
-        host=os.getenv('DB_HOST'),
-        user=os.getenv('DB_USER'),
-        password=os.getenv('DB_PASS'),
-        database=os.getenv('DB_NAME'),
-        fresh=False
+    # --- Configuración de SQLAlchemy para MariaDB ---
+    app.config['SQLALCHEMY_DATABASE_URI'] = (
+        f"mysql+pymysql://{os.getenv('DB_USER')}:{os.getenv('DB_PASS')}"
+        f"@{os.getenv('DB_HOST')}/{os.getenv('DB_NAME')}?charset=utf8mb4"
     )
-    
-    # Registro dinámico
-    for bp in all_blueprints:
-        app.register_blueprint(bp)
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
+    # --- Inicialización del Manager (ORM Puro) ---
+    m_db = ManagerDB(app, fresh=False)
+
+    # --- Registro de Rutas ---
+    register_blueprints(app)
+
+    # --- Context Processor para Assets ---
+    @app.context_processor
+    def inject_assets():
+        def get_css_from_folder(folder):
+            path = os.path.join(app.root_path, 'static', 'css', folder)
+            if os.path.exists(path):
+                return [f for f in os.listdir(path) if f.endswith('.css')]
+            return []
+
+        return dict(
+            admin_css=get_css_from_folder('admin'),
+            user_css=get_css_from_folder('user'),
+            public_css=get_css_from_folder('public')
+        )
+    
+    @app.context_processor
+    def inject_config():
+        return {
+            'BACKUP_FOLDER': app.config['BACKUP_FOLDER'],
+            'BANCO_ENTIDAD': app.config['BANCO_ENTIDAD'],
+            'BANCO_TITULAR': app.config['BANCO_TITULAR'],
+            'BANCO_CLABE': app.config['BANCO_CLABE'],
+            'ADMIN_WHATSAPP': app.config['ADMIN_WHATSAPP']
+        }
     return app

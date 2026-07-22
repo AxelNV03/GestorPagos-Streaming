@@ -1,0 +1,41 @@
+<!-- Filtros de busqueda -->
+ <div class="card-filters shadow-sm mb-4">
+        <form action="{{ url_for('admin.usuarios') }}" method="GET" class="filter-form">
+            
+            <div class="filter-group buscador">
+                <span class="filter-label">Busqueda</span>
+                <div class="input-wrapper">
+                    <i class="bi bi-search"></i>
+                    <input type="text" name="query" class="minimal-input with-icon" placeholder="Buscar usuario..." value="{{ request.args.get('query', '') }}">
+                </div>
+            </div>
+
+            <div class="filter-group plataforma">
+                <span class="filter-label">Plataforma</span>
+                <select name="plataforma_id" class="minimal-input">
+                    <option value="">Todas</option>
+                    {% for p in listaPlataformas %}
+                        <option value="{{ p.id }}" {% if request.args.get('plataforma_id') == p.id|string %}selected{% endif %}>
+                            {{ p.nombre }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="filter-group-btn">
+                <button type="submit" class="btn-filter">
+                    <i class="bi bi-search"></i> Filtrar Usuarios
+                </button>
+            </div>
+
+            <!-- Agregar user -->
+            <div class="filter-group-btn btn-add-container">
+                <button type="button" class="btn-primary add-user" onclick="abrirModalUsuario()">
+                    <i class="bi bi-person-plus"></i> Nuevo Usuario
+                </button>
+            </div>
+        </form>
+    </div>
+
+<!-- Alertas -->
+{% include "admin/alerts.html" %}

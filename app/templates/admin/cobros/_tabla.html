@@ -1,0 +1,206 @@
+<h3>Detalles</h3>
+<div class="pbc-table-frame shadow-sm">
+    <table class="pbc-table-core">
+        <thead>
+            <tr>
+                <th class="pbc-col-usuario">Usuario</th>
+                <th class="pbc-col-plataforma">Plataforma</th>
+                <th class="pbc-col-motivo">Motivo</th>
+                <th class="pbc-col-monto">Total</th>
+                <th class="pbc-col-estado">Estado</th>
+                <th class="pbc-col-fecha">Fecha pago</th>
+                <th class="pbc-col-gestion">Gestión</th>
+            </tr>
+        </thead>
+
+        <!-- Contenido de tabla -->
+        <tbody>
+            {% for grupo in cobros %}
+                {% set usuario = grupo.usuario %}
+                {% set primer_cobro = grupo.cobros[0] %}
+                
+                <!-- FILA PRINCIPAL (siempre visible) -->
+                <tr class="pbc-row-data {% if grupo.es_multiple %}pbc-grupo-row{% endif %}"
+                    {% if grupo.es_multiple %}onclick="toggleGrupo(this)" style="cursor:pointer;"{% endif %}>
+                    
+                    <!-- NOMBRE DEL USUARIO -->
+                    <td>
+                        <a href="{{ url_for('admin.detalle_usuario', usuario_id=usuario.id) }}" style="text-decoration: none;">
+                            <strong class="pbc-user-name-highlight">
+                                {{ usuario.nombres }} {{ usuario.apeP }}
+                            </strong>
+                        </a>
+                    </td>
+                                        
+
+                    <!-- PLATAFORMAS (Si son varias se expande) -->
+                    <td>
+                        <span class="badge-plataforma pbc-platform-text-tag">
+                            {% if grupo.es_multiple %}
+                                Varias
+                                <span class="badge bg-secondary ms-1">[{{ grupo.cobros|length }}]</span>
+                                <i class="bi bi-chevron-down ms-1"></i>
+                            {% else %}
+                                {{ primer_cobro.suscripcion.plataforma.nombre }}
+                            {% endif %}
+                        </span>
+                    </td>
+
+            
+                    <!-- COLUMNA DE COBROS -->
+                    <td>
+                        {% if not grupo.es_multiple %}
+                            {{ primer_cobro.motivo or '-' }}
+                        {% else %}
+                            <small class="text-muted">{{ grupo.cobros|length }} cobros</small>
+                        {% endif %}
+                    </td>
+
+
+                    <!-- SUMA DEL TOTAL DE LOS PAGOS -->
+                    <td class="pbc-txt-center pbc-monto-bold">
+                        ${{ "%.2f"|format(grupo.total_grupo) }}
+                    </td>
+                    
+                    
+                    <!-- ESTADO DEL PAGO -->
+                    <td class="pbc-txt-center">
+                        {% if not grupo.es_multiple %}
+                            {# Mismo badge de estado que ya tenías #}
+                            {% if primer_cobro.estado == 'pendiente' %}
+                                <span class="pbc-badge pbc-badge-pendiente">Pendiente</span>
+                            {% elif primer_cobro.estado == 'pagado' %}
+                                <span class="pbc-badge pbc-badge-pagado">Pagado</span>
+                            {% else %}
+                                <span class="pbc-badge pbc-badge-rechazado">Rechazado</span>
+                            {% endif %}
+                        {% else %}
+                            <span class="pbc-badge bg-info text-dark">Varios</span>
+                        {% endif %}
+                    </td>
+
+
+                    <!-- FECHA PAGO -->
+                    <td class="pbc-txt-center">
+                        {% if grupo.es_multiple %}
+                            <span class="pbc-txt-muted">Varias</span>
+                        {% elif primer_cobro.comprobante_id %}
+                            <strong> {{ primer_cobro.comprobante_ref.created_at.strftime('%d/%m/%Y') }} </strong>
+                        {% else %}
+                            <span class="pbc-txt-muted">N/A</span>
+                        {% endif %}
+                    </td>
+
+
+                    <!-- SECCION FINAL -->
+                    <td class="pbc-txt-center">
+                        {% if not grupo.es_multiple %}
+                            {% if primer_cobro.estado == 'pendiente' %}
+                                <button class="btn-action btn-edit" 
+                                    onclick="event.stopPropagation(); abrirModalEditar({{ primer_cobro.id }}, '{{ primer_cobro.suscripcion.plataforma.nombre }}', '{{ primer_cobro.motivo or '' }}', {{ primer_cobro.monto_deuda }})">
+                                    <i class="bi bi-pencil-square"></i>
+                                </button>
+
+
+
+                                <!-- Boton de Borrar -->
+                                <button class="btn-action btn-delete" 
+                                        onclick="event.stopPropagation(); confirmarEliminarCobro('{{ primer_cobro.motivo or 'Sin motivo' }} - {{ usuario.nombres }}', '{{ url_for('admin.eliminar_cobro', cobro_id=primer_cobro.id) }}')">
+                                    <i class="bi bi-trash3-fill"></i>
+                                </button>
+                            {% else %}
+                                <button class="btn-action" onclick="event.stopPropagation(); revisarComprobante({{ primer_cobro.comprobante_id }})">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                            {% endif %}
+                        {% else %}
+                            <small class="text-muted">Expandir para gestionar</small>
+                        {% endif %}
+                    </td>
+
+
+
+                </tr>
+
+
+
+
+
+
+
+
+                <!-- SUB-FILAS OCULTAS (SOLO SI ES MULTIPLES PAGOS) -->
+                {% if grupo.es_multiple %}
+                    {% for c in grupo.cobros %}
+                    <tr class="pbc-sub-row" style="display:none; background:#f8f9fa;">
+                        <td></td>
+                        <td>
+                            <span class="badge-plataforma pbc-platform-text-tag" style="font-size:0.85em;">
+                                {{ c.suscripcion.plataforma.nombre }}
+                            </span>
+                        </td>
+                        <td>{{ c.motivo or '-' }}</td>
+                        <td class="pbc-txt-center">${{ "%.2f"|format(c.monto_deuda) }}</td>
+                        <td class="pbc-txt-center">
+                            {% if c.estado == 'pendiente' %}
+                                <span class="pbc-badge pbc-badge-pendiente">Pendiente</span>
+                            {% elif c.estado == 'pagado' %}
+                                <span class="pbc-badge pbc-badge-pagado">Pagado</span>
+                            {% else %}
+                                <span class="pbc-badge pbc-badge-rechazado">Rechazado</span>
+                            {% endif %}
+                        </td>
+
+
+                        <!-- FECHA PAGO -->
+                        <td class="pbc-txt-center">
+                            {% if c.comprobante_id %}
+                                <strong>{{ c.comprobante_ref.created_at.strftime('%d/%m/%Y') }}</strong>
+                            {% else %}
+                                <span class="pbc-txt-muted">N/A</span>
+                            {% endif %}
+                        </td>
+
+
+                        <!--  SECCION DE GESTION-->
+                        <td class="pbc-txt-center">
+                            {% if c.estado == 'pendiente' %}
+                                <!-- Editar cobro -->
+                                <button class="btn-action btn-edit" 
+                                        onclick="abrirModalEditar({{ c.id }}, '{{ c.suscripcion.plataforma.nombre }}', '{{ c.motivo or '' }}', {{ c.monto_deuda }})">
+                                    <i class="bi bi-pencil-square"></i>
+                                </button>
+                                
+                                <!-- Eliminar cobro -->
+                                <button class="btn-action btn-delete" 
+                                        onclick="confirmarEliminarCobro('{{ c.motivo or 'Sin motivo' }}', '{{ url_for('admin.eliminar_cobro', cobro_id=c.id) }}')">
+                                    <i class="bi bi-trash3-fill"></i>
+                                </button>
+
+                            {% else %}
+                                <button class="btn-action" onclick="revisarComprobante({{ c.comprobante_id }})">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                            {% endif %}
+                        </td>
+
+
+
+                        
+                    </tr>
+                    {% endfor %}
+                {% endif %}
+            {% else %}
+                <tr>
+                    <td colspan="7" class="text-center text-muted py-5">
+                        <div class="empty-state-wrapper">
+                            <i class="bi bi-folder-x fs-1 d-block mb-3 text-secondary"></i>
+                            <h5 class="fw-bold">No hay cobros registrados</h5>
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+

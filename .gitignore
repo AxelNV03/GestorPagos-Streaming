@@ -15,8 +15,8 @@ env/
 *.db
 # Ignoramos los archivos SQL de respaldo por si tienen datos reales
 # (A menos que quieras que se suban los scripts vacíos)
-# tablas.sql
-# seeder.sql
+tablas.sql
+seeder.sql
 
 # --- Archivos de Usuario (PRIVACIDAD) ---
 # No queremos subir las fotos de los recibos reales a GitHub
@@ -28,3 +28,8 @@ static/uploads/comprobantes/
 .idea/
 .DS_Store
 *.log
+# --- Backups locales ---
+storage/backups/
+
+# --- rclone config ---
+rclone.conf

@@ -1,158 +1,192 @@
-.facturacion-container {
-    background: #f8f9fa; /* Fondo muy claro */
-    padding: 20px;
-    border-radius: 12px;
+/* ==================================================================================================== */
+/* HISTORIAL DE PAGOS */
+/* ==================================================================================================== */
+
+.bb-navbar {
+    width: 100%;
+    background-color: #0d0d0d;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 10px 20px;
 }
 
-.facturacion-header {
+.bb-btn-return {
+    color: #ffffff;
+    font-size: 0.85rem;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    opacity: 0.9;
+}
+
+.bb-btn-return i {
+    font-size: 1rem;
+}
+
+.historial-container {
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 16px 20px;
+}
+
+.section-title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #8E959B;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 16px;
+}
+
+/* --- Grupo por mes --- */
+.historial-mes {
+    margin-bottom: 20px;
+}
+
+.historial-mes-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 15px;
+    padding: 8px 0;
+    border-bottom: 1px solid #F0F3F5;
+    margin-bottom: 8px;
 }
 
-.facturacion-header h3 {
-    font-size: 1.2rem;
-    font-weight: 800;
-    color: #1a1a1a;
-}
-
-.year-select {
-    border: none;
-    background: transparent;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-.billing-table {
-    width: 100%;
-    background: white;
-    border-radius: 10px;
-    border-collapse: collapse;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.03);
-    overflow: hidden;
-}
-
-.billing-table tr {
-    border-bottom: 1px solid #f0f0f0;
-}
-
-.billing-table tr:last-child {
-    border-bottom: none;
-}
-
-.billing-table td {
-    padding: 20px 15px;
-    font-size: 0.95rem;
-    color: #444;
-}
-
-.col-date {
-    width: 25%;
-}
-
-.col-status {
-    color: #8E959B !important; /* Gris como en tu imagen */
-}
-
-.col-amount {
-    text-align: center;
-}
-
-.col-link {
-    text-align: right;
-}
-
-.col-link a {
-    color: #1a1a1a;
-    text-decoration: underline;
-    font-weight: 500;
-}
-
-.no-receipt {
-    color: #ccc;
-}
-.billing-table td {
-    padding: 16px 12px;
-    vertical-align: middle;
-    border-bottom: 1px solid #f2f2f2;
-}
-
-/* Columna de Fecha y Estado */
-.col-main {
-    width: 20%;
-}
-
-.date-text {
+.historial-mes-nombre {
     font-weight: 700;
+    font-size: 0.9rem;
     color: #1a1a1a;
-    font-size: 0.9rem;
-    margin-bottom: 2px;
 }
 
-.status-subtext {
-    font-size: 0.75rem;
-    color: #8E959B; /* Gris sutil para el estado debajo */
-    text-transform: capitalize;
-}
-
-/* Columna de Monto */
-.col-amount {
-    width: 25%;
-    font-weight: 600;
-    color: #444;
-    text-align: right;
-    font-size: 0.9rem;
-}
-
-/* Columna de Link */
-.col-link {
-    width: 25%;
-    text-align: right;
-}
-
-.col-link a {
-    color: #000;
-    text-decoration: underline;
+.historial-mes-total {
     font-weight: 600;
     font-size: 0.85rem;
+    color: #8E959B;
 }
 
-.no-receipt {
-    color: #d1d1d1;
-    font-size: 0.8rem;
+/* --- Item de cobro --- */
+.historial-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 14px;
+    background: #fff;
+    border: 1px solid #eef2f5;
+    border-radius: 10px;
+    margin-bottom: 6px;
+    border-left: 3px solid #FF9500;
+}
+.historial-item.historial-pagado {
+    border-left-color: #00ba13;
+    opacity: 0.85;
+}
+
+.historial-item-left {
+    display: flex;
+    flex-direction: column;
+}
+
+.historial-plataforma {
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: #1d1d1f;
+}
+
+.historial-motivo {
+    font-size: 0.72rem;
+    color: #8E959B;
+    margin-top: 1px;
+}
+
+.historial-fecha {
+    font-size: 0.68rem;
+    color: #A1AAB2;
+    margin-top: 2px;
+}
+
+.historial-item-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+}
+
+.historial-monto {
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: #1d1d1f;
+}
+
+.historial-estado {
+    font-size: 0.72rem;
+}
+
+.historial-ver {
+    font-size: 0.75rem;
+    color: #007AFF;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+/* --- Empty --- */
+.empty-state-wrapper {
+    text-align: center;
+    padding: 40px 20px;
+    color: #8E959B;
+}
+
+.empty-state-wrapper i {
+    font-size: 2rem;
+    display: block;
+    margin-bottom: 10px;
+}
+
+.empty-state-wrapper h5 {
+    font-size: 0.9rem;
+    margin: 0 0 5px;
+    color: #555;
+}
+
+.empty-state-wrapper p {
+    font-size: 0.75rem;
+    margin: 0;
+}
+
+/* --- Responsive PC --- */
+@media (min-width: 950px) {
+    .historial-container {
+        max-width: 600px;
+    }
 }
 
 
 
-/* Media Query para Tablets y PC */
-@media screen and (min-width: 768px) {
-    .facturacion-container {
-        /* Limitamos el ancho para que no se pierda la proporción */
-        max-width: 600px; 
-        margin-left: auto;
-        margin-right: auto;
-        padding: 30px; /* Un poco más de aire en PC se ve mejor */
-        background-color: #ffffff; /* Le damos fondo blanco al contenedor en PC */
-        box-shadow: 0 4px 20px rgba(0,0,0,0.05);
-        border-radius: 24px;
-        margin-top: 40px;
-    }
 
-    .billing-table {
-        box-shadow: none; /* Quitamos la sombra interna porque el contenedor ya tiene */
-    }
 
-    /* Ajuste de fuentes para que no se vean pequeñas en monitores */
-    .date-text {
-        font-size: 1rem;
-    }
-    
-    .col-amount {
-        font-size: 1.05rem;
-    }
 
-    .col-link a {
-        font-size: 0.95rem;
-    }
+
+/* BARRA NAV */
+.historial-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+}
+
+.historial-nav-btn {
+    color: #1a1a1a;
+    text-decoration: none;
+    font-size: 1.1rem;
+    padding: 6px 10px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+}
+
+.historial-nav-label {
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: #1a1a1a;
 }

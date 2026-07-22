@@ -1,0 +1,60 @@
+<div class="pbc-table-frame shadow-sm">
+    <table class="pbc-table-core">
+        <thead>
+            <tr>
+                <th class="pbc-col-cmp-usuario">Usuario</th>
+                <th class="pbc-col-cmp-fecha">Fecha</th>
+                <th class="pbc-col-cmp-nota">Nota</th>
+                <th class="pbc-col-cmp-estado">Estado</th>
+                <th class="pbc-col-cmp-accion">Acción</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for comp in comprobantes %}
+            <tr class="pbc-row-data">
+                <td>
+                    <a href="{{ url_for('admin.detalle_usuario', usuario_id=comp.usuario.id) }}" style="text-decoration: none;">
+                        <strong class="pbc-user-name-highlight">
+                            {{ comp.usuario.nombres }} {{ comp.usuario.apeP }}
+                        </strong>
+                    </a>
+                </td>
+                <td class="pbc-txt-center">
+                    {{ comp.created_at.strftime('%d/%m/%Y - %H:%M:%S') }}
+                </td>
+                <td class="pbc-col-cmp-nota">
+                    {{ comp.nota_usuario or '<span class="pbc-txt-muted">-</span>' | safe }}
+                </td>
+                <td class="pbc-txt-center">
+                    {% if comp.estado == 'revision' %}
+                        <span class="pbc-badge pbc-badge-revision">En Revisión</span>
+                    {% elif comp.estado == 'aprobado' %}
+                        <span class="pbc-badge pbc-badge-pagado">Aprobado</span>
+                    {% else %}
+                        <span class="pbc-badge pbc-badge-rechazado">Rechazado</span>
+                    {% endif %}
+                </td>
+                <td class="pbc-txt-center">
+                    <button class="btn-action" onclick="revisarComprobante({{ comp.id }})">
+                        {% if comp.estado == 'revision' %}
+                            <i class="bi bi-search"> Revisar</i> 
+                        {% else %}
+                            <i class="bi bi-eye"> Ver</i> 
+                        {% endif %}
+                    </button>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="5" class="pbc-empty-state-cell">
+                    <div class="empty-state-wrapper">
+                        <i class="bi bi-receipt"></i>
+                        <h5>No hay comprobantes</h5>
+                        <p>No se encontraron comprobantes en este período.</p>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>

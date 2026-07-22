@@ -1,0 +1,64 @@
+<!-- Filtros de búsqueda -->
+<div class="card-filters shadow-sm mb-4">
+    <form action="{{ url_for('admin.comprobantes') }}" method="GET" class="filter-form">
+        
+        <div class="filter-group buscador">
+            <span class="filter-label">Búsqueda</span>
+            <div class="input-wrapper">
+                <i class="bi bi-search"></i>
+                <input type="text" name="query" class="minimal-input with-icon" 
+                       placeholder="Buscar usuario..." value="{{ filtros_usados.get('query', '') }}">
+            </div>
+        </div>
+
+        <div class="filter-group small">
+            <span class="filter-label">Estado</span>
+            <select name="estado" class="minimal-input">
+                <option value="">Todos</option>
+                <option value="revision" {{ 'selected' if filtros_usados.get('estado') == 'revision' }}>En Revisión</option>
+                <option value="aprobado" {{ 'selected' if filtros_usados.get('estado') == 'aprobado' }}>Aprobados</option>
+                <option value="rechazado" {{ 'selected' if filtros_usados.get('estado') == 'rechazado' }}>Rechazados</option>
+            </select>
+        </div>
+
+        <div class="filter-group small">
+            <span class="filter-label">Mes</span>
+            <select name="mes" class="minimal-input">
+                {% set meses = [
+                    (1, 'Enero'), (2, 'Febrero'), (3, 'Marzo'), (4, 'Abril'),
+                    (5, 'Mayo'), (6, 'Junio'), (7, 'Julio'), (8, 'Agosto'),
+                    (9, 'Septiembre'), (10, 'Octubre'), (11, 'Noviembre'), (12, 'Diciembre')
+                ] %}
+                {% set mes_seleccionado = (filtros_usados.get('mes') or mes_actual)|int %}
+                {% for num, nombre in meses %}
+                    <option value="{{ num }}" {{ 'selected' if mes_seleccionado == num }}>
+                        {{ nombre }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="filter-group small">
+            <span class="filter-label">Año</span>
+            <select name="anio" class="minimal-input">
+                {% set anio_seleccionado = (filtros_usados.get('anio') or anio_actual)|int %}
+                {% for anio in range(2026, 2040) %}
+                    <option value="{{ anio }}" {{ 'selected' if anio_seleccionado == anio }}>
+                        {{ anio }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="filter-group-btn">
+            <button type="submit" class="btn-filter">
+                <i class="bi bi-search"></i> Filtrar
+            </button>
+        </div>
+    </form>
+</div>
+
+<!--  -->
+<button class="btn-primary" onclick="abrirModalNuevoComprobante()" style="margin: 0 0 5px 0;">
+    <i class="bi bi-plus-lg"></i> Nuevo Comprobante
+</button>

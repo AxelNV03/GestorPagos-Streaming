@@ -1,0 +1,59 @@
+<div id="modalPlataforma" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 id="modalTitle"><i class="bi bi-pencil-square"></i> Editar Plataforma</h3>
+            <span class="close" onclick="cerrarModal()">&times;</span>
+        </div>
+        <form id="formPlataforma" action="{{ url_for('admin.guardar_plataforma') }}" method="POST" enctype="multipart/form-data">
+            <div class="form-body">
+                <input type="hidden" name="plataforma_id" id="form_plataforma_id">
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="nombre">Nombre de la Plataforma</label>
+                        <input type="text" name="nombre" id="form_nombre" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="precio_total">Costo Mensual ($)</label>
+                        <input type="number" step="1.00" name="precio_total" id="form_precio_total" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="dia_cobro">Día de Corte</label>
+                        <input type="number" name="dia_cobro" id="form_dia_cobro" min="1" max="31" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="cuota">Cuota ($)</label>
+                        <input type="number" step="1.00" name="cuota" id="form_cuota" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="correo_admin">Correo del Administrador</label>
+                    <input type="email" name="correo_admin" id="form_correo_admin" placeholder="ejemplo@netflix.com">
+                </div>
+
+                <div class="form-group text-center" id="form_logo_preview_container" style="display: none;">
+                    <label class="d-block mb-2">Logo Actual</label>
+                    <div class="mb-2">
+                        <img id="p_logo_preview" src="" alt="Vista previa del logo" 
+                            class="img-fluid rounded-circle" 
+                            style="width: 70px; height: 70px; object-fit: cover; border: 2px solid #ddd; margin: 0 auto;">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="form_url_logo">Subir Nuevo Logo</label>
+                    <input type="file" name="logo" id="form_url_logo" accept="image/png, image/jpeg, image/webp" class="form-control">
+                    <small class="text-muted d-block mt-1">Formatos recomendados: PNG o JPG cuadrados.</small>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-secondary" onclick="cerrarModal()">Cancelar</button>
+                <button type="submit" class="btn-primary" id="btnGuardar">Guardar Cambios</button>
+            </div>
+        </form>
+    </div>
+</div>

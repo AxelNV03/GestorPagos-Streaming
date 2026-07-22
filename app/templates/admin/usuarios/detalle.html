@@ -1,0 +1,179 @@
+{% extends "layouts/admin.html" %}
+{% block title %}Usuario - {{ usuario.nombres }} | Admin{% endblock %}
+
+{% block main_content %}
+
+<!-- Encabezado -->
+<div class="cpc-header">
+    <div class="cpc-header-title">
+        <h3>{{ usuario.nombres }} {{ usuario.apeP }} {{ usuario.apeM or '' }}   
+        &nbsp;
+        <small style="font-weight: 400; color: #94a3b8; font-size: 0.7rem;">
+            {% set meses = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'] %}
+            Desde {{ meses[usuario.created_at.month - 1] }} {{ usuario.created_at.year }}
+        </small>
+        </h3>
+    </div>
+
+    <div class="cpc-cards-row">
+        <div class="cpc-card">
+            <div class="cpc-card-icon"><i class="bi bi-cash-stack"></i></div>
+            <div class="cpc-card-body">
+                <span class="cpc-card-number">${{ "%.2f"|format(total_deuda) }}</span>
+                <span class="cpc-card-label">Deuda Pendiente</span>
+            </div>
+        </div>
+        <div class="cpc-card">
+            <div class="cpc-card-icon"><i class="bi bi-check-circle"></i></div>
+            <div class="cpc-card-body">
+                <span class="cpc-card-number">${{ "%.2f"|format(total_pagado) }}</span>
+                <span class="cpc-card-label">Pagado</span>
+            </div>
+        </div>
+        <div class="cpc-card">
+            <div class="cpc-card-icon"><i class="bi bi-collection"></i></div>
+            <div class="cpc-card-body">
+                <span class="cpc-card-number">{{ plataformas_activas }}</span>
+                <span class="cpc-card-label">Plataformas Activas</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Plataformas Activas -->
+<div class="cpc-header" style="margin-bottom: 20px;">
+    <div class="cpc-header-title" style="margin-bottom: 14px; padding-bottom: 10px;">
+        <h3>Plataformas Activas</h3>
+    </div>
+    <div style="display: flex; gap: 16px; flex-wrap: wrap;">
+        {% for s in usuario.suscripciones %}
+            {% if s.activo %}
+            <div style="display: flex; align-items: center; gap: 10px; background: #f8fafc; border: 1px solid #eef2f5; border-radius: 8px; padding: 10px 14px;">
+                <img src="{{ url_for('static', filename='uploads/' ~ s.plataforma.url_logo) }}" 
+                     alt="{{ s.plataforma.nombre }}" 
+                     style="width: 32px; height: 32px; border-radius: 6px; object-fit: contain;">
+                <div>
+                    <span style="font-weight: 600; font-size: 0.85rem; color: #2d3748;">{{ s.plataforma.nombre }}</span>
+                    <span style="display: block; font-size: 0.75rem; color: #718096;">${{ "%.2f"|format(s.plataforma.cuota) }}/mes</span>
+                </div>
+            </div>
+            {% endif %}
+        {% else %}
+            <span class="pbc-txt-muted">Sin plataformas activas</span>
+        {% endfor %}
+    </div>
+</div>
+
+
+
+<!-- Filtro Mes/Año -->
+<div class="card-filters shadow-sm mb-4">
+    <form class="filter-form" method="get">
+        <div class="filter-group small">
+            <span class="filter-label">Mes</span>
+            <select name="mes" class="minimal-input">
+                {% set meses = [(1,'Enero'),(2,'Febrero'),(3,'Marzo'),(4,'Abril'),(5,'Mayo'),(6,'Junio'),(7,'Julio'),(8,'Agosto'),(9,'Septiembre'),(10,'Octubre'),(11,'Noviembre'),(12,'Diciembre')] %}
+                {% for num, nombre in meses %}
+                    <option value="{{ num }}" {{ 'selected' if mes_actual|int == num }}>{{ nombre }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="filter-group small">
+            <span class="filter-label">Año</span>
+            <select name="anio" class="minimal-input">
+                {% for anio in range(2026, 2040) %}
+                    <option value="{{ anio }}" {{ 'selected' if anio_actual|int == anio }}>{{ anio }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="filter-group-btn">
+            <button type="submit" class="btn-filter"><i class="bi bi-search"></i> Filtrar</button>
+        </div>
+
+    </form>
+</div>
+
+<!-- Tabla de Cobros -->
+<div class="pbc-table-frame shadow-sm">
+    <table class="pbc-table-core">
+        <thead>
+            <tr>
+                <th>Plataforma</th>
+                <th>Motivo</th>
+                <th class="pbc-txt-center">Monto</th>
+                <th class="pbc-txt-center">Estado</th>
+                <th class="pbc-txt-center">Comprobante</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for c in cobros %}
+            <tr class="pbc-row-data">
+                <td>{{ c.suscripcion.plataforma.nombre }}</td>
+                <td>{{ c.motivo or '-' }}</td>
+                <td class="pbc-txt-center pbc-monto-bold">${{ "%.2f"|format(c.monto_deuda) }}</td>
+                <td class="pbc-txt-center">
+                    {% if c.estado == 'pendiente' %}
+                        <span class="pbc-badge pbc-badge-pendiente">Pendiente</span>
+                    {% else %}
+                        <span class="pbc-badge pbc-badge-pagado">Pagado</span>
+                    {% endif %}
+                </td>
+                <td class="pbc-txt-center">
+                    {% if c.comprobante_id %}
+                        <button class="btn-action" onclick="revisarComprobante({{ c.comprobante_id }})">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                    {% else %}
+                        <span class="pbc-txt-muted">-</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="5" class="pbc-empty-state-cell">
+                    <div class="empty-state-wrapper">
+                        <i class="bi bi-folder-x"></i>
+                        <h5>Sin cobros este mes</h5>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Modal de revisión -->
+{% include "admin/comprobantes/_modal_revision.html" %}
+
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    <script>
+        const datosRevision = {};
+        const infoComprobantes = {
+            {% for comp in comprobantes %}
+                {{ comp.id }}: {
+                    usuario: "{{ comp.usuario.nombres }} {{ comp.usuario.apeP }}",
+                    estado: "{{ comp.estado }}",
+                    nota: "{{ comp.nota_usuario or '' }}",
+                    imagen_url: "{{ url_for('admin.ver_imagen', comprobante_id=comp.id) }}",
+                    motivo_rechazo: "{{ comp.motivo_rechazo or '' }}",
+                    comentario: "{{ comp.comentario or '' }}",
+                    fecha_carga: "{{ comp.created_at.isoformat() if comp.created_at else '' }}",
+                    cobros_asociados: []
+                }{% if not loop.last %},{% endif %}
+            {% endfor %}
+        };
+        
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') cerrarModalRevision();
+        });
+        window.addEventListener('click', function(e) {
+            const modal = document.getElementById('modalRevision');
+            if (modal && e.target === modal) cerrarModalRevision();
+        });
+    </script>
+    <script src="{{ url_for('static', filename='js/admin/seccion_comprobantes.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,78 @@
+<!-- Tabla de datos -->
+<table class="users-table">
+    <thead>
+        <th>Nombre completo</th>
+        <th>Plataforma(s)</th>
+        <th>Teléfono</th>
+        <th>Correo</th>
+        <th>Acciones</th>
+    </thead>
+    <tbody>
+        {% for u in listaUsuarios %}
+            <tr>
+                <td>
+                    <a href="{{ url_for('admin.detalle_usuario', usuario_id=u.id) }}" style="text-decoration: none;">
+                        <strong class="pbc-user-name-highlight">{{ u.nombres }} {{ u.apeP }} {{ u.apeM or '' }}</strong>
+                    </a>
+                </td>
+
+                <td>
+                    <div class="badge-container">
+                        {% for p in u.plataformas %}
+                            <span class="badge bg-primary">{{ p.nombre }}</span>
+                        {% else %}
+                            <span class="text-muted fs-7">Sin plataformas</span>
+                        {% endfor %}
+                    </div>
+                </td>
+                <td><span class="user-phone">{{ u.telefono }}</span></td>
+                <td>{{ u.correo }}</td>
+                <td>
+                    <a href="https://wa.me/{{ u.telefono }}" target="_blank" class="btn-action btn-whatsapp" title="Contactar por WhatsApp">
+                        <i class="bi bi-whatsapp"></i>
+                    </a>
+
+                    {% set correos_data = [] %}
+                    {% for s in u.suscripciones %}
+                        {% if s.activo %}
+                            {% set _ = correos_data.append({"plataforma_id": s.plataforma_id, "correo": s.correo_plataforma or ""}) %}
+                        {% endif %}
+                    {% endfor %}
+
+                    <button class="btn-action btn-edit" 
+                        onclick='abrirModalUsuario({{ {
+                            "id": u.id,
+                            "nombres": u.nombres,
+                            "apeP": u.apeP,
+                            "apeM": u.apeM or "",
+                            "telefono": u.telefono,
+                            "correo": u.correo or "",
+                            "plataformas": u.plataformas | map(attribute='id') | list,
+                            "correos_plataforma": correos_data
+                        } | tojson | safe }})'>
+                        <i class="bi bi-pencil-square"></i>
+                    </button>                                                                
+                    <button class="btn-action btn-delete" 
+                        onclick="confirmarEliminarUsuario('{{ u.id }}', '{{ url_for('admin.eliminar_usuario', u_id=u.id) }}')">
+                        <i class="bi bi-trash3-fill"></i>
+                    </button>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <!-- Forzamos la expansión exacta por tus 5 columnas de la tabla de usuarios -->
+                <td colspan="5" class="text-center text-muted py-5" style="background: #ffffff; border: none;">
+                    <div class="user-empty-state-wrapper">
+                        <!-- El icono con las clases de Bootstrap idénticas a plataformas -->
+                        <i class="bi bi-person-x fs-1 d-block mb-3 text-secondary user-empty-icon"></i>
+                        
+                        <!-- Título con la clase fw-bold para heredar el peso exacto de plataformas -->
+                        <h5 class="fw-bold user-empty-title">No hay usuarios registrados</h5>
+                        
+                        <!-- Párrafo descriptivo secundario -->
+                    </div>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>

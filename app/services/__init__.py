@@ -1,14 +1,8 @@
-# app/services/__init__.py
-
-from .users import UserService
-from .plataformas import PlataformaService
-from .periodos import PeriodoService
-from .cobros import CobroService
-from .comprobantes import ComprobanteService
-
-
-
-
-# Aquí irás agregando los demás conforme los crees:
-# from .plataformas import PlataformaService
-# from .pagos import PagoService
+from .usuario_service import UsuarioService
+from .cobro_service import CobroService
+from .comprobante_service import ComprobanteService
+from .plataforma_service import PlataformaService
+from .plataforma_usuario_service import PlataformaUsuarioService
+from .periodo_service import PeriodoService
+from .cliente_service import ClienteService
+from .bot_service import BotService

@@ -6,14 +6,14 @@
     </div>
 
     <nav class="menu">
-        <a href="{{ url_for('admin.dashboard') }}" class="menu-item {{ 'active' if request.endpoint == 'admin.dashboard' }}">
+        <a href="{{ url_for('admin.index') }}" class="menu-item {{ 'active' if request.endpoint == 'admin.index' }}">
             <i class="bi bi-grid-1x2-fill"></i>
             <span>Principal</span>
         </a>
 
-        <a href="{{ url_for('admin.servicios') }}" class="menu-item {{ 'active' if request.endpoint == 'admin.servicios' }}">
+        <a href="{{ url_for('admin.plataformas') }}" class="menu-item {{ 'active' if request.endpoint == 'admin.plataformas' }}">
             <i class="bi bi-play-circle"></i>
-            <span>Servicios</span>
+            <span>Plataformas</span>
         </a>
 
         <a href="{{ url_for('admin.usuarios') }}" class="menu-item {{ 'active' if request.endpoint == 'admin.usuarios' }}">
@@ -25,5 +25,16 @@
             <i class="bi bi-cash-stack"></i>
             <span>Cobros</span>
         </a>
+        
+        <a href="{{ url_for('admin.comprobantes') }}" class="menu-item {{ 'active' if request.endpoint == 'admin.comprobantes' }}">
+            <i class="bi bi-ticket-detailed"></i>
+            <span>Comprobantes</span>
+        </a>
+
+        <a href="{{ url_for('admin.respaldos') }}" class="menu-item {{ 'active' if request.endpoint == 'admin.respaldos' }}">
+            <i class="bi bi-database-fill-gear"></i>
+            <span>Respaldos</span>
+        </a>
+
     </nav>
 </aside>

@@ -2,7 +2,7 @@ services:
   db:
     image: mariadb:12.2.2
     container_name: pagos_db
-    restart: always
+    restart: unless-stopped
     environment:
       MARIADB_ROOT_PASSWORD: 1234
       MARIADB_DATABASE: streaming
@@ -16,18 +16,16 @@ services:
   app:
     build: .
     container_name: pagos_app
-    restart: always 
+    restart: unless-stopped  # <--- Añade esto aquí también
     volumes:
       - .:/app
+      - ./storage:/app/storage
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      - ./rclone.conf:/root/.config/rclone/rclone.conf:ro
     ports:
       - "5000:5000"
-    environment:
-      - FLASK_APP=run.py
-      - FLASK_DEBUG=1
-      - DB_HOST=db
-      - DB_USER=nava
-      - DB_PASSWORD=1234
-      - DB_NAME=streaming
+    env_file: .env
     depends_on:
       db: # Versión extendida para evitar el error de conexión que vimos antes
         condition: service_started

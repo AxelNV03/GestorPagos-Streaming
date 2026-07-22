@@ -51,23 +51,7 @@
     color: #1a1a1a;
     line-height: 1.2;
 }
-/* ==================================================================================================================== */
-/* Boton de agregar - Estilo Card Minimalista */
-/* ==================================================================================================================== */
-.add-user {
-    margin-top: 0 !important; /* Forzamos la eliminación de cualquier margen previo */
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 15px; /* <--- MUEVE ESTE VALOR: súbelo si quieres más espacio abajo */
-    /* Ajuste fino para que no se vea "pesado" junto al H2 */
-    align-self: flex-start; 
-}
 
-/* Si quieres que el icono se vea un poco más pro */
-.add-user i {
-    font-size: 1.1rem;
-}
 /* ==================================================================================================================== */
 /* Tabla de busquedas - Estilo Card Minimalista */
 /* ==================================================================================================================== */
@@ -228,29 +212,178 @@
     background-color: #1a202c;
     transform: translateY(-1px);
 }
-/* ==================================================================================================================== */
-/* Tabla de Usuarios - Estilo Card Minimalista */
-/* ==================================================================================================================== */
 
-.table-container {
-    background: #ffffff;
+
+
+
+/* ==================================================================================================================== */
+/* Modal de Usuarios */
+/* ==================================================================================================================== */
+/* 2. Contenedor Principal */
+#modalUsuario .modal-content {
+    background-color: #fff;
+    margin: 5% auto;
+    padding: 0;
     border-radius: 12px;
-    border: 1px solid #eef0f2;
-    overflow: hidden; /* Para que los bordes redondeados funcionen */
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    animation: slideDown 0.3s ease-out;
+    overflow: hidden;
 }
 
+/* 3. Header */
+#modalUsuario .modal-header {
+    background: #f8f9fa;
+    padding: 20px;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#modalUsuario .modal-header h3 {
+    margin: 0;
+    font-size: 1.25rem;
+    color: #333;
+}
+
+/* 4. Cuerpo del Formulario */
+#modalUsuario .form-body {
+    padding: 20px;
+}
+
+#modalUsuario .form-group {
+    margin-bottom: 15px;
+}
+
+#modalUsuario .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+#modalUsuario label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #555;
+}
+
+#modalUsuario input {
+    width: 100%;
+    box-sizing: border-box; /* <--- ESTO ES LA CLAVE */
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: border-color 0.2s;
+}
+
+#modalUsuario input:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
+}
+
+/* 5. Footer y Botones */
+#modalUsuario .modal-footer {
+    padding: 15px 20px;
+    background: #f8f9fa;
+    border-top: 1px solid #eee;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+/* Ajuste para el footer del modal (para quitar márgenes extra que no necesites) */
+#modalUsuario .modal-footer .btn-secondary {
+    margin: 0; /* Limpiamos márgenes para que el gap del footer mande */
+}
+
+#modalUsuario .modal-footer .btn-primary {
+    margin-top: 0; /* Quita el margen que usas cuando el botón está solo en una card */
+}
+
+/* ==================================================================================================================== */
+/* Sección Dinámica de Plataformas (Dentro del Modal) */
+/* ==================================================================================================================== */
+
+/* Alineación de la fila que contiene el select y el botón de eliminar */
+#modalUsuario .fila-plataforma {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+/* Forzamos a que el contenedor del select use todo el espacio restante */
+#modalUsuario .fila-plataforma .form-group {
+    flex: 1;
+    margin-bottom: 0; /* Quitamos el margen inferior para que se alinee con el botón */
+}
+
+/* Estilos para el elemento Select (Heredando el diseño de tus inputs actuales) */
+#modalUsuario .form-select {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 1rem;
+    background-color: #fff;
+    color: #333;
+    transition: border-color 0.2s;
+}
+
+#modalUsuario .form-select:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
+}
+
+/* Modificación exclusiva para hacer más grande el botón de borrar plataformas */
+.btn-action.btn-plat-delete {
+    padding: 10px 16px;      /* ⬅️ Más espacio interno (arriba/abajo e izquierda/derecha) */
+    font-size: 1.1rem;       /* ⬅️ Hacemos el icono de la basura más grande y visible */
+    border-radius: 6px;      /* ⬅️ Mantiene el radio de tus inputs actuales */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;            /* ⬅️ Si tu fila tiene un alto fijo, se estira para alinearse */
+}
+
+/* Efecto hover exclusivo para este botón */
+.btn-action.btn-plat-delete:hover {
+    background-color: #f8d7da; 
+    color: #dc3545;            
+    border-color: #f5c6cb;     
+}
+/* Botón secundario para agregar más filas (Ajustado al tamaño interno del modal) */
+#modalUsuario #btn-agregar-plataforma {
+    width: auto;
+    padding: 6px 12px;
+    font-size: 0.85rem;
+    cursor: pointer;
+}
+
+
+/* ==================================================================================================================== */
+/* Tabla de Usuarios - Consolidada y Dinámica */
+/* ==================================================================================================================== */
+
+/* CONTAINER DE LA TABLA */
 .users-table {
     width: 100%;
-    max-width: fit-content; /* La tabla solo se expande lo necesario */
-    border-collapse: separate;
-    border-spacing: 0;
+    border-collapse: collapse; /* Cambiado a collapse para que funcione table-layout: auto de forma óptima */
     background: #ffffff;
+    table-layout: auto;        /* 🔥 Permite que el navegador calcule el ancho según el texto más largo */
     border-radius: 12px;
     overflow: hidden;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
     margin-top: 15px;
     border: 1px solid #eef2f5;
-    table-layout: fixed; /* Forzamos el respeto de los anchos definidos */
 }
 
 /* Encabezado */
@@ -260,7 +393,7 @@
 
 .users-table th {
     padding: 15px;
-    text-align: left; /* TODO A LA IZQUIERDA */
+    text-align: left;
     font-size: 0.75rem;
     text-transform: uppercase;
     letter-spacing: 1px;
@@ -271,13 +404,13 @@
 
 /* Celdas Generales */
 .users-table td {
-    padding: 12px 15px;
-    text-align: left; /* TODO A LA IZQUIERDA */
+    padding: 14px 15px; 
+    text-align: left;
     vertical-align: middle;
     border-bottom: 1px solid #f1f1f1;
     color: #333;
     font-size: 0.9rem;
-    white-space: nowrap;
+    /* Quitamos el white-space: nowrap general para controlar cada columna de manera independiente abajo */
 }
 
 .users-table tr:last-child td {
@@ -285,54 +418,113 @@
 }
 
 .users-table tr:hover {
-    background-color: #fcfcfc;
+    background-color: #f9fbfd; 
 }
 
-/* -------------------------------------------------------------------------------------------------------------------- */
-/* Definición de Anchos y Estilos Específicos */
+/* ==================================================================================================================== */
+/* Definición de Comportamiento por Columna */
+/* ==================================================================================================================== */
 
-/* 1. ID */
-.users-table th:nth-child(1), .users-table td:nth-child(1) { 
-    width: 60px; 
-    font-family: 'Cascadia Code', monospace;
-    color: #888;
-    font-size: 0.8rem;
+/* --- 1. Columna de Nombres --- */
+.users-table th:nth-child(1), 
+.users-table td:nth-child(1) { 
+    width: auto;         /* Se adapta al nombre más largo de la base de datos */
+    white-space: nowrap; /* Evita estrictamente que un nombre largo se parta en dos líneas */
+    font-weight: 600;    
+    padding-right: 25px; 
 }
 
-/* 2. NOMBRE (Alineación y Negritas) */
-.users-table th:nth-child(2), .users-table td:nth-child(2) { 
-    width: 280px; /* Ajusta este valor para acercar/alejar la Plataforma */
-    font-weight: 500;
-    overflow: hidden;
-    text-overflow: ellipsis;
+/* --- 2. Columna de Plataformas (Badges Flexibles) --- */
+.users-table th:nth-child(2), 
+.users-table td:nth-child(2) { 
+    width: auto;         /* Permite que la columna se extienda todo lo necesario hacia la derecha */
 }
 
-/* 3. PLATAFORMA */
-.users-table th:nth-child(3), .users-table td:nth-child(3) { 
-    width: 150px; 
+.users-table td:nth-child(2) { 
+    white-space: normal; /* 🟢 Permite el salto de línea sólo cuando el espacio físico de la pantalla se agote */
+    overflow: visible;         
 }
 
-/* 4. TELÉFONO */
-.users-table th:nth-child(4), .users-table td:nth-child(4) { 
-    width: 140px; 
+/* Contenedor inteligente de badges */
+.users-table td:nth-child(2) .badge-container {
+    display: flex;
+    flex-wrap: wrap;     /* 🔄 ¡La clave! Se extiende horizontalmente, pero si ya no cabe en la pantalla, salta abajo */
+    flex-direction: row; 
+    gap: 8px;            
+    align-items: center;
 }
 
-/* 5. REGISTRO */
-.users-table th:nth-child(5), .users-table td:nth-child(5) { 
-    width: 150px; 
-    color: #888;
-    font-size: 0.8rem;
+/* --- 3. Teléfono --- */
+.users-table th:nth-child(3), 
+.users-table td:nth-child(3) { 
+    width: auto;
+    white-space: nowrap; /* El teléfono se queda siempre visible en un solo renglón */
+    padding-right: 15px;
 }
 
-/* 6. ACCIONES (Este lo mantenemos centrado para que los botones respiren) */
-.users-table th:nth-child(6), .users-table td:nth-child(6) { 
-    width: 100px; 
+/* --- 4. Correo --- */
+.users-table th:nth-child(4), 
+.users-table td:nth-child(4) { 
+    width: auto; 
+    white-space: nowrap; /* El correo electrónico no se corta ni salta */
+    color: #555;
+    padding-right: 20px;
+}
+
+/* --- 5. Acciones (Botones) --- */
+.users-table th:nth-child(5), 
+.users-table td:nth-child(5) { 
+    width: 1%;           /* Se encoge al mínimo espacio posible de los botones */
+    white-space: nowrap; /* Mantiene tus botones de editar/eliminar en una sola línea horizontal */
     text-align: center;
+    padding-right: 15px; /* ⬅️ Le da un colchón de espacio limpio al título antes del borde final */
+}
+/* -------------------------------------------------------------------------------------------------------------------- */
+/* Componentes Internos Modernizados */
+
+/* Estilo personalizado para los Badges de Plataformas */
+
+
+/* Estilo Premium para los Badges de Plataformas */
+.users-table .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px; /* Separación entre el puntito y el texto */
+    padding: 4px 10px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase; /* Estilo tipográfico más fino */
+    letter-spacing: 0.5px;
+    border-radius: 20px; /* Bordes completamente redondeados (estilo píldora) */
+    
+    /* Colores minimalistas: Fondo casi blanco con un toque de gris/azul */
+    background-color: #f1f3f5 !important; 
+    color: #495057 !important;
+    border: 1px solid #e9ecef;
+    
+    white-space: nowrap;
+    transition: all 0.2s ease;
 }
 
-/* -------------------------------------------------------------------------------------------------------------------- */
-/* Componentes Internos */
+/* El toque maestro: Un indicador de estado activo dentro de cada badge */
+.users-table .badge::before {
+    content: "";
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: #10b981; /* Verde esmeralda neón (Activo) */
+    box-shadow: 0 0 8px rgba(16, 185, 129, 0.5); /* Sutil brillo */
+}
 
+/* Micro-interacción cuando pasas el mouse por encima de la celda */
+.users-table tr:hover .badge {
+    background-color: #e9ecef !important;
+    color: #212529 !important;
+    border-color: #dee2e6;
+}
+
+/* Estilos de tus botones que mencionas que están perfectos */
 .btn-action {
     background: transparent;
     border: 1px solid #eee;
@@ -344,247 +536,41 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 5px;
 }
-
-
-.btn-action:hover {
-    background: #1a1a1a;
-    color: #fff;
-    border-color: #1a1a1a;
-    transform: translateY(-2px);
-}
-
-.btn-edit:hover { background: #1a1a1a; color: #fff; transform: scale(1.1); }
-.btn-delete:hover { background: #ef4444; color: #fff; transform: scale(1.1); }
 
 .user-phone {
-    font-family: 'Cascadia Code', monospace;
-    background: #f4f4f4;
+    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+    background: #f4f6f8;
     padding: 3px 8px;
-    border-radius: 5px;
-    font-size: 0.85rem;
-    color: #444;
-}
-
-/* ==================================================================================================================== */
-/* Estilo nombres plataformas */
-/* ==================================================================================================================== */
-/* Base del tag (la que ya tienes) */
-.plataforma-tag {
-    background-color: #f4f4f4;
-    color: #1a1a1a;
-    padding: 4px 10px;
     border-radius: 6px;
-    font-size: 0.75rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    border: 1px solid transparent;
+    font-size: 0.8rem;
+    color: #444;
+    border: 1px solid #eef0f2;
 }
 
-/* Variantes por plataforma (Colores suaves para no romper el minimalismo) */
-.tag-netflix {
-    background-color: #ffebee;
-    color: #e53935;
-    border-color: #ffcdd2;
+.btn-whatsapp:hover { background: #25d366; color: #fff; border-color: #25d366; transform: scale(1.1); }
+.btn-edit:hover { background: #1a1a1a; color: #fff; border-color: #1a1a1a; transform: scale(1.1); }
+.btn-delete:hover { background: #ef4444; color: #fff; border-color: #ef4444; transform: scale(1.1); }
+
+
+/* ==================================================================================================================== */
+/* Estado Vacío - Módulo de Usuarios (Calca Exacta y Aislada de Plataformas) */
+/* ==================================================================================================================== */
+
+/* Contenedor base para centrar los elementos de la fila */
+.users-table .user-empty-state-wrapper {
+    display: block;
+    text-align: center;
 }
 
-.tag-disney {
-    background-color: #e8eaf6;
-    color: #3f51b5;
-    border-color: #c5cae9;
+/* Forzamos al icono a heredar las dimensiones exactas del de plataformas */
+.users-table .user-empty-icon {
+    font-size: 1.5rem !important; /* Mismo tamaño que otorga la clase fs-1 de Bootstrap */
+    color: #6c757d !important;    /* Forzamos el tono gris exacto de la clase text-secondary */
+}
+/* Bloqueo del efecto hover gris en la fila del estado vacío */
+.users-table tr:has(.user-empty-state-wrapper):hover {
+    background-color: transparent !important;
 }
 
-.tag-spotify {
-    background-color: #e8f5e9;
-    color: #2e7d32;
-    border-color: #c8e6c9;
-}
 
-.tag-hbo {
-    background-color: #f3e5f5;
-    color: #8e24aa;
-    border-color: #e1bee7;
-}
-
-/* Clase genérica por si no coincide ninguna */
-.tag-default {
-    background-color: #f5f5f5;
-    color: #616161;
-    border-color: #e0e0e0;
-}
-/* ==========================================================================
-   MODAL DE USUARIOS - PROTECMOR (CORREGIDO)
-   ========================================================================== */
-
-.modal-custom {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background-color: rgba(15, 23, 42, 0.5); /* Color más profundo */
-    display: none; /* Se activa con 'flex' en JS */
-    align-items: center;
-    justify-content: center;
-    z-index: 2000;
-    backdrop-filter: blur(6px);
-}
-
-.modal-content-custom {
-    background-color: #ffffff;
-    width: 90%;
-    max-width: 520px;
-    border-radius: 16px;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.2);
-    animation: modalSlideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    overflow: hidden;
-}
-
-@keyframes modalSlideUp {
-    from { transform: translateY(30px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
-}
-
-/* Encabezado */
-.modal-header-custom {
-    padding: 1.5rem 2rem;
-    border-bottom: 1px solid #f1f5f9;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: #fff;
-}
-
-.modal-header-custom h4 {
-    margin: 0;
-    font-size: 1.3rem;
-    color: #0f172a;
-    font-weight: 800;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-/* Cuerpo */
-.modal-body-custom {
-    padding: 2rem; /* Más espacio interno */
-}
-
-.form-row {
-    display: flex;
-    gap: 20px; /* Más espacio entre columnas */
-    margin-bottom: 1.5rem;
-}
-
-.form-group {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 8px; /* Espacio entre label e input */
-}
-
-/* Estilo de Labels */
-.form-group .filter-label {
-    font-size: 0.65rem;
-    font-weight: 800;
-    text-transform: uppercase;
-    color: #94a3b8;
-    letter-spacing: 0.8px;
-    margin-left: 2px;
-}
-
-/* Inputs y Selects */
-.modal-body-custom .minimal-input {
-    width: 100%;
-    height: 46px; /* Un poco más alto para mejor tacto */
-    padding: 0 1rem;
-    background-color: #f8fafc;
-    border: 1px solid #e2e8f0;
-    border-radius: 10px;
-    font-size: 0.95rem;
-    color: #1e293b;
-    transition: all 0.2s ease;
-    box-sizing: border-box;
-}
-
-.modal-body-custom select.minimal-input {
-    appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2364748b'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 1rem center;
-    background-size: 1.2em;
-    padding-right: 2.5rem;
-}
-
-.modal-body-custom .minimal-input:focus {
-    outline: none;
-    border-color: #1a1a1a;
-    background-color: #fff;
-    box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.05);
-}
-
-/* Pie del Modal */
-.modal-footer-custom {
-    padding: 1.5rem 2rem;
-    background-color: #f8fafc;
-    border-top: 1px solid #f1f5f9;
-    display: flex;
-    justify-content: flex-end;
-    gap: 12px;
-}
-
-/* Botones */
-.btn-secondary {
-    background: #fff;
-    border: 1px solid #e2e8f0;
-    color: #64748b;
-    padding: 0 1.5rem;
-    height: 44px;
-    border-radius: 10px;
-    font-weight: 700;
-    font-size: 0.85rem;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.btn-secondary:hover {
-    background-color: #f1f5f9;
-    color: #0f172a;
-}
-
-.btn-primary.add-user {
-    background: #1a1a1a;
-    color: #fff;
-    border: none;
-    padding: 0 1.5rem;
-    height: 44px;
-    border-radius: 10px;
-    font-weight: 700;
-    font-size: 0.85rem;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.btn-primary.add-user:hover {
-    background: #000;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-.btn-close-modal {
-    background: #f1f5f9;
-    border: none;
-    color: #64748b;
-    width: 32px;
-    height: 32px;
-    border-radius: 8px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s;
-}
-
-.btn-close-modal:hover {
-    background: #fee2e2;
-    color: #ef4444;
-}

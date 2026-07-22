@@ -1,76 +1,87 @@
+/* ==================================================================================================== */
+/* USER LAYOUT & DASHBOARD - CLEAN */
+/* ==================================================================================================== */
+
+/* --- Contenedor principal --- */
+.user-container {
+    min-height: 100vh;
+    background-color: #eef0f2;
+}
+
+.user-content {
+    padding-bottom: 30px;
+}
+
+/* --- Card de perfil --- */
 .user-card-section {
     width: 100%;
-    padding: 20px;
+    padding: 0px 20px;
     display: flex;
     justify-content: center;
 }
 
+/* --- Card principal --- */
 .tidal-profile-card {
     width: 100%;
     max-width: 500px;
     background-color: #ffffff;
-    border-radius: 24px;
-    padding: 10px 10px;
-    text-align: center;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+    border-radius: 0 0 16px 16px;
+    padding: 20px 20px 8px 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    border: 1px solid #e5e7eb;
 }
-
-.welcome-text {
-    font-family: 'Montserrat', sans-serif;
-    font-size: 0.7rem;
-    font-weight: 600;
-    color: #8E959B;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    margin-bottom: 15px;
-}
-
-.avatar-icon {
-    width: 70px;
-    height: 70px;
-    background-color: #F0F3F5;
-    border-radius: 50%;
+/* --- Header: Nombre + Meta --- */
+.profile-header {
     display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 2.2rem;
-    color: #A1AAB2;
-    margin: 0 auto 12px;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 12px;
+}
+
+.profile-names {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.3;
 }
 
 .user-main-name {
     font-family: 'Montserrat', sans-serif;
-    font-weight: 600;
-    font-size: 1.3rem;
+    font-weight: 700;
+    font-size: 1.2rem;
     margin: 0;
     text-transform: capitalize;
+    color: #1a1a1a;
 }
 
-.user-phone, .session-user {
+.user-phone {
     font-family: 'Montserrat', sans-serif;
     font-weight: 400;
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     color: #8E959B;
 }
 
-/* --- EL GRID DE DATOS (2 COLUMNAS EN CEL) --- */
-.info-details-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr); /* Aquí ocurre la magia */
-    gap: 10px 10px;
-    margin-top: 25px;
-    padding-top: 20px;
-    border-top: 1px solid #F0F3F5;
-}
-
-.info-item {
+.profile-meta {
     display: flex;
     flex-direction: column;
+    align-items: flex-end;
+    justify-content: center;
 }
 
-.info-item.full-width {
-    grid-column: span 2; /* El monto ocupa todo el ancho para resaltar */
-    margin-top: 10px;
+.meta-item {
+    font-size: 0.7rem;
+    color: #8E959B;
+    text-align: right;
+    line-height: 1.4;
+}
+
+/* --- Monto a Pagar --- */
+.profile-monto {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-top: 1px solid #F0F3F5;
+    margin-bottom: 12px;
 }
 
 .info-label {
@@ -78,172 +89,155 @@
     font-weight: 600;
     color: #8E959B;
     text-transform: uppercase;
-    margin-bottom: 4px;
+    letter-spacing: 0.5px;
 }
 
-.info-value {
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 500;
-    font-size: 0.95rem;
-    color: #000000;
+.info-price-pendiente { color: #FF9500; font-weight: 700; font-size: 1.1rem; }
+.info-price-pendiente small { display: block; font-size: 0.7rem; font-weight: 500; color: #FF9500; }
+
+.info-price-revision { color: #007AFF; font-weight: 700; font-size: 1.1rem; }
+.info-price-revision small { display: block; font-size: 0.7rem; font-weight: 500; color: #007AFF; }
+
+.info-price-rechazado { color: #FF3B30; font-weight: 700; font-size: 1.1rem; }
+.info-price-rechazado small { display: block; font-size: 0.7rem; font-weight: 500; color: #FF3B30; }
+
+.info-price-completo { color: #00ba13; font-weight: 700; font-size: 1rem; }
+
+
+
+
+/* --- Plataformas --- */
+.plataformas-chips-container .info-label {
+    display: block;
+    margin-bottom: 10px;
 }
 
-.info-price {
-    color: #00ba13;
-    font-weight: 700;
-    font-size: 1.2rem;
+.plataformas-chips {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
 }
 
-/* --- 💻 MEDIA QUERY PARA PC (950px+) --- */
-@media (min-width: 950px) {
-    .tidal-profile-card {
-        max-width: 1000px; /* La tarjeta se ensancha */
-        padding: 10px 10px; /* Mucho más aire interno */
-        border-radius: 32px; /* Bordes más imponentes */
-    }
-
-    .avatar-icon {
-        width: 100px; /* El avatar crece para llenar el espacio */
-        height: 100px;
-        font-size: 3.5rem;
-        margin-bottom: 25px;
-    }
-
-    /* El grid de datos también respira más en PC */
-    .info-details-grid {
-        margin-top: 10px;
-        padding-top: 30px;
-        gap:10px 20px; /* Más espacio entre los datos de pago */
-    }
+.plataforma-chip {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #f8fafc;
+    border: 1px solid #eef2f5;
+    border-radius: 10px;
+    padding: 10px 12px;
+    width: 100%;
 }
 
-/* =========================================================================================================== */
-/* # Letras del proximo pago */
-/* =========================================================================================================== */
-/* Rojo para cuando ya pasó la fecha */
-.pago-vencido {
-    color: #FF3B30 !important;
-    font-weight: 700;
+.plataforma-chip-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
-/* Naranja para cuando el pago es HOY */
-.pago-hoy {
-    color: #FF9500 !important;
-    font-weight: 700;
+.plataforma-chip-img {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    object-fit: contain;
 }
 
-/* Estilo por defecto */
-.pago-normal {
-    color: #000000;
-    font-weight: 700;
+.plataforma-chip-nombre {
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: #1d1d1f;
 }
 
-/* Estado: Enviado, esperando aprobación */
-.pago-revision {
-    color: #007AFF !important;
-    font-weight: 700;
+.plataforma-chip-cuota {
+    font-weight: 600;
+    font-size: 0.8rem;
+    color: #8E959B;
 }
 
-.alert-card.revision {
-    background-color: rgba(0, 122, 255, 0.1);
-    border: 1px solid rgba(0, 122, 255, 0.2);
-}
-.alert-card.revision .alert-icon, 
-.alert-card.revision .alert-text strong { 
-    color: #007AFF; 
+.plataforma-chip-left div {
+    display: flex;
+    flex-direction: column;
 }
 
-/* =========================================================================================================== */
-/* # Avisos */
-/* =========================================================================================================== */
-/* Conatines de avisios */
+.plataforma-chip-correo {
+    font-size: 0.7rem;
+    color: #8E959B;
+    margin-top: 1px;
+}
+
+
+
+
+
+/* --- Alertas --- */
+/* --- Alertas --- */
 .alert-card-container {
-    padding: 0 20px;
-    margin-top: 5px;
-    max-width: 500px; /* Misma que tu card principal */
+    padding: 10px 20px 0 20px;
+    margin-top: 4px;
+    max-width: 500px;
     margin-left: auto;
     margin-right: auto;
 }
-
 .alert-card {
     display: flex;
     align-items: center;
-    padding: 15px 20px;
-    border-radius: 18px;
-    gap: 15px;
+    padding: 10px 14px;
+    border-radius: 12px;
+    gap: 10px;
 }
 
-/* Variante Vencido (Rojo) */
+.alert-icon {
+    font-size: 1rem;
+    flex-shrink: 0;
+}
+
 .alert-card.vencido {
-    background-color: rgba(255, 59, 48, 0.1); /* Rojo muy suave */
-    border: 1px solid rgba(255, 59, 48, 0.2);
+    background-color: rgba(255, 59, 48, 0.08);
+    border: 1px solid rgba(255, 59, 48, 0.15);
 }
 .alert-card.vencido .alert-icon { color: #FF3B30; }
 .alert-card.vencido .alert-text strong { color: #FF3B30; }
 
-/* Variante Hoy (Naranja) */
 .alert-card.urgente {
-    background-color: rgba(255, 149, 0, 0.1); /* Naranja muy suave */
-    border: 1px solid rgba(255, 149, 0, 0.2);
+    background-color: rgba(255, 149, 0, 0.08);
+    border: 1px solid rgba(255, 149, 0, 0.15);
 }
 .alert-card.urgente .alert-icon { color: #FF9500; }
 .alert-card.urgente .alert-text strong { color: #FF9500; }
 
+.alert-card.revision {
+    background-color: rgba(0, 122, 255, 0.08);
+    border: 1px solid rgba(0, 122, 255, 0.15);
+}
+.alert-card.revision .alert-icon,
+.alert-card.revision .alert-text strong { color: #007AFF; }
+
+.alert-card.aprobado {
+    background-color: rgba(0, 186, 19, 0.08);
+    border: 1px solid rgba(0, 186, 19, 0.15);
+}
+.alert-card.aprobado .alert-icon,
+.alert-card.aprobado .alert-text strong { color: #00ba13; }
+
 .alert-text {
     display: flex;
     flex-direction: column;
-    font-size: 0.85rem;
-    color: #444;
+    font-size: 0.75rem;
+    color: #555;
 }
 
 .alert-text strong {
-    font-size: 0.9rem;
-    margin-bottom: 2px;
+    font-size: 0.8rem;
+    margin-bottom: 1px;
 }
 
-/* Esto es lo único que debería estar si quieres el aviso verde */
-.alert-card.aprobado {
-    background-color: rgba(0, 186, 19, 0.1); 
-    border: 1px solid rgba(0, 186, 19, 0.2);
-}
-.alert-card.aprobado .alert-icon, 
-.alert-card.aprobado .alert-text strong { 
-    color: #00ba13; 
-}
 
-@media (min-width: 950px) {
-    .alert-card-container {
-        max-width: 1000px; /* Igualamos al ancho de tu tarjeta principal */
-        margin-top: 15px;  /* Un poco más de separación del dashboard */
-        padding: 0;        /* Quitamos padding lateral para que alineen los bordes */
-    }
 
-    .alert-card {
-        padding: 20px 40px; /* Más aire interno en PC */
-        border-radius: 24px; /* Un poco más sutil que la principal */
-        justify-content: flex-start; /* Alineamos el aviso a la izquierda */
-    }
 
-    .alert-icon {
-        font-size: 1.5rem; /* Icono un poco más presente */
-    }
 
-    .alert-text {
-        font-size: 1rem; /* Texto más legible en pantallas grandes */
-        flex-direction: row; /* En PC podemos poner el título y el texto en una línea */
-        gap: 10px;
-        align-items: center;
-    }
 
-    .alert-text strong {
-        margin-bottom: 0;
-        border-right: 1px solid rgba(0,0,0,0.1); /* Una barrita separadora elegante */
-        padding-right: 10px;
-    }
-}
-/* =========================================================================================================== */
-/* # BOTONES */
-/* =========================================================================================================== */
+
+/* --- Menú --- */
 .menu-cards-container {
     max-width: 500px;
     margin: 20px auto;
@@ -255,22 +249,15 @@
 
 .menu-card {
     background: #ffffff;
-    border-radius: 24px;
-    padding: 20px;
+    border-radius: 14px;
+    padding: 16px 20px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    text-decoration: none; /* Quita el subrayado de link */
+    text-decoration: none;
     color: inherit;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
-    border: 1px solid transparent;
-}
-
-.menu-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-    border-color: #f0f0f0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    border: 1px solid #e5e7eb;
 }
 
 .menu-card-content {
@@ -308,17 +295,84 @@
     font-size: 1.1rem;
 }
 
-/* --- 💻 ADAPTACIÓN A PC (950px+) --- */
+/* --- Navbar --- */
+/* --- Navbar --- */
+.tidal-navbar {
+    width: 100%;
+    background-color: #0d0d0d;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
+}
+
+.tidal-logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+}
+
+.tidal-wordmark {
+    font-size: 16px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+}
+
+.tidal-icon-custom {
+    color: #00ba13;
+    font-size: 1.1rem;
+}
+
+.tidal-logout-btn {
+    color: #fff;
+    font-size: 1.3rem;
+    text-decoration: none;
+}
+
+/* --- Responsive PC --- */
 @media (min-width: 950px) {
+    .tidal-profile-card {
+        max-width: 600px;
+        padding: 30px;
+        border-radius: 28px;
+    }
+    
+    .alert-card-container {
+        max-width: 600px;
+    }
+    
     .menu-cards-container {
-        max-width: 1000px; /* Alineado con tu Main Card */
-        flex-direction: row; /* En PC se ponen uno al lado del otro */
+        max-width: 600px;
+        flex-direction: row;
         flex-wrap: wrap;
     }
-
+    
     .menu-card {
-        flex: 1; /* Se estiran para ocupar el ancho */
-        min-width: 300px;
-        padding: 25px;
+        flex: 1;
+        min-width: 250px;
     }
+    
+    .tidal-navbar {
+        height: 60px;
+        padding: 0 40px;
+    }
+    
+    .tidal-wordmark {
+        font-size: 20px;
+    }
+
+}
+
+.plataformas-section {
+    padding-top: 12px;
+    border-top: 1px solid #F0F3F5;
+    margin-bottom: 12px;
+}
+
+.plataformas-section .info-label {
+    display: block;
+    margin-bottom: 10px;
 }

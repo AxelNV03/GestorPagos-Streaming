@@ -1,0 +1,34 @@
+<!-- MODAL EDITAR COBRO -->
+<div class="pbc-edit-modal-overlay" id="modalEditarCobro">
+    <div class="pbc-edit-modal-content">
+        <form id="formEditarCobro" method="POST">
+            <div class="pbc-edit-modal-header">
+                <h5>✏️ Editar Cobro</h5>
+                <button type="button" class="pbc-edit-close-btn" onclick="cerrarModalEditar()">&times;</button>
+            </div>
+            <div class="pbc-edit-form-body">
+                <input type="hidden" name="cobro_id" id="edit_cobro_id">
+                
+                <div class="pbc-edit-form-group">
+                    <label>Plataforma</label>
+                    <input type="text" id="edit_plataforma" disabled>
+                    <span class="pbc-edit-help-text">No se puede cambiar la plataforma</span>
+                </div>
+                
+                <div class="pbc-edit-form-group">
+                    <label>Motivo</label>
+                    <input type="text" name="motivo" id="edit_motivo" placeholder="Ej: Suscripción mensual">
+                </div>
+                
+                <div class="pbc-edit-form-group">
+                    <label>Monto ($)</label>
+                    <input type="number" name="monto" id="edit_monto" step="0.01" min="0" required>
+                </div>
+            </div>
+            <div class="pbc-edit-modal-footer">
+                <button type="button" class="pbc-edit-btn-cancel" onclick="cerrarModalEditar()">Cancelar</button>
+                <button type="submit" class="pbc-edit-btn-save">Guardar Cambios</button>
+            </div>
+        </form>
+    </div>
+</div>

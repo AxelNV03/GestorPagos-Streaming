@@ -1,43 +1,100 @@
-{% extends 'user/components/bar_back.html' %}
+{% extends "layouts/user.html" %}
+{% block header %}
+    {% include 'user/components/bar_back.html' %}
+{% endblock %}
+{% block title %}Recibo | Access Stream{% endblock %}
+
 {% block main_content %}
 
 <div class="receipt-viewer">
-    <div class="viewer-header">
-        <h3>Tu Comprobante</h3>
-    </div>
-    
     <div class="receipt-card">
-<img src="{{ url_for('user.servir_comprobante_user', filename=pago.ruta_archivo) }}" 
-     alt="Recibo de pago" 
-     class="receipt-img">
-        
-        <div class="receipt-info">
-            <div class="info-group">
-                <label>Fecha de Subida</label>
-                <span>{{ pago.fecha_subida }}</span>
-            </div>
 
-            <div class="info-group">
-                <label>Estado del Pago</label>
-                <span class="status-text-inline {{ pago.estado }}">
-                    {% if pago.estado|lower == 'pendiente' %}
-                        En revisión
+        <img src="{{ url_for('user.servir_comprobante_user', filename=data.ruta_archivo) }}" 
+            alt="Comprobante" class="receipt-img">
+
+       <div class="receipt-info">
+        <!-- DEBUG -->
+
+
+            <div class="receipt-row">
+                <span class="receipt-label">Plataforma</span>
+                <span class="receipt-value">
+                    {% if data.comprobante_estado == 'revision' %}
+                        Verificando
+                    {% elif data.comprobante_estado == 'rechazado' %}
+                        N/A
                     {% else %}
-                        {{ pago.estado }}
+                        {{ data.plataforma }}
                     {% endif %}
                 </span>
             </div>
-            {% if pago.nota %}
-            <div class="info-group full-width">
-                <label>Nota / Comentario</label>
-                <p class="receipt-note">{{ pago.nota }}</p>
+            
+{% if data.comprobante_estado != 'revision' and data.comprobante_estado != 'rechazado' %}
+<div class="receipt-row full-width">
+    <span class="receipt-label">Concepto</span>
+    <span class="receipt-value receipt-value-light">{{ data.motivo }}</span>
+</div>
+{% endif %}
+
+            <div class="receipt-row">
+                <span class="receipt-label">Monto</span>
+                <span class="receipt-value 
+                    {% if data.comprobante_estado == 'revision' %}receipt-monto-azul
+                    {% elif data.comprobante_estado == 'rechazado' %}receipt-monto-rojo
+                    {% elif data.estado == 'pagado' %}receipt-monto-verde
+                    {% endif %}">
+                    {% if data.comprobante_estado == 'revision' %}
+                        Verificando
+                    {% elif data.comprobante_estado == 'rechazado' %}
+                        N/A
+                    {% elif data.estado == 'pagado' %}
+                        ${{ "%.2f"|format(data.monto) }}
+                    {% else %}
+                        ${{ "%.2f"|format(data.monto) }}
+                    {% endif %}
+                </span>
+            </div>
+            <div class="receipt-row">
+                <span class="receipt-label">Fecha</span>
+                <span class="receipt-value">{{ data.fecha_subida or 'N/A' }}</span>
+            </div>
+            <div class="receipt-row">
+                <span class="receipt-label">Estado</span>
+                <span class="receipt-value {{ data.comprobante_estado }}">
+                    {% if data.comprobante_estado == 'revision' %}
+                        🔵 En revisión
+                    {% elif data.comprobante_estado == 'rechazado' %}
+                        🔴 Rechazado
+                    {% elif data.estado == 'pagado' %}
+                        ✅ Pagado
+                    {% else %}
+                        ⏳ Pendiente
+                    {% endif %}
+                </span>
+            </div>
+            {% if data.motivo_rechazo %}
+            <div class="receipt-row full-width">
+                <span class="receipt-label">Motivo de rechazo</span>
+                <span class="receipt-value text-danger">{{ data.motivo_rechazo }}</span>
+            </div>
+            {% endif %}
+            
+            {% if data.comentario %}
+                <div class="receipt-row full-width">
+                    <span class="receipt-label">Comentario</span>
+                    <span class="receipt-value">{{ data.comentario }}</span>
+                </div>
+            {% endif %}
+            {% if data.nota %}
+            <div class="receipt-row full-width">
+                <span class="receipt-label">Nota</span>
+                <span class="receipt-value">{{ data.nota }}</span>
             </div>
             {% endif %}
         </div>
-
-        
     </div>
 
     <a href="{{ url_for('user.historial') }}" class="btn-back">Volver al historial</a>
 </div>
+
 {% endblock %}
