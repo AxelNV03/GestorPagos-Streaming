@@ -7,10 +7,12 @@ from app.utils.decorators import admin_required
 
 from app.services.admin_service import AdminService
 from app.services.usuario_service import UsuarioService
+from app.services.bot_service import BotService
 
 # ===================================================================================================
 @admin_bp.route('/usuarios')
 def usuarios():
+    BotService.notificar_admin("🤖 *Prueba desde GestorPagos*\n\nEl bot está funcionando correctamente. ✅")
     filtros = {
         'query': request.args.get('query', ''),
         'plataforma_id': request.args.get('plataforma_id', '')

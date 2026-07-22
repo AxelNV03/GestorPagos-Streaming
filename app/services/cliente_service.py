@@ -270,3 +270,4 @@ class ClienteService:
         except Exception as e:
             db.session.rollback()
             raise e
+# ===================================================================================================
