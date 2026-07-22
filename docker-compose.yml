@@ -18,11 +18,13 @@ services:
     container_name: pagos_app
     restart: unless-stopped  # <--- Añade esto aquí también
     volumes:
-      - .:/app
-      - ./storage:/app/storage
+      # - .:/app
+      # - ./storage:/app/storage
       - /etc/localtime:/etc/localtime:ro
-      - /etc/timezone:/etc/timezone:ro
+      # - /etc/timezone:/etc/timezone:ro
       - ./rclone.conf:/root/.config/rclone/rclone.conf:ro
+      - .:/app:Z
+      - ./storage:/app/storage:Z
     ports:
       - "5000:5000"
     env_file: .env

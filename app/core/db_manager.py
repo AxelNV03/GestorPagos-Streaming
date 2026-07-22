@@ -5,6 +5,7 @@ from contextlib import contextmanager
 # Instancia global del ORM
 db = SQLAlchemy()
 
+
 class ManagerDB:
     def __init__(self, app=None, fresh=False):
         if app:
