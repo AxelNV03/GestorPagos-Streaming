@@ -22,7 +22,7 @@ def create_app():
     
     # --- CONFIGURACIÓN PARA SESIÓN INFINITA ---
     # Definimos una duración exageradamente larga (ej. 10 años)
-    app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=3650)
+    app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=90)
     # Asegura que la cookie se refresque para mantener la fecha de expiración lejos
     app.config['SESSION_REFRESH_EACH_REQUEST'] = True 
     # ------------------------------------------

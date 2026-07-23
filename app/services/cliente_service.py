@@ -6,6 +6,8 @@ from app.services.periodo_service import PeriodoService
 from app.services.cobro_service import CobroService
 from app.services.usuario_service import UsuarioService
 from app.services.comprobante_service import ComprobanteService
+from app.services.email_service import EmailService
+
 
 from app.core.models.comprobante import Comprobante
 from app.core.models.cobro import Cobro
@@ -267,6 +269,11 @@ class ClienteService:
         
         try:
             ComprobanteService.guardar_comprobante(usuario_id, archivo, nota)
+            
+            # Enviar email de confirmación
+            if usuario.correo:
+                EmailService.comprobante_recibido(usuario)
+                
         except Exception as e:
             db.session.rollback()
             raise e

@@ -6,11 +6,14 @@ from app.services.plataforma_usuario_service import PlataformaUsuarioService
 from app.services.cobro_service import CobroService
 from app.services.periodo_service import PeriodoService
 from app.services.comprobante_service import ComprobanteService
+from app.services.email_service import EmailService
+
 from app.core.models.plataforma import Plataforma
 from app.core.models.cobro import Cobro
 from app.core.models.comprobante import Comprobante
 from app.core.models.plataforma_usuario import PlataformaUsuario
 from app.core.models.usuario import Usuario
+
 
 from itertools import groupby
 from sqlalchemy.orm import joinedload
@@ -246,6 +249,13 @@ class AdminService:
                     AdminService.generar_cobros_en_plataformas(u.id, plataformas_ids, mes_actual, anio_actual, label)
             
             db.session.commit()
+
+            # Dar la bienvenida
+            if not usuario_id or not str(usuario_id).strip():
+                # Es usuario nuevo
+                usuario = u  # u es el usuario creado
+                if usuario.correo:
+                    EmailService.bienvenida(usuario)
             return u
         except Exception as e:
             db.session.rollback()
@@ -591,9 +601,47 @@ class AdminService:
                     CobroService.asignar_extra(cobro_id, comprobante.id)
             
             ComprobanteService.cambiar_estado(comprobante, 'aprobado', comentario)
+            db.session.refresh(comprobante)
+            
+            # Enviar correo
+            AdminService._enviar_correo_aprobacion(comprobante, comentario)
+                
         except Exception as e:
             db.session.rollback()
             raise e
+    # ===================================================================================================
+    @staticmethod
+    def _enviar_correo_aprobacion(comprobante, comentario):
+        """Prepara y envía el correo de comprobante aprobado"""
+        usuario = comprobante.usuario
+        if not usuario.correo:
+            return
+        
+        cobros_cubiertos = [{
+            'motivo': c.motivo or 'Mensualidad',
+            'monto': float(c.monto_deuda),
+        } for c in comprobante.cobros_asociados]
+
+        total_cubierto = sum(c['monto'] for c in cobros_cubiertos)
+        
+        hoy = date.today()
+        inicio_mes = hoy.replace(day=1)
+        pendientes_q = Cobro.query.filter(
+            Cobro.suscripcion.has(PlataformaUsuario.usuario_id == usuario.id),
+            Cobro.estado == 'pendiente',
+            Cobro.mes_anio == inicio_mes
+        ).all()
+        
+
+        pendientes_lista = [{
+            'motivo': p.motivo or 'Mensualidad',
+            'monto': float(p.monto_deuda),
+        } for p in pendientes_q]
+
+        EmailService.comprobante_aprobado(
+            usuario, cobros_cubiertos, total_cubierto, 
+            pendientes_lista, comentario or None
+        )
 # ===================================================================================================
     @staticmethod
     def rechazar_comprobante(comprobante_id, comentario):
@@ -605,6 +653,13 @@ class AdminService:
         
         try:
             ComprobanteService.cambiar_estado(comprobante, 'rechazado', comentario)
+
+            # Rechazado 
+            # Email de rechazo
+            usuario = comprobante.usuario
+            if usuario.correo:
+                EmailService.comprobante_rechazado(usuario, comentario or 'Sin motivo especificado')
+
         except Exception as e:
             db.session.rollback()
             raise e
