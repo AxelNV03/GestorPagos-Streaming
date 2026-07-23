@@ -24,6 +24,7 @@ COPY . .
 # Dar permisos al script de backup
 RUN chmod +x /app/backup_auto.sh
 RUN chmod +x /app/recordatorio_mensual.sh
+RUN chmod +x /app/recordatorio_vencido.sh
 
 # Configurar cron para backup diario a las 3:00 AM
 RUN echo "0 3 * * * /app/backup_auto.sh >> /var/log/backup.log 2>&1" > /etc/cron.d/backup-cron && \
@@ -31,6 +32,8 @@ RUN echo "0 3 * * * /app/backup_auto.sh >> /var/log/backup.log 2>&1" > /etc/cron
     crontab /etc/cron.d/backup-cron
 
 RUN echo "0 9 1 * * /app/recordatorio_mensual.sh >> /var/log/recordatorio.log 2>&1" >> /etc/cron.d/backup-cron
+
+RUN echo "0 9 6 * * /app/recordatorio_vencido.sh >> /var/log/recordatorio.log 2>&1" >> /etc/cron.d/backup-cron
 
 # Crear archivo de log
 RUN touch /var/log/backup.log

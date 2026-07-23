@@ -71,35 +71,6 @@ class EmailService:
         )
 
     @staticmethod
-    def comprobante_aprobado(usuario, cobros_cubiertos, total_cubierto, pendientes_restantes, comentario=None):
-        nombre = f"{usuario.nombres} {usuario.apeP}"
-        titulo = f"¡Aprobado, {nombre}! ✅"
-        
-        # Desglose de cobros cubiertos
-        desglose = '<br>'.join([f'{c["plataforma"]}: ${c["monto"]:,.2f} - {c["motivo"]}' for c in cobros_cubiertos])
-        
-        if pendientes_restantes == 0:
-            estado = "<p>Todos tus servicios est&aacute;n al d&iacute;a. ¡Gracias por tu pago!</p>"
-        else:
-            estado = f"<p>A&uacute;n tienes <strong>{pendientes_restantes}</strong> cobros pendientes este mes.</p>"
-        
-        comentario_html = f"<p style='color:#8E959B;font-size:13px;margin-top:16px;'><strong>Comentario:</strong> {comentario}</p>" if comentario else "<p style='color:#8E959B;font-size:13px;margin-top:16px;'><strong>Comentario:</strong> N/A</p>"
-        
-        contenido = f"""
-        <p>Tu comprobante fue <strong>APROBADO</strong>. Este comprobante cubri&oacute;:</p>
-        <p style='background:#f8f9fa;padding:12px;border-radius:8px;'>{desglose}</p>
-        <p><strong>Total cubierto: ${total_cubierto:,.2f} MXN</strong></p>
-        {estado}
-        {comentario_html}
-        <p style='color:#8E959B;font-size:13px;margin-top:16px;'>Puedes consultar tu historial en el bot&oacute;n de abajo.</p>
-        """
-        return EmailService.enviar(
-            usuario.correo,
-            "Comprobante aprobado - GestorPagos",
-            EmailService._base_template(titulo, contenido, "Ver historial", "https://pagos.axelnava.com/user/historial")
-        )
-    
-    @staticmethod
     def comprobante_rechazado(usuario, motivo):
         nombre = f"{usuario.nombres} {usuario.apeP}"
         titulo = f"Comprobante rechazado, {nombre} ❌"
@@ -148,16 +119,32 @@ class EmailService:
             "Comprobante aprobado - GestorPagos",
             EmailService._base_template(titulo, contenido, "Ver historial", "https://pagos.axelnava.com/user/historial")
         )
+    @staticmethod
+    def recordatorio_pago(usuario, plataformas, total):
+        nombre = f"{usuario.nombres} {usuario.apeP}"
+        titulo = f"Hola {nombre} 💳"
+        contenido = f"""
+        <p>Este correo es para recordarte los pagos de este mes:</p>
+        <p style='background:#f8f9fa;padding:12px;border-radius:8px;'>{plataformas}</p>
+        <p><strong>Total: ${total:,.2f} MXN</strong></p>
+        <p>Realiza tu pago antes del <strong>d&iacute;a 5</strong> y sube tu comprobante en el bot&oacute;n de abajo.</p>
+        <p style='color:#8E959B;font-size:13px;margin-top:16px;'>Si ya registraste tu comprobante, omite este mensaje. Cualquier duda, escr&iacute;beme al WhatsApp.</p>
+        """
+        return EmailService.enviar(
+            usuario.correo,
+            "Recordatorio de pago(s) - GestorPagos",
+            EmailService._base_template(titulo, contenido, "Subir comprobante", "https://pagos.axelnava.com/user/pago")
+        )
 
     @staticmethod
     def recordatorio_vencido(usuario, plataformas, total):
         nombre = f"{usuario.nombres} {usuario.apeP}"
         titulo = f"⚠️ Pagos vencidos, {nombre}"
-        contenido = f"<p>Tienes pagos <strong>VENCIDOS</strong>:</p><p style='background:#fef2f2;padding:12px;border-radius:8px;border-left:4px solid #dc3545;'>{plataformas}</p><p><strong>Total: ${total:,.2f} MXN</strong></p><p>Evita la suspensión de tus servicios.</p>"
+        contenido = f"<p>Tienes pagos <strong>VENCIDOS</strong>:</p><p style='background:#fef2f2;padding:12px;border-radius:8px;border-left:4px solid #dc3545;'>{plataformas}</p><p><strong>Total: ${total:,.2f} MXN</strong></p><p>No olvides registrar tu comprobante en la plataforma.</p><p style='color:#8E959B;font-size:13px;margin-top:16px;'>Si ya realizaste el registro de tu comprobante, omite este mensaje. Cualquier duda, escr&iacute;beme al WhatsApp.</p>"
         return EmailService.enviar(
             usuario.correo,
             "⚠️ Pagos vencidos - GestorPagos",
-            EmailService._base_template(titulo, contenido, "Subir comprobante", "https://pagos.axelnava.com/user/pago")
+            EmailService._base_template(titulo, contenido, "Panel de la plataforma", "https://pagos.axelnava.com/")
         )
 
     @staticmethod
@@ -187,8 +174,31 @@ class EmailService:
     def aviso_general(usuario, mensaje, boton_texto=None, boton_url=None):
         nombre = f"{usuario.nombres} {usuario.apeP}"
         titulo = f"Aviso, {nombre} 📢"
+        contenido = f"""
+        <p>{mensaje}</p>
+        <p style='color:#8E959B;font-size:13px;margin-top:16px;'>Cualquier duda, escr&iacute;beme al WhatsApp.</p>
+        """
         return EmailService.enviar(
             usuario.correo,
             "Aviso - GestorPagos",
-            EmailService._base_template(titulo, f"<p>{mensaje}</p>", boton_texto, boton_url)
+            EmailService._base_template(titulo, contenido, boton_texto, boton_url)
+        )
+
+    @staticmethod
+    def nuevo_cargo_extra(usuario, concepto, monto, plataforma):
+        nombre = f"{usuario.nombres} {usuario.apeP}"
+        titulo = f"Nuevo cargo, {nombre} 💰"
+        contenido = f"""
+        <p>Se ha agregado un nuevo cargo a tu cuenta:</p>
+        <p style='background:#f8f9fa;padding:12px;border-radius:8px;'>
+            {plataforma}: ${monto:,.2f}<br>
+            <small>{concepto}</small>
+        </p>
+        <p>Revisa tu panel para m&aacute;s detalles.</p>
+        <p style='color:#8E959B;font-size:13px;margin-top:16px;'>Cualquier duda, escr&iacute;beme al WhatsApp.</p>
+        """
+        return EmailService.enviar(
+            usuario.correo,
+            "Nuevo cargo - GestorPagos",
+            EmailService._base_template(titulo, contenido, "Ver panel", "https://pagos.axelnava.com/user/dashboard")
         )

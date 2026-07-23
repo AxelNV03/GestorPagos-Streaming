@@ -45,15 +45,7 @@
     </div>
 </div>
 
-{% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages %}
-        <div class="alerts-wrapper">
-            {% for category, message in messages %}
-            <div class="alert alert-{{ category }}">{{ message }}</div>
-            {% endfor %}
-        </div>
-    {% endif %}
-{% endwith %}
+
 <form action="{{ url_for('user.subir_comprobante') }}" method="POST" enctype="multipart/form-data" class="payment-form">
     <div class="upload-section">
         <label class="upload-label">Comprobante de transferencia</label>
@@ -76,7 +68,7 @@
         <textarea name="notas" class="payment-notes" placeholder="Ej: Pago de 2 meses, etc." rows="2"></textarea>
     </div>
 
-    <button type="submit" class="btn-confirm-payment">Enviar</button>
+    <button type="submit" class="btn-confirm-payment" onclick="this.disabled=true;this.textContent='Enviando...';this.form.submit();">Enviar</button>
 </form>
 {% endif %}
 

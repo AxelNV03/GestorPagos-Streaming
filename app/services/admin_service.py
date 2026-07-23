@@ -403,12 +403,10 @@ class AdminService:
 # ===================================================================================================
     @staticmethod
     def cobro_extra(datos):
-        # Datos del periodo
         info_p = PeriodoService.obtener_periodo_actual()
         mes_actual, anio_actual, label = info_p["mes"], info_p["anio"], info_p["label"]
         fecha_cobro = date(int(anio_actual), int(mes_actual), 1)
         
-        # Desempaquetado de datos
         alcance = datos.get('alcance')
         monto = datos.get('monto')
         concepto = datos.get('concepto')
@@ -416,7 +414,6 @@ class AdminService:
         plataforma_id = datos.get('plataforma_id')
         
         try:
-            # 1. Cobro general de plataforma
             if alcance == 'plataforma':
                 usuarios_plataforma = PlataformaUsuarioService.obtener_vinculos_de_plataforma(plataforma_id)
                 if not usuarios_plataforma:
@@ -432,9 +429,14 @@ class AdminService:
                     )
                     db.session.add(nuevo_cobro)
                 db.session.commit()
+                
+                # Notificar a todos los usuarios de la plataforma
+                plataforma = db.session.get(Plataforma, plataforma_id)
+                if plataforma:
+                    for v in plataforma.usuarios_vinculados:
+                        if v.activo and v.perfil_usuario.correo:
+                            EmailService.nuevo_cargo_extra(v.perfil_usuario, concepto, monto, plataforma.nombre)
             else:
-                # 2. Cobro a un solo user
-                # Buscamos el vínculo activo entre el usuario y la plataforma elegida en el selector interactivo
                 vinculo = PlataformaUsuario.query.filter_by(
                     usuario_id=int(usuario_id),
                     plataforma_id=int(plataforma_id),
@@ -453,9 +455,23 @@ class AdminService:
                 )
                 db.session.add(nuevo_cobro)
                 db.session.commit()
+                
+                # Notificar al usuario
+                # Para notificar al usuario individual
+                user = db.session.get(Usuario, int(usuario_id))
+                if user and user.correo:
+                    EmailService.nuevo_cargo_extra(user, concepto, monto, vinculo.plataforma.nombre)
+                    
         except Exception as e:
             db.session.rollback()
             raise e
+
+
+    
+
+
+
+    
 # ===================================================================================================
     @staticmethod
     def eliminar_cobro(cobro_id):
@@ -664,3 +680,16 @@ class AdminService:
             db.session.rollback()
             raise e
 # ===================================================================================================
+# AdminService
+    @staticmethod
+    def enviar_anuncio(mensaje):
+        if not mensaje.strip():
+            raise ValueError('El mensaje no puede estar vacío')
+        
+        usuarios = UsuarioService.obtener_todos()
+        enviados = 0
+        for u in usuarios:
+            if u.correo:
+                EmailService.aviso_general(u, mensaje)
+                enviados += 1
+        return enviados
