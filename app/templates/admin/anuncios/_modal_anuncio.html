@@ -1,0 +1,68 @@
+<div id="pbc-modal-anuncio" class="pbc-modal-overlay">
+    <div class="pbc-modal-content">
+        
+        <div class="pbc-modal-header">
+            <h3>Enviar Anuncio General</h3>
+            <span class="pbc-close-btn" onclick="cerrarModalAnuncio()">&times;</span>
+        </div>
+        
+        <form action="{{ url_for('admin.enviar_anuncio') }}" method="POST" id="formAnuncio">
+            <input type="hidden" name="alcance" id="inputAlcanceAnuncio" value="plataforma">
+
+            <div class="pbc-form-body">
+                
+                <div class="pbc-form-group">
+                    <label>Mensaje del anuncio</label>
+                    <textarea name="mensaje" class="pbc-form-textarea" rows="4" placeholder="Escribe el anuncio que se enviará a los usuarios..." required></textarea>
+                </div>
+
+                <div class="pbc-tabs-container">
+                    <button type="button" class="pbc-tab" id="tabUsuarioAnuncio" onclick="cambiarPestanaAnuncio('usuario')">
+                        Usuarios específicos
+                    </button>
+                    <button type="button" class="pbc-tab active" id="tabPlataformaAnuncio" onclick="cambiarPestanaAnuncio('plataforma')">
+                        Por Plataforma
+                    </button>
+                </div>
+
+                <div id="panelUsuarioAnuncio" class="pbc-tab-panel" style="display: none;">
+                    <div class="pbc-form-group">
+                        <label>Selecciona los usuarios</label>
+                        <div style="max-height: 200px; overflow-y: auto; border: 1px solid #e2e8f0; border-radius: 8px; padding: 8px;">
+                            {% for u in usuarios %}
+                            <label style="display: flex; align-items: center; gap: 8px; padding: 6px 8px; cursor: pointer; border-radius: 4px;" 
+                                   onmouseover="this.style.background='#f8f9fa'" onmouseout="this.style.background='transparent'">
+                                <input type="checkbox" name="usuarios_ids" value="{{ u.id }}" style="accent-color: #1a1a1a;">
+                                <span style="font-size: 0.85rem;">{{ u.nombres }} {{ u.apeP }}</span>
+                                {% if not u.correo %}
+                                <span style="font-size: 0.7rem; color: #dc3545;">(sin correo)</span>
+                                {% endif %}
+                            </label>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                <div id="panelPlataformaAnuncio" class="pbc-tab-panel">
+                    <div class="pbc-form-group">
+                        <label>Selecciona la Plataforma</label>
+                        <select class="pbc-form-select" name="plataforma_id">
+                            {% for p in listaPlataformas %}
+                                <option value="{{ p.id }}">{{ p.nombre }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="pbc-modal-footer">
+                <button type="button" class="btn-secondary" onclick="cerrarModalAnuncio()">Cancelar</button>
+                <button type="submit" class="btn-primary">
+                    <i class="bi bi-send"></i> Enviar anuncio
+                </button>
+            </div>
+        </form>
+
+    </div>
+</div>

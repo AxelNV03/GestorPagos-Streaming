@@ -67,11 +67,15 @@
         </header>
     </div>
 
+     <!-- Botón de Anuncio -->
+    <button type="button" class="btn-primary" onclick="abrirModalAnuncio()" style="margin: 15px 0;">
+        <i class="bi bi-megaphone"></i> Enviar Anuncio
+    </button>
 
+    {% include "admin/anuncios/_modal_anuncio.html" %}
 
     
 
-    <!-- Servicios estilo playlist -->
 <!-- Servicios estilo playlist -->
 <section class="platform-status-section">
     <h2>Acceso Rapido</h2>
@@ -116,5 +120,6 @@
 
 {% endblock %}
 {% block scripts %}
-
+    {{ super() }}
+    <script src="{{ url_for('static', filename='js/admin/seccion_anuncios.js') }}"></script>
 {% endblock %}

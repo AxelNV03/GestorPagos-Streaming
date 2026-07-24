@@ -58,6 +58,8 @@ class AdminService:
             },
             "plataformas": plataformas,  
             "plataformas_pendientes": plataformas_deudoras,
+            "usuarios": UsuarioService.obtener_todos(),           # ← Agregar
+            "listaPlataformas": PlataformaService.obtener_todas()  # ← Agregar
         }
 # ===================================================================================================
 
@@ -465,15 +467,7 @@ class AdminService:
         except Exception as e:
             db.session.rollback()
             raise e
-
-
-    
-
-
-
-    
 # ===================================================================================================
-    @staticmethod
     def eliminar_cobro(cobro_id):
         try: 
             cobro = db.session.get(Cobro, cobro_id)
@@ -680,6 +674,11 @@ class AdminService:
             db.session.rollback()
             raise e
 # ===================================================================================================
+
+
+# ===================================================================================================
+# ANUNCIOS
+# ===================================================================================================
 # AdminService
     @staticmethod
     def enviar_anuncio(mensaje):
@@ -691,5 +690,25 @@ class AdminService:
         for u in usuarios:
             if u.correo:
                 EmailService.aviso_general(u, mensaje)
+                enviados += 1
+        return enviados
+
+    @staticmethod
+    def enviar_anuncio_plataforma(plataforma_id, mensaje):
+        vinculos = PlataformaUsuario.query.filter_by(plataforma_id=plataforma_id, activo=True).all()
+        enviados = 0
+        for v in vinculos:
+            if v.perfil_usuario.correo:
+                EmailService.aviso_general(v.perfil_usuario, mensaje)
+                enviados += 1
+        return enviados
+
+    @staticmethod
+    def enviar_anuncio_usuarios(usuarios_ids, mensaje):
+        enviados = 0
+        for u_id in usuarios_ids:
+            usuario = db.session.get(Usuario, int(u_id))
+            if usuario and usuario.correo:
+                EmailService.aviso_general(usuario, mensaje)
                 enviados += 1
         return enviados
