@@ -40,7 +40,7 @@
                 {% endif %}
             </span>
             {% if cobro.ruta_archivo %}
-            <a href="{{ url_for('user.ver_recibo', id=cobro.id) }}" class="historial-ver">Ver</a>
+            <a href="{{ url_for('user.ver_recibo', id=cobro.id) }}" class="historial-ver">Ver recibo</a>
             {% endif %}
         </div>
     </div>
@@ -69,7 +69,7 @@
             </div>
             <div class="historial-item-right">
                 <span class="historial-estado">🔵 En revisión</span>
-                <a href="{{ url_for('user.ver_comprobante_rechazado', id=r.id) }}" class="historial-ver">Ver</a>
+                <a href="{{ url_for('user.ver_comprobante_rechazado', id=r.id) }}" class="historial-ver">Ver recibo</a>
             </div>
         </div>
         {% endfor %}
@@ -91,7 +91,7 @@
                 </div>
                 <div class="historial-item-right">
                     <span class="historial-estado">🔴 Rechazado</span>
-                    <a href="{{ url_for('user.ver_comprobante_rechazado', id=r.id) }}" class="historial-ver">Ver</a>
+                    <a href="{{ url_for('user.ver_comprobante_rechazado', id=r.id) }}" class="historial-ver">Ver detalles</a>
                 </div>
             </div>
         {% endfor %}
