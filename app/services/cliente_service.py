@@ -12,7 +12,7 @@ from app.services.email_service import EmailService
 from app.core.models.comprobante import Comprobante
 from app.core.models.cobro import Cobro
 from app.core.models.usuario import Usuario
-
+import threading
 from app import db
 # ===================================================================================================
 class ClienteService:
@@ -272,8 +272,12 @@ class ClienteService:
             
             # Enviar email de confirmación
             if usuario.correo:
-                EmailService.comprobante_recibido(usuario)
-                
+                threading.Thread(
+                    target=EmailService.comprobante_recibido,
+                    args=(usuario,),
+                    daemon=True
+                ).start()
+                            
         except Exception as e:
             db.session.rollback()
             raise e

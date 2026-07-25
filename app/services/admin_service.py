@@ -7,7 +7,7 @@ from app.services.cobro_service import CobroService
 from app.services.periodo_service import PeriodoService
 from app.services.comprobante_service import ComprobanteService
 from app.services.email_service import EmailService
-
+import threading
 from app.core.models.plataforma import Plataforma
 from app.core.models.cobro import Cobro
 from app.core.models.comprobante import Comprobante
@@ -251,13 +251,15 @@ class AdminService:
                     AdminService.generar_cobros_en_plataformas(u.id, plataformas_ids, mes_actual, anio_actual, label)
             
             db.session.commit()
-
             # Dar la bienvenida
             if not usuario_id or not str(usuario_id).strip():
-                # Es usuario nuevo
-                usuario = u  # u es el usuario creado
+                usuario = u
                 if usuario.correo:
-                    EmailService.bienvenida(usuario)
+                    threading.Thread(
+                        target=EmailService.bienvenida,
+                        args=(usuario,),
+                        daemon=True
+                    ).start()
             return u
         except Exception as e:
             db.session.rollback()
@@ -437,7 +439,11 @@ class AdminService:
                 if plataforma:
                     for v in plataforma.usuarios_vinculados:
                         if v.activo and v.perfil_usuario.correo:
-                            EmailService.nuevo_cargo_extra(v.perfil_usuario, concepto, monto, plataforma.nombre)
+                            threading.Thread(
+                                target=EmailService.nuevo_cargo_extra,
+                                args=(v.perfil_usuario, concepto, monto, plataforma.nombre),
+                                daemon=True
+                            ).start()
             else:
                 vinculo = PlataformaUsuario.query.filter_by(
                     usuario_id=int(usuario_id),
@@ -458,12 +464,15 @@ class AdminService:
                 db.session.add(nuevo_cobro)
                 db.session.commit()
                 
-                # Notificar al usuario
-                # Para notificar al usuario individual
+                # Notificar al usuario individual
                 user = db.session.get(Usuario, int(usuario_id))
                 if user and user.correo:
-                    EmailService.nuevo_cargo_extra(user, concepto, monto, vinculo.plataforma.nombre)
-                    
+                    threading.Thread(
+                        target=EmailService.nuevo_cargo_extra,
+                        args=(user, concepto, monto, vinculo.plataforma.nombre),
+                        daemon=True
+                    ).start()
+
         except Exception as e:
             db.session.rollback()
             raise e
@@ -648,10 +657,11 @@ class AdminService:
             'monto': float(p.monto_deuda),
         } for p in pendientes_q]
 
-        EmailService.comprobante_aprobado(
-            usuario, cobros_cubiertos, total_cubierto, 
-            pendientes_lista, comentario or None
-        )
+        threading.Thread(
+            target=EmailService.comprobante_aprobado,
+            args=(usuario, cobros_cubiertos, total_cubierto, pendientes_lista, comentario or None),
+            daemon=True
+        ).start()
 # ===================================================================================================
     @staticmethod
     def rechazar_comprobante(comprobante_id, comentario):
@@ -664,11 +674,14 @@ class AdminService:
         try:
             ComprobanteService.cambiar_estado(comprobante, 'rechazado', comentario)
 
-            # Rechazado 
-            # Email de rechazo
+            # Rechazado
             usuario = comprobante.usuario
             if usuario.correo:
-                EmailService.comprobante_rechazado(usuario, comentario or 'Sin motivo especificado')
+                threading.Thread(
+                    target=EmailService.comprobante_rechazado,
+                    args=(usuario, comentario or 'Sin motivo especificado'),
+                    daemon=True
+                ).start()
 
         except Exception as e:
             db.session.rollback()
@@ -687,28 +700,42 @@ class AdminService:
         
         usuarios = UsuarioService.obtener_todos()
         enviados = 0
+
         for u in usuarios:
             if u.correo:
-                EmailService.aviso_general(u, mensaje)
+                threading.Thread(
+                    target=EmailService.aviso_general,
+                    args=(u, mensaje),
+                    daemon=True
+                ).start()
                 enviados += 1
         return enviados
-
+# ===================================================================================================
     @staticmethod
     def enviar_anuncio_plataforma(plataforma_id, mensaje):
         vinculos = PlataformaUsuario.query.filter_by(plataforma_id=plataforma_id, activo=True).all()
         enviados = 0
         for v in vinculos:
             if v.perfil_usuario.correo:
-                EmailService.aviso_general(v.perfil_usuario, mensaje)
+                threading.Thread(
+                    target=EmailService.aviso_general,
+                    args=(v.perfil_usuario, mensaje),
+                    daemon=True
+                ).start()
                 enviados += 1
         return enviados
-
+# ===================================================================================================
     @staticmethod
     def enviar_anuncio_usuarios(usuarios_ids, mensaje):
         enviados = 0
         for u_id in usuarios_ids:
             usuario = db.session.get(Usuario, int(u_id))
             if usuario and usuario.correo:
-                EmailService.aviso_general(usuario, mensaje)
+                threading.Thread(
+                    target=EmailService.aviso_general,
+                    args=(usuario, mensaje),
+                    daemon=True
+                ).start()
                 enviados += 1
         return enviados
+# ===================================================================================================
