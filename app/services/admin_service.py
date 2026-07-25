@@ -222,6 +222,10 @@ class AdminService:
                     PlataformaUsuarioService.desvincular_plataformas_de_usuario(u.id, eliminar)
 
                 if agregar:
+                    for p_id in agregar:  # ← Falta este loop
+                        plataforma = db.session.get(Plataforma, p_id)
+                        if plataforma and not plataforma.tiene_cupos:
+                            raise ValueError(f"La plataforma '{plataforma.nombre}' no tiene cupos disponibles")
                     PlataformaUsuarioService.vincular_plataformas_a_usuario(
                         u.id, agregar, datos.get('correos_plataforma', {})
                     )               
@@ -244,6 +248,10 @@ class AdminService:
 
                 plataformas_ids = datos.get('plataformas', [])
                 if plataformas_ids:
+                    for p_id in plataformas_ids:
+                        plataforma = db.session.get(Plataforma, p_id)
+                        if plataforma and not plataforma.tiene_cupos:
+                            raise ValueError(f"La plataforma '{plataforma.nombre}' no tiene cupos disponibles")
                     PlataformaUsuarioService.vincular_plataformas_a_usuario(
                         u.id, plataformas_ids, datos.get('correos_plataforma', {})
                     )
