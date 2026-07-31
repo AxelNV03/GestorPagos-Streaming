@@ -722,6 +722,9 @@ class AdminService:
     @staticmethod
     def enviar_anuncio_plataforma(plataforma_id, mensaje):
         vinculos = PlataformaUsuario.query.filter_by(plataforma_id=plataforma_id, activo=True).all()
+        if not vinculos:
+            raise ValueError('La plataforma no tiene usuarios activos')
+        
         enviados = 0
         for v in vinculos:
             if v.perfil_usuario.correo:

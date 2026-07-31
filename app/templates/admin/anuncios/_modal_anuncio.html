@@ -29,16 +29,17 @@
                     <div class="pbc-form-group">
                         <label>Selecciona los usuarios</label>
                         <div style="max-height: 200px; overflow-y: auto; border: 1px solid #e2e8f0; border-radius: 8px; padding: 8px;">
-                            {% for u in usuarios %}
+                        {% for u in usuarios %}
                             <label style="display: flex; align-items: center; gap: 8px; padding: 6px 8px; cursor: pointer; border-radius: 4px;" 
-                                   onmouseover="this.style.background='#f8f9fa'" onmouseout="this.style.background='transparent'">
+                                onmouseover="this.style.background='#f8f9fa'" onmouseout="this.style.background='transparent'">
                                 <input type="checkbox" name="usuarios_ids" value="{{ u.id }}" style="accent-color: #1a1a1a;">
                                 <span style="font-size: 0.85rem;">{{ u.nombres }} {{ u.apeP }}</span>
+                                <span style="font-size: 0.7rem; color: #8E959B;">({{ u.nombres_plataformas or 'Sin plataforma' }})</span>
                                 {% if not u.correo %}
                                 <span style="font-size: 0.7rem; color: #dc3545;">(sin correo)</span>
                                 {% endif %}
                             </label>
-                            {% endfor %}
+                        {% endfor %}
                         </div>
                     </div>
                 </div>
@@ -46,9 +47,12 @@
                 <div id="panelPlataformaAnuncio" class="pbc-tab-panel">
                     <div class="pbc-form-group">
                         <label>Selecciona la Plataforma</label>
+
                         <select class="pbc-form-select" name="plataforma_id">
                             {% for p in listaPlataformas %}
-                                <option value="{{ p.id }}">{{ p.nombre }}</option>
+                                {% if p.total_usuarios > 0 %}
+                                <option value="{{ p.id }}">{{ p.nombre }} ({{ p.total_usuarios }} usuarios)</option>
+                                {% endif %}
                             {% endfor %}
                         </select>
                     </div>
