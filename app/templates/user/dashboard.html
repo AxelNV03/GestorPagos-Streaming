@@ -124,7 +124,7 @@
         <div class="menu-arrow"><i class="bi bi-chevron-right"></i></div>
     </a>
 
-    {% if data.total_pendiente > 0 %}
+    <!-- Seccion comprobantes -->
         <a href="{{ url_for('user.seccion_comprobante') }}" class="menu-card">
             <div class="menu-card-content">
                 <div class="menu-icon icon-blue"><i class="bi bi-plus-circle-fill"></i></div>
@@ -135,7 +135,6 @@
             </div>
             <div class="menu-arrow"><i class="bi bi-chevron-right"></i></div>
         </a>
-    {% endif %}
 
     <a href="https://wa.me/{{ config.ADMIN_WHATSAPP }}?text=Hola!%20Soy%20{{ data.user.nombres | lower | title | urlencode }},%20tengo%20una%20duda%20sobre%20mi%20cuenta" 
         target="_blank" class="menu-card">
