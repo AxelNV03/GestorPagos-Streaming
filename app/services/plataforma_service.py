@@ -45,7 +45,8 @@ class PlataformaService:
             precio_total=datos.get('precio_total'),
             dia_cobro=datos.get('dia_cobro'),
             cuota=datos.get('cuota'),
-            correo_admin=datos.get('correo_admin')
+            correo_admin=datos.get('correo_admin'),
+            tarjeta=datos.get('tarjeta')  # ← NUEVO
         )        
         db.session.add(nueva_p)
         db.session.flush()
@@ -66,6 +67,7 @@ class PlataformaService:
         plataforma.dia_cobro = datos.get('dia_cobro')
         plataforma.cuota = datos.get('cuota') 
         plataforma.correo_admin = datos.get('correo_admin')
+        plataforma.tarjeta = datos.get('tarjeta')  # ← NUEVO
         db.session.flush()
 
         if archivo_logo and archivo_logo.filename != '':
