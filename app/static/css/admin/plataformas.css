@@ -152,7 +152,9 @@
     box-shadow: 0 6px 15px rgba(0,0,0,0.15);
 }
 /* ===================================================================================================================== */
+/* ==================================================================================================== */
 /* TABLA DE DATOS - Style */
+/* ==================================================================================================== */
 .plataforma-table {
     width: 100%;
     border-collapse: separate;
@@ -170,22 +172,23 @@
 }
 
 .plataforma-table th {
-    padding: 15px;
+    padding: 12px 10px;
     text-align: left;
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 0.5px;
     color: #666;
     font-weight: 700;
     border-bottom: 2px solid #eee;
+    white-space: nowrap;
 }
 
 .plataforma-table td {
-    padding: 12px 15px;
+    padding: 10px;
     vertical-align: middle;
     border-bottom: 1px solid #f1f1f1;
     color: #333;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
 }
 
 .plataforma-table tr:last-child td {
@@ -193,24 +196,73 @@
 }
 
 .plataforma-table tr:hover {
-    background-color: #fcfcfc; /* Efecto hover sutil */
+    background-color: #fcfcfc;
 }
 
-/* Logos en la tabla */
+/* Logo */
 .table-logo {
-    width: 35px;
-    height: 35px;
+    width: 32px;
+    height: 32px;
     object-fit: contain;
     border-radius: 6px;
     background: #f9f9f9;
     padding: 2px;
 }
 
-/* Badges de Estado - Éxito/Pagado */
+/* Email */
+.email-container {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #f4f4f4;
+    padding: 3px 8px;
+    border-radius: 6px;
+    border: 1px solid #e0e0e0;
+}
+
+.user-email {
+    font-family: 'Cascadia Code', 'Courier New', monospace;
+    font-size: 0.8rem;
+    color: #333;
+}
+
+.btn-copy-small {
+    background: none;
+    border: none;
+    color: #888;
+    cursor: pointer;
+    font-size: 0.75rem;
+    padding: 0;
+    transition: color 0.2s;
+}
+
+.btn-copy-small:hover {
+    color: #1a1a1a;
+}
+
+/* Botones */
+.btn-action {
+    background: transparent;
+    border: 1px solid #eee;
+    padding: 6px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: #555;
+}
+
+.btn-action:hover {
+    background: #1a1a1a;
+    color: #fff;
+    border-color: #1a1a1a;
+    transform: translateY(-2px);
+}
+
+/* Badges */
 .badge-status-green {
-    background-color: #e8f5e9; /* Un verde muy claro de fondo */
-    color: #2e7d32;           /* Un verde oscuro para el texto (legibilidad) */
-    border: 1px solid #c8e6c9; /* Borde sutil para darle estructura */
+    background-color: #e8f5e9;
+    color: #2e7d32;
+    border: 1px solid #c8e6c9;
     padding: 4px 10px;
     border-radius: 6px;
     font-size: 0.7rem;
@@ -229,137 +281,24 @@
     font-weight: 700;
 }
 
-/* Botones de Acción (Pencil) */
-
-.btn-action {
-    background: transparent;
-    border: 1px solid #eee;
-    padding: 8px;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.2s;
-    color: #555;
-}
-
-.btn-action:hover {
-    background: #1a1a1a;
-    color: #fff;
-    border-color: #1a1a1a;
-    transform: translateY(-2px);
-}
-
-.plataforma-table th, 
+/* Centrado */
+.plataforma-table th,
 .plataforma-table td {
-    text-align: center; /* Esto centra texto, imágenes y botones */
+    text-align: center;
     vertical-align: middle;
 }
 
-/* Boton de gestionar */
-.btn-go-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 6px 12px;
-    background-color: #f8f9fa;
-    color: #1a1a1a;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    text-decoration: none;
-    font-size: 0.85rem;
-    font-weight: 500;
-    transition: all 0.2s ease;
+/* Excepciones: alinear izquierda */
+.plataforma-table td:first-child,
+.plataforma-table th:first-child {
+    text-align: center;
 }
 
-.btn-go-link i {
-    font-size: 0.9rem;
-}
-
-.btn-go-link:hover {
-    background-color: #1a1a1a;
-    color: #ffffff;
-    border-color: #1a1a1a;
-    transform: translateY(-1px);
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
-
+/* Empty state */
 .text-muted {
     color: #adb5bd;
     font-size: 0.8rem;
     font-style: italic;
-}
-
-
-/* Boton de copiar correo */
-.email-container {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    background: #f4f4f4;
-    padding: 4px 8px;
-    border-radius: 6px;
-    border: 1px solid #e0e0e0;
-}
-
-.user-email {
-    font-family: 'Cascadia Code', 'Courier New', monospace;
-    font-size: 0.85rem;
-    color: #333;
-}
-
-.btn-copy-small {
-    background: none;
-    border: none;
-    color: #888;
-    cursor: pointer;
-    font-size: 0.8rem;
-    padding: 0;
-    transition: color 0.2s;
-}
-
-.btn-copy-small:hover {
-    color: #1a1a1a;
-}
-
-/* Ajuste de anchos específicos en algunas columnas */
-table.plataforma-table th:nth-child(1) { width: 60px; }  /* Logo */
-table.plataforma-table th:nth-child(6) { width: 100px; } /* Fecha, Precio, Conteo */
-table.plataforma-table td:nth-child(9),
-table.plataforma-table th:nth-child(9) {
-    text-align: left !important;
-    padding-left: 20px !important;
-}
-
-/* Datos de la columan correos alinear a la izquierda */
-/* Localizamos el TD que contiene el email-container */
-.plataforma-table td:has(.email-container) {
-    text-align: left !important;
-    padding-left: 15px !important;
-}
-
-/* Forzamos al contenedor a no centrarse por márgenes automáticos */
-.email-container {
-    display: inline-flex !important; 
-    margin: 0 !important; /* Elimina cualquier margin: auto que lo esté centrando */
-    justify-content: flex-start !important;
-}
-
-/* Columna Correo alinear izquierda */
-/* Alineamos el encabezado "Correo" (columna 10) */
-.plataforma-table thead th:nth-child(10) {
-    text-align: left !important;
-    padding-left: 20px !important;
-}
-
-/* Alineamos los datos del correo (columna 10) */
-.plataforma-table tbody td:nth-child(10) {
-    text-align: left !important;
-    padding-left: 20px !important;
-}
-
-/* Aseguramos que el contenedor del email no tenga márgenes que lo centren */
-.plataforma-table td:nth-child(10) .email-container {
-    margin-left: 0 !important;
-    margin-right: auto !important;
 }
 
 /* ===================================================================================================================== */

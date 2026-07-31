@@ -24,7 +24,8 @@ def guardar_plataforma():
         'precio_total': float(request.form.get('precio_total', 0.00)),
         'dia_cobro': int(request.form.get('dia_cobro', 1)),
         'cuota': float(request.form.get('cuota', 0.00)),
-        'correo_admin': request.form.get('correo_admin')
+        'correo_admin': request.form.get('correo_admin'),
+        'tarjeta': request.form.get('tarjeta', '')  # ← NUEVO
     }
     try:
         AdminService.guardar_plataforma(plataforma_id, datos, archivo_logo)    

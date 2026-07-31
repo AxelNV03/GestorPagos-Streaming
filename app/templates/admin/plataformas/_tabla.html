@@ -5,7 +5,6 @@
             <tr>
                 <th scope="col">Logo</th>
                 <th scope="col">Plataforma</th>
-                <th scope="col">Correo Admin</th>
                 <th scope="col" class="text-center">Día de Cobro</th>
                 <th scope="col" class="text-end">Precio Mensual</th>
                 <th scope="col" class="text-end">Cuota</th>
@@ -29,22 +28,18 @@
                         {% endif %}
                     </td>
 
-                    <td>
+
+                    <td style="text-align: left !important;">
                         <a href="{{ url_for('admin.detalle_plataforma', plataforma_id=p.id) }}" 
                         style="text-decoration: none; color: inherit;">
                             <strong>{{ p.nombre }}</strong>
                         </a>
+                        <div style="font-size: 0.8rem; color: #1a1a1a; margin-top: 2px;">✉️ {{ p.correo_admin }}</div>
+                        {% if p.tarjeta %}
+                        <div style="font-size: 0.78rem; color: #666; margin-top: 2px; font-weight: 500;">💳 {{ p.tarjeta }}</div>
+                        {% endif %}
                     </td>
 
-
-                    <td>
-                        <div class="email-container">
-                            <code class="user-email">{{ p.correo_admin }}</code>
-                            <button class="btn-copy-small" onclick="copyToClipboard('{{ p.correo_admin }}')" title="Copiar correo">
-                                <i class="bi bi-clipboard"></i>
-                            </button>
-                        </div>
-                    </td>                    
                     <td>Dia {{ p.dia_cobro }}</td>
                     <td>${{ "{:,.2f}".format(p.precio_total) }}</td>
                     <td>${{ "{:,.2f}".format(p.cuota) }}</td>
@@ -78,7 +73,8 @@
                                 "dia": p.dia_cobro,
                                 "cuota": p.cuota,
                                 "correo": p.correo_admin,
-                                "logo": p.url_logo
+                                "logo": p.url_logo,
+                                "tarjeta": p.tarjeta or ""
                             } | tojson | safe }})'>
                             <i class="bi bi-pencil-square"></i>
                         </button>
@@ -90,7 +86,7 @@
                 </tr>
             {% else %}
                 <tr>
-                    <td colspan="11" class="text-center text-muted py-5">
+                    <td colspan="10" class="text-center text-muted py-5">
                         <div class="empty-state-wrapper">
                             <i class="bi bi-folder-x fs-1 d-block mb-3 text-secondary"></i>
                             <h5 class="fw-bold">No hay plataformas registradas</h5>
