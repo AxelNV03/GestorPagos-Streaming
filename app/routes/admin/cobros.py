@@ -24,7 +24,9 @@ def generar_cargo_extra():
         'monto' : float(request.form.get('monto', 0)),
         'concepto' : request.form.get('concepto'),
         'usuario_id' : request.form.get('usuario_id'),
-        'plataforma_id' : request.form.get('plataforma_id')
+        'plataforma_id' : request.form.get('plataforma_id'),
+        'mes_cobro' : int(request.form.get('cobro_mes')),
+        'anio_cobro' : int(request.form.get('cobro_anio'))
     }
     try:
         AdminService.cobro_extra(datos)
