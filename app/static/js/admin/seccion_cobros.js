@@ -148,3 +148,18 @@ window.addEventListener('click', function(event) {
         cerrarModalEditar();
     }
 });
+
+// Cerrar modal cargo extra con ESC
+document.addEventListener('keydown', function(event) {
+    if (event.key === "Escape") {
+        cerrarModalCargoExtra();
+    }
+});
+
+// Cerrar modal cargo extra al hacer clic fuera
+window.addEventListener('click', function(event) {
+    const modal = document.getElementById('pbc-modal-cargo-extra');
+    if (event.target === modal) {
+        cerrarModalCargoExtra();
+    }
+});

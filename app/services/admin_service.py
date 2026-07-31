@@ -415,9 +415,9 @@ class AdminService:
 # ===================================================================================================
     @staticmethod
     def cobro_extra(datos):
-        info_p = PeriodoService.obtener_periodo_actual()
-        mes_actual, anio_actual, label = info_p["mes"], info_p["anio"], info_p["label"]
-        fecha_cobro = date(int(anio_actual), int(mes_actual), 1)
+        mes = int(datos.get('mes_cobro'))
+        anio = int(datos.get('anio_cobro'))
+        fecha_cobro = date(anio, mes, 1)
         
         alcance = datos.get('alcance')
         monto = datos.get('monto')
