@@ -38,6 +38,9 @@
                         {% if p.tarjeta %}
                         <div style="font-size: 0.78rem; color: #666; margin-top: 2px; font-weight: 500;">💳 {{ p.tarjeta }}</div>
                         {% endif %}
+                        {% if p.direccion %}
+                            <div style="font-size: 0.75rem; color: #8E959B; margin-top: 1px;">📍 {{ p.direccion }}</div>
+                        {% endif %}
                     </td>
 
                     <td>Dia {{ p.dia_cobro }}</td>
@@ -74,7 +77,8 @@
                                 "cuota": p.cuota,
                                 "correo": p.correo_admin,
                                 "logo": p.url_logo,
-                                "tarjeta": p.tarjeta or ""
+                                "tarjeta": p.tarjeta or "",
+                                "direccion": p.direccion or ""
                             } | tojson | safe }})'>
                             <i class="bi bi-pencil-square"></i>
                         </button>

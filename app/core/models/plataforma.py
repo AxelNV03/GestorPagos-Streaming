@@ -17,6 +17,7 @@ class Plataforma(db.Model):
     correo_admin = db.Column(db.String(255), nullable=False)
     max_cupos = db.Column(db.Integer, default=5)
     tarjeta = db.Column(db.String(50), nullable=True)  # ← NUEVO
+    direccion = db.Column(db.String(500), nullable=True)  # ← NUEVA
     # ===================================================================================================
     # Relación: Una plataforma tiene muchos registros de usuarios
     usuarios_vinculados = db.relationship('PlataformaUsuario', backref='plataforma', lazy=True)
