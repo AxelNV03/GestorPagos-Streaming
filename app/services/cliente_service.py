@@ -29,13 +29,26 @@ class ClienteService:
         total_pagado = sum(c['monto'] for c in cobros_mes if c['estado'] == 'pagado')
         total_pendiente_count = sum(1 for c in cobros_mes if c['estado'] == 'pendiente')
         
-        # Comprobantes del mes        
-        comprobantes_todos = Comprobante.query.filter_by(
-            usuario_id=u_id
+        # Revisión: todos sin filtro de fecha
+        comprobante_en_revision = Comprobante.query.filter_by(
+            usuario_id=u_id,
+            estado='revision'
+        ).first() is not None
+        
+        # Rechazados: solo del mes actual
+        inicio_mes = datetime(int(anio), int(mes), 1)
+        if int(mes) == 12:
+            fin_mes = datetime(int(anio) + 1, 1, 1)
+        else:
+            fin_mes = datetime(int(anio), int(mes) + 1, 1)
+        
+        comprobantes_mes = Comprobante.query.filter(
+            Comprobante.usuario_id == u_id,
+            Comprobante.estado == 'rechazado',
+            Comprobante.created_at >= inicio_mes,
+            Comprobante.created_at < fin_mes
         ).all()
-
-        comprobante_en_revision = any(c.estado == 'revision' for c in comprobantes_todos)
-        comprobante_rechazado = any(c.estado == 'rechazado' for c in comprobantes_todos)
+        comprobante_rechazado = len(comprobantes_mes) > 0
         
         hoy = date.today()
         limite = date(int(anio), int(mes), 5)
