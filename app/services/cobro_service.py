@@ -120,12 +120,7 @@ class CobroService:
         """Trae todos los pendientes de varios usuarios en una sola query"""
         if not usuarios_ids:
             return {}
-        
-        from datetime import date
-        if mes and anio:
-            inicio_mes = date(int(anio), int(mes), 1)
-        else:
-            inicio_mes = date.today().replace(day=1)
+    
         
         cobros = db.session.query(Cobro).join(Cobro.suscripcion)\
             .options(
@@ -134,8 +129,7 @@ class CobroService:
             )\
             .filter(
                 PlataformaUsuario.usuario_id.in_(usuarios_ids),
-                Cobro.estado == 'pendiente',
-                Cobro.mes_anio == inicio_mes
+                Cobro.estado == 'pendiente'
             )\
             .order_by(Cobro.mes_anio.asc()).all()
         
@@ -162,7 +156,8 @@ class CobroService:
                     pendientes_por_plataforma[key] = {
                         'plataforma': c.suscripcion.plataforma.nombre,
                         'plataforma_usuario_id': v_id,
-                        'ultimo_pago': ultimo_pagado.mes_anio.strftime('%d/%m/%Y') if ultimo_pagado else None,
+                        'ultimo_pago': ultimo_pagado.mes_anio.strftime('%B %Y') if ultimo_pagado else None,
+                        # 'ultimo_pago': ultimo_pagado.mes_anio.strftime('%d/%m/%Y') if ultimo_pagado else None,
                         'pendientes': 0,
                         'cobros_ids': [],
                         'costo_mensual': float(c.monto_deuda)
@@ -174,7 +169,8 @@ class CobroService:
                     'cobro_id': c.id,
                     'plataforma': c.suscripcion.plataforma.nombre,
                     'concepto': c.motivo or 'Sin concepto',
-                    'monto': float(c.monto_deuda)
+                    'monto': float(c.monto_deuda),
+                    'fecha': c.mes_anio.strftime('%B %Y')  # ← NUEVO
                 })
         
         for (u_id, _), data in pendientes_por_plataforma.items():
