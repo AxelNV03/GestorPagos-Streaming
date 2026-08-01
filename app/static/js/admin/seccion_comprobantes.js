@@ -144,7 +144,7 @@ function renderMensualidadesRevision(mensualidades) {
         
         return `
             <div class="cpc-form-group">
-                <label>${m.plataforma} <small style="font-weight:400;color:#94a3b8;">| Último: ${m.ultimo_pago || 'N/A'}</small></label>
+                <label>${m.plataforma} <small style="font-weight:400;color:#94a3b8;">| Último: ${traducirMes(m.ultimo_pago) || 'N/A'}</small></label>
                 <select name="meses_${m.plataforma_usuario_id}" class="cpc-form-select cpc-mes-select" data-costo="${m.costo_mensual}" onchange="actualizarResumen()">
                     ${opciones}
                 </select>
@@ -167,7 +167,7 @@ function renderExtrasRevision(extras) {
         <div class="cpc-extra-card">
             <div class="cpc-extra-card-left">
                 <span class="cpc-extra-plataforma">${e.plataforma}</span>
-                <span class="cpc-extra-concepto">${e.concepto}</span>
+                <span class="cpc-extra-concepto">${e.concepto} · ${traducirMes(e.fecha)}</span>
             </div>
             <span class="cpc-extra-monto">$${e.monto.toFixed(2)}</span>
             <label class="cpc-extra-switch">
@@ -194,6 +194,15 @@ window.addEventListener('click', function(event) {
         cerrarModalRevision();
     }
 });
+
+function traducirMes(fecha) {
+    if (!fecha) return 'N/A';
+    const meses = {January:'Enero',February:'Febrero',March:'Marzo',April:'Abril',May:'Mayo',June:'Junio',July:'Julio',August:'Agosto',September:'Septiembre',October:'Octubre',November:'Noviembre',December:'Diciembre'};
+    for (let [en, es] of Object.entries(meses)) {
+        if (fecha.startsWith(en)) return fecha.replace(en, es);
+    }
+    return fecha;
+}
 
 // ===================================================================
 // ACCIONES DEL MODAL
