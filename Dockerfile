@@ -9,6 +9,7 @@ RUN apt-get update && apt-get install -y \
     pkg-config \
     default-mysql-client \
     cron \
+    tzdata \
     && rm -rf /var/lib/apt/lists/*
 
 # Definimos el directorio donde vivirá el código dentro del contenedor
@@ -36,6 +37,10 @@ RUN echo "0 3 * * * /app/backup_auto.sh >> /var/log/backup.log 2>&1" > /etc/cron
 
 # Crear archivo de log
 RUN touch /var/log/backup.log
+
+# Después de instalar tzdata
+RUN ln -fs /usr/share/zoneinfo/America/Mexico_City /etc/localtime && \
+    echo "America/Mexico_City" > /etc/timezone
 
 # El puerto por defecto que usa Flask
 EXPOSE 5000

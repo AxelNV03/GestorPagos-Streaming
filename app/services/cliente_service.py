@@ -29,21 +29,13 @@ class ClienteService:
         total_pagado = sum(c['monto'] for c in cobros_mes if c['estado'] == 'pagado')
         total_pendiente_count = sum(1 for c in cobros_mes if c['estado'] == 'pendiente')
         
-        # Comprobantes del mes
-        inicio_mes = datetime(int(anio), int(mes), 1)
-        if int(mes) == 12:
-            fin_mes = datetime(int(anio) + 1, 1, 1)
-        else:
-            fin_mes = datetime(int(anio), int(mes) + 1, 1)
-        
-        comprobantes_mes = Comprobante.query.filter(
-            Comprobante.usuario_id == u_id,
-            Comprobante.created_at >= inicio_mes,
-            Comprobante.created_at < fin_mes
+        # Comprobantes del mes        
+        comprobantes_todos = Comprobante.query.filter_by(
+            usuario_id=u_id
         ).all()
-        
-        comprobante_en_revision = any(c.estado == 'revision' for c in comprobantes_mes)
-        comprobante_rechazado = any(c.estado == 'rechazado' for c in comprobantes_mes)
+
+        comprobante_en_revision = any(c.estado == 'revision' for c in comprobantes_todos)
+        comprobante_rechazado = any(c.estado == 'rechazado' for c in comprobantes_todos)
         
         hoy = date.today()
         limite = date(int(anio), int(mes), 5)
@@ -172,6 +164,7 @@ class ClienteService:
             'nota': c.nota_usuario or '',
             'ruta_archivo': c.ruta_archivo
         } for c in comprobantes_revision]
+        
     
         return {
             'historial': historial,
@@ -237,20 +230,11 @@ class ClienteService:
     @staticmethod
     def data_subida():
         u_id = session.get('user_id')
-        info_p = PeriodoService.obtener_periodo_actual()
         
-        # Verificar si ya hay un comprobante en revisión este mes
-        inicio_mes = datetime(info_p['anio'], info_p['mes'], 1)
-        if info_p['mes'] == 12:
-            fin_mes = datetime(info_p['anio'] + 1, 1, 1)
-        else:
-            fin_mes = datetime(info_p['anio'], info_p['mes'] + 1, 1)
-        
-        en_revision = Comprobante.query.filter(
-            Comprobante.usuario_id == u_id,
-            Comprobante.estado == 'revision',
-            Comprobante.created_at >= inicio_mes,
-            Comprobante.created_at < fin_mes
+        # Verificar si ya hay un comprobante en revisión (sin filtrar por mes)
+        en_revision = Comprobante.query.filter_by(
+            usuario_id=u_id,
+            estado='revision'
         ).first()
         
         return {

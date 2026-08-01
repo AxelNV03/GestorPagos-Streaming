@@ -1,3 +1,5 @@
+from datetime import datetime
+from zoneinfo import ZoneInfo
 # app/services/comprobante_service.py
 # ===================================================================================================
 from app.core.models.comprobante import Comprobante
@@ -14,6 +16,8 @@ from sqlalchemy.orm import joinedload
 from sqlalchemy import func
 # ===================================================================================================
 class ComprobanteService:
+    def ahora_mexico():
+        return datetime.now(ZoneInfo('America/Mexico_City'))
     @staticmethod
     def _rango_mes(mes, anio):
         """Devuelve (fecha_inicio, fecha_fin) para cubrir todo el mes"""
@@ -94,7 +98,8 @@ class ComprobanteService:
             usuario_id=usuario.id,
             ruta_archivo='',  # temporal
             nota_usuario=nota,
-            estado='revision'
+            estado='revision',
+            created_at=datetime.now(ZoneInfo('America/Mexico_City'))
         )
         db.session.add(comprobante)
         db.session.flush()  # Para obtener created_at
