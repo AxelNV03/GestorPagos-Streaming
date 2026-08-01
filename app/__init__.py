@@ -37,7 +37,7 @@ def create_app():
     logos_path = os.path.join(app.root_path, 'static', 'uploads')
     app.config['UPLOAD_LOGOS'] = os.path.abspath(logos_path)
     os.makedirs(app.config['UPLOAD_LOGOS'], exist_ok=True)
-
+    os.environ['TZ'] = 'America/Mexico_City'
     # --- Configuración de SQLAlchemy para MariaDB ---
     app.config['SQLALCHEMY_DATABASE_URI'] = (
         f"mysql+pymysql://{os.getenv('DB_USER')}:{os.getenv('DB_PASS')}"

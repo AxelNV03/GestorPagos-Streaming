@@ -1,3 +1,4 @@
+from datetime import datetime, timezone
 # ===================================================================================================
 # app/core/models/comprobante.py
 # ===================================================================================================
@@ -21,7 +22,7 @@ class Comprobante(db.Model):
         db.Enum('revision', 'aprobado', 'rechazado', name='estado_comprobante_enum'), 
         default='revision'
     )
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
     # ===================================================================================================
     cobros_asociados = db.relationship('Cobro', backref='comprobante_ref', lazy=True)
     usuario = db.relationship('Usuario', back_populates='comprobantes', lazy=True)

@@ -8,6 +8,7 @@ services:
       MARIADB_DATABASE: streaming
       MARIADB_USER: nava
       MARIADB_PASSWORD: 1234
+      TZ: America/Mexico_City
     ports:
       - "3306:3306"
     volumes:
@@ -21,6 +22,7 @@ services:
       # - .:/app
       # - ./storage:/app/storage
       - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
       # - /etc/timezone:/etc/timezone:ro
       - ./rclone.conf:/root/.config/rclone/rclone.conf:ro
       - .:/app:Z
@@ -28,6 +30,8 @@ services:
     ports:
       - "5000:5000"
     env_file: .env
+    environment:
+      - TZ=America/Mexico_City
     depends_on:
       db: # Versión extendida para evitar el error de conexión que vimos antes
         condition: service_started

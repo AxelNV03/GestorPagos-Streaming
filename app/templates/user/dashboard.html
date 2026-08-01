@@ -61,9 +61,23 @@
     </div>
 </section>
 
-<!-- Alerts según estado -->
+
+
+<!-- 🔵 Comprobante en revisión (SIEMPRE si existe) -->
+{% if data.comprobante_en_revision %}
+<div class="alert-card-container">
+    <div class="alert-card revision">
+        <div class="alert-icon"><i class="bi bi-hourglass-split"></i></div>
+        <div class="alert-text">
+            <strong>Comprobante en revisión</strong>
+            <span>Tienes un comprobante en revisión. Te notificaremos al terminar.</span>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- 🟢 Todo al día -->
 {% if data.total_pendiente == 0 %}
-<!-- 1. 🟢 Todo al día -->
 <div class="alert-card-container">
     <div class="alert-card aprobado">
         <div class="alert-icon"><i class="bi bi-shield-check"></i></div>
@@ -73,33 +87,10 @@
         </div>
     </div>
 </div>
+{% endif %}
 
-{% elif data.comprobante_en_revision %}
-<!-- 2. 🔵 Comprobante en revisión -->
-<div class="alert-card-container">
-    <div class="alert-card revision">
-        <div class="alert-icon"><i class="bi bi-hourglass-split"></i></div>
-        <div class="alert-text">
-            <strong>Comprobante en revisión</strong>
-            <span>Tu pago está siendo verificado. Te notificaremos al terminar.</span>
-        </div>
-    </div>
-</div>
-
-{% elif data.comprobante_rechazado %}
-<!-- 3. 🔴 Comprobante rechazado -->
-<div class="alert-card-container">
-    <div class="alert-card vencido">
-        <div class="alert-icon"><i class="bi bi-x-circle"></i></div>
-        <div class="alert-text">
-            <strong>Comprobante rechazado</strong>
-            <span>Revisa el historial y vuelve a intentarlo. Tienes {{ data.total_pendiente_count }} cobros pendientes.</span>
-        </div>
-    </div>
-</div>
-
-{% else %}
-<!-- 4. 🟠 Pendientes -->
+<!-- 🟠 Pendientes (sin rechazos) -->
+{% if data.total_pendiente > 0 and not data.comprobante_rechazado %}
 <div class="alert-card-container">
     <div class="alert-card urgente">
         <div class="alert-icon"><i class="bi bi-clock-fill"></i></div>
@@ -110,6 +101,21 @@
     </div>
 </div>
 {% endif %}
+
+<!-- 🔴 Rechazado + pendientes -->
+{% if data.comprobante_rechazado and data.total_pendiente > 0 %}
+<div class="alert-card-container">
+    <div class="alert-card vencido">
+        <div class="alert-icon"><i class="bi bi-x-circle"></i></div>
+        <div class="alert-text">
+            <strong>Comprobante rechazado</strong>
+            <span>Revisa el historial y vuelve a intentarlo. Tienes {{ data.total_pendiente_count }} cobros pendientes.</span>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+
 
 <!-- Menú -->
 <div class="menu-cards-container">
