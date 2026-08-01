@@ -399,10 +399,11 @@ class AdminService:
                 'es_multiple': len(grupo_cobros) > 1
             })
 
-        comprobantes_mes = ComprobanteService.obtener_comprobantes_del_mes(
-            filtros["mes"], filtros["anio"]
-        )
-        
+        usuarios_ids_actuales = [u.id for u in usuariosF]
+        comprobantes_mes = Comprobante.query.filter(
+            Comprobante.usuario_id.in_(usuarios_ids_actuales)
+        ).all() if usuarios_ids_actuales else []
+                
         return {
             'listaPlataformas': plataformas,
             'mes_actual': filtros["mes"],
