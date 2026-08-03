@@ -22,7 +22,7 @@ services:
       # - .:/app
       # - ./storage:/app/storage
       - /etc/localtime:/etc/localtime:ro
-      - /etc/timezone:/etc/timezone:ro
+      # - /etc/timezone:/etc/timezone:ro
       # - /etc/timezone:/etc/timezone:ro
       - ./rclone.conf:/root/.config/rclone/rclone.conf:ro
       - .:/app:Z
