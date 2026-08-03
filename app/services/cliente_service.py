@@ -7,8 +7,7 @@ from app.services.cobro_service import CobroService
 from app.services.usuario_service import UsuarioService
 from app.services.comprobante_service import ComprobanteService
 from app.services.email_service import EmailService
-
-
+from app.services.telegram_bot_service import BotService
 from app.core.models.comprobante import Comprobante
 from app.core.models.cobro import Cobro
 from app.core.models.usuario import Usuario
@@ -266,7 +265,19 @@ class ClienteService:
         
         try:
             ComprobanteService.guardar_comprobante(usuario_id, archivo, nota)
-            
+
+            # Enviar noti por telegram
+            if usuario:
+                BotService.notificar_admin(
+                    f"*Comprobante Recibido*\n\n"
+                    f"{usuario.nombres} {usuario.apeP} {usuario.apeM}\n\n"
+                    f"{usuario.nombres_plataformas}\n\n"
+                    f"📝 {nota or 'Sin nota'}\n\n",
+                    botones=[
+                        [{"text": "🔍 Revisar en panel", "url": "https://pagos.axelnava.com/admin/comprobantes"}],
+                        [{"text": "💬 WhatsApp", "url": f"https://wa.me/{usuario.telefono}"}]
+                    ]
+                )
             # Enviar email de confirmación
             if usuario.correo:
                 threading.Thread(
