@@ -13,9 +13,11 @@ from app.core.models.comprobante import Comprobante
 def comprobantes():
     info_p = PeriodoService.obtener_periodo_actual()
     filtros = {
+        'query': request.args.get('query', ''),
         'estado': request.args.get('estado', '') , #revision
         'mes': request.args.get('mes') or info_p['mes'],
-        'anio': request.args.get('anio') or info_p['anio']
+        'anio': request.args.get('anio') or info_p['anio'],
+        'plataforma_id': request.args.get('plataforma_id', '')
     }
     return render_template('admin/comprobantes/index.html', **AdminService.panel_comprobantes(filtros))
 # ===================================================================================================

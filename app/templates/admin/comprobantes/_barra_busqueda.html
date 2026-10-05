@@ -11,6 +11,19 @@
             </div>
         </div>
 
+        <div class="filter-group plataforma">
+            <span class="filter-label">Plataforma</span>
+            <select name="plataforma_id" class="minimal-input">
+                <option value="">Todas</option>
+                {% set plataforma_seleccionada = filtros_usados.get('plataforma_id')|int %}
+                {% for p in listaPlataformas %}
+                    <option value="{{ p.id }}" {{ 'selected' if plataforma_seleccionada == p.id }}>
+                        {{ p.nombre }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
         <div class="filter-group small">
             <span class="filter-label">Estado</span>
             <select name="estado" class="minimal-input">

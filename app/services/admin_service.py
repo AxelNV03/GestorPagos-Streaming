@@ -554,7 +554,7 @@ class AdminService:
         usuarios = UsuarioService.obtener_todos()
         
         comprobantes = ComprobanteService.obtener_comprobantes_del_mes(
-            filtros["mes"], filtros["anio"], filtros.get("estado") or None
+            filtros["mes"], filtros["anio"], filtros.get("estado") or None, filtros.get("plataforma_id") or None, filtros.get("query") or None
         )
         
         metricas = ComprobanteService.metricas_mes(filtros["mes"], filtros["anio"])

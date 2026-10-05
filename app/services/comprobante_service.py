@@ -3,6 +3,9 @@ from zoneinfo import ZoneInfo
 # app/services/comprobante_service.py
 # ===================================================================================================
 from app.core.models.comprobante import Comprobante
+from app.core.models.plataforma_usuario import PlataformaUsuario
+from app.core.models.plataforma import Plataforma
+from app.core.models.cobro import Cobro
 from app import db
 from datetime import date
 import os
@@ -29,7 +32,7 @@ class ComprobanteService:
         return inicio, fin
 # ===================================================================================================
     @staticmethod
-    def obtener_comprobantes_del_mes(mes, anio, estado=None):
+    def obtener_comprobantes_del_mes(mes, anio, estado=None, plataforma_id=None, query=None):
         fecha_inicio, fecha_fin = ComprobanteService._rango_mes(mes, anio)
         
         consulta = db.session.query(Comprobante)\
@@ -42,7 +45,50 @@ class ComprobanteService:
         
         if estado:
             consulta = consulta.filter(Comprobante.estado == estado)
-        
+
+        if plataforma_id:
+            # Plataforma específica
+            plataforma = db.session.get(Plataforma, plataforma_id)
+            nombre_plataforma = plataforma.nombre if plataforma else None
+            
+            # Usuarios con esa plataforma activa
+            usuarios_con_plataforma = db.session.query(PlataformaUsuario.usuario_id).filter(
+                PlataformaUsuario.plataforma_id == plataforma_id,
+                PlataformaUsuario.activo == True
+            ).subquery()
+            
+            # Comprobantes aprobados que cubrieron esa plataforma
+            comprobantes_aprobados = db.session.query(Cobro.comprobante_id).join(
+                PlataformaUsuario, Cobro.usuario_plataforma_id == PlataformaUsuario.id
+            ).filter(
+                PlataformaUsuario.plataforma_id == plataforma_id,
+                Cobro.comprobante_id.isnot(None)
+            ).subquery()
+            
+            # Unión: en revisión/rechazado → usuario tiene plataforma
+            #         aprobado → cubrió esa plataforma
+            from sqlalchemy import or_, and_
+            consulta = consulta.filter(
+                or_(
+                    and_(
+                        Comprobante.estado != 'aprobado',
+                        Comprobante.usuario_id.in_(usuarios_con_plataforma)
+                    ),
+                    and_(
+                        Comprobante.estado == 'aprobado',
+                        Comprobante.id.in_(comprobantes_aprobados)
+                    )
+                )
+            )
+
+        if query:
+            consulta = consulta.join(Comprobante.usuario).filter(
+                db.or_(
+                    Usuario.nombres.ilike(f'%{query}%'),
+                    Usuario.apeP.ilike(f'%{query}%'),
+                    Usuario.telefono.ilike(f'%{query}%')
+                )
+            )
         return consulta.order_by(Comprobante.created_at.desc()).all()
 # ===================================================================================================
     @staticmethod
