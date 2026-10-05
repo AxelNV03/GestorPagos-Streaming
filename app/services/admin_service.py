@@ -14,7 +14,7 @@ from app.core.models.comprobante import Comprobante
 from app.core.models.plataforma_usuario import PlataformaUsuario
 from app.core.models.usuario import Usuario
 
-
+from datetime import date
 from itertools import groupby
 from sqlalchemy.orm import joinedload
 from sqlalchemy import func
@@ -570,21 +570,30 @@ class AdminService:
         datos_revision = {}
         for comp in comprobantes:
             datos_revision[comp.id] = pendientes_por_usuario.get(comp.usuario_id, {'mensualidades': [], 'extras': []})
-
-            # Plataformas a mostrar
+            
             if comp.estado == 'aprobado':
+                # Plataformas que cubrió
                 plataformas_display = list(set(
                     c.suscripcion.plataforma.nombre 
                     for c in comp.cobros_asociados
                 ))
             else:
-                plataformas_display = [
-                    s.plataforma.nombre 
-                    for s in comp.usuario.suscripciones 
-                    if s.activo
-                ]
+                # Plataformas con cobros pendientes del MES ACTUAL
+                inicio_mes = date(int(filtros['anio']), int(filtros['mes']), 1)
+                plataformas_pendientes = set()
+                for s in comp.usuario.suscripciones:
+                    if not s.activo:
+                        continue
+                    tiene_pendiente_mes = any(
+                        c.mes_anio == inicio_mes and c.estado == 'pendiente'
+                        for c in s.cobros
+                    )
+                    if tiene_pendiente_mes:
+                        plataformas_pendientes.add(s.plataforma.nombre)
+                
+                plataformas_display = list(plataformas_pendientes)
+            
             comp.plataformas_display = plataformas_display if plataformas_display else []
-            # comp.plataformas_display = ', '.join(plataformas_display) if plataformas_display else '-'
 
         return {
             'listaPlataformas': plataformas,

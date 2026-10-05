@@ -2,16 +2,50 @@
 // ===================================================================
 // MODAL NUEVO COMPROBANTE
 // ===================================================================
+function filtrarUsuariosPorPlataforma() {
+    const plataformaSelect = document.getElementById('cpc_plataforma_select');
+    const opcion = plataformaSelect.options[plataformaSelect.selectedIndex];
+    const usuarioGroup = document.getElementById('cpc_usuario_group');
+    const usuarioSelect = document.getElementById('cpc_usuario_select');
+    
+    usuarioSelect.innerHTML = '';
+    
+    if (!opcion.value) {
+        usuarioGroup.style.display = 'none';
+        return;
+    }
+    
+    const usuarios = JSON.parse(opcion.getAttribute('data-usuarios') || '[]');
+    
+    usuarioGroup.style.display = 'block';
+    
+    if (usuarios.length === 0) {
+        usuarioSelect.innerHTML = '<option value="">Sin usuarios en esta plataforma</option>';
+        usuarioSelect.disabled = true;
+        return;
+    }
+    
+    usuarioSelect.disabled = false;
+    usuarioSelect.innerHTML = '<option value="">Seleccionar usuario...</option>';
+    usuarios.forEach(u => {
+        const opt = document.createElement('option');
+        opt.value = u.id;
+        opt.textContent = u.nombre;
+        usuarioSelect.appendChild(opt);
+    });
+}
 
 function abrirModalNuevoComprobante() {
     document.getElementById('modalNuevoComprobante').style.display = 'block';
     document.getElementById('formNuevoComprobante').reset();
     document.getElementById('cpc_file_name').textContent = 'Seleccionar imagen...';
+    document.getElementById('cpc_usuario_group').style.display = 'none';
 }
 
 function cerrarModalNuevoComprobante() {
     document.getElementById('modalNuevoComprobante').style.display = 'none';
     document.getElementById('formNuevoComprobante').reset();
+    document.getElementById('cpc_usuario_group').style.display = 'none';
 }
 
 // Mostrar nombre del archivo seleccionado
@@ -34,7 +68,6 @@ window.addEventListener('click', function(event) {
         cerrarModalNuevoComprobante();
     }
 });
-
 // ===================================================================
 // MODAL REVISIÓN COMPROBANTE
 // ===================================================================

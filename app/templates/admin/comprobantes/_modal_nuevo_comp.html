@@ -28,14 +28,29 @@
                     <textarea name="nota" class="cpc-form-textarea" rows="2" placeholder="Ej: Pago de Netflix y Disney+"></textarea>
                 </div>
 
-                <!-- Usuario -->
+
+                <!-- Plataforma -->
                 <div class="cpc-form-group">
-                    <label>Usuario</label>
-                    <select name="usuario_id" class="cpc-form-select" required>
-                        <option value="">Seleccionar usuario...</option>
-                        {% for u in usuarios %}
-                            <option value="{{ u.id }}">{{ u.nombres }} {{ u.apeP }}</option>
+                    <label>Plataforma</label>
+                    <select name="plataforma_id" id="cpc_plataforma_select" class="cpc-form-select" required onchange="filtrarUsuariosPorPlataforma()">
+                        <option value="">Seleccionar plataforma...</option>
+                        {% for p in listaPlataformas %}
+                            <option value="{{ p.id }}" data-usuarios='[
+                                {% for s in p.usuarios_vinculados if s.activo %}
+                                    {"id": {{ s.perfil_usuario.id }}, "nombre": "{{ s.perfil_usuario.nombres }} {{ s.perfil_usuario.apeP }}"}{% if not loop.last %},{% endif %}
+                                {% endfor %}
+                            ]'>
+                                {{ p.nombre }}
+                            </option>
                         {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Usuario (se llena dinámicamente) -->
+                <div class="cpc-form-group" id="cpc_usuario_group" style="display: none;">
+                    <label>Usuario</label>
+                    <select name="usuario_id" id="cpc_usuario_select" class="cpc-form-select" required disabled>
+                        <option value="">Selecciona primero una plataforma</option>
                     </select>
                 </div>
 
