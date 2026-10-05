@@ -103,6 +103,14 @@
     max-width: 130px;
 }
 
+.pbc-col-cmp-plataformas .badge-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+}
+
+
 /* 2. Fecha: Corta */
 .pbc-table-core th.pbc-col-cmp-fecha {
     width: 100px;
@@ -115,6 +123,7 @@
 .pbc-table-core th.pbc-col-cmp-nota {
     /* Sin width definido = elástica */
 }
+
 .pbc-table-core td.pbc-col-cmp-nota {
     text-align: justify;
     word-break: break-word;

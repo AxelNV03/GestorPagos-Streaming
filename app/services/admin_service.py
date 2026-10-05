@@ -570,7 +570,22 @@ class AdminService:
         datos_revision = {}
         for comp in comprobantes:
             datos_revision[comp.id] = pendientes_por_usuario.get(comp.usuario_id, {'mensualidades': [], 'extras': []})
-        
+
+            # Plataformas a mostrar
+            if comp.estado == 'aprobado':
+                plataformas_display = list(set(
+                    c.suscripcion.plataforma.nombre 
+                    for c in comp.cobros_asociados
+                ))
+            else:
+                plataformas_display = [
+                    s.plataforma.nombre 
+                    for s in comp.usuario.suscripciones 
+                    if s.activo
+                ]
+            comp.plataformas_display = plataformas_display if plataformas_display else []
+            # comp.plataformas_display = ', '.join(plataformas_display) if plataformas_display else '-'
+
         return {
             'listaPlataformas': plataformas,
             'usuarios': usuarios,

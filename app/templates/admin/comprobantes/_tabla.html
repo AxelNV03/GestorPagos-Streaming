@@ -3,6 +3,7 @@
         <thead>
             <tr>
                 <th class="pbc-col-cmp-usuario">Usuario</th>
+                <th class="pbc-col-cmp-plataformas">Plataformas</th>
                 <th class="pbc-col-cmp-fecha">Fecha</th>
                 <th class="pbc-col-cmp-nota">Nota</th>
                 <th class="pbc-col-cmp-estado">Estado</th>
@@ -19,6 +20,18 @@
                         </strong>
                     </a>
                 </td>
+                <td class="pbc-col-cmp-plataformas">
+                    <div class="badge-container">
+                        {% for plat in comp.plataformas_display %}
+                            <span class="user-phone">
+                                {{ plat }}
+                            </span>
+                        {% else %}
+                            <span class="pbc-txt-muted">-</span>
+                        {% endfor %}
+                    </div>
+                </td>
+
                 <td class="pbc-txt-center">
                     {{ comp.created_at.strftime('%d/%m/%Y - %H:%M:%S') }}
                 </td>
