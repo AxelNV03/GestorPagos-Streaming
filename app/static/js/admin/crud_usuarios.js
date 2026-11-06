@@ -57,6 +57,7 @@ function abrirModalUsuario(data = {}) {
         document.getElementById('form_apeM').value = data.apeM;
         document.getElementById('form_telefono').value = data.telefono;
         document.getElementById('form_correo').value = data.correo;
+    document.getElementById('form_perfil_social').value = data.perfil_social;
 
 
         // Plataformas

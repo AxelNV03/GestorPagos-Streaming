@@ -32,6 +32,7 @@ def guardar_usuario():
         'apeM' : request.form.get('apeM'),
         'telefono' : request.form.get('telefono'),
         'correo' : request.form.get('correo'),
+        'perfil_social': request.form.get('perfil_social'),
         'plataformas' : ids_plataformas_user,
         'correos_plataforma': dict(zip(ids_plataformas_user, correos_plataforma))
     }
@@ -42,7 +43,7 @@ def guardar_usuario():
     except Exception as e:
         flash(f'Error al guardar el usuario: {str(e)}', 'danger')       
     
-    return redirect_back('admin.comprobantes')
+    return redirect_back('admin.usuarios')
     # return redirect(url_for('admin.usuarios'))
 # ===================================================================================================
 @admin_bp.route('/usuarios/eliminar/<int:u_id>', methods=['POST'])
@@ -55,7 +56,7 @@ def eliminar_usuario(u_id):
         db.session.rollback()
         flash(f"No se pudo eliminar al usuario: {str(e)}", "danger")
     
-    return redirect_back('admin.comprobantes')
+    return redirect_back('admin.usuarios')
     # return redirect(url_for('admin.usuarios'))
 # ===================================================================================================
 @admin_bp.route('/usuarios/<int:usuario_id>')

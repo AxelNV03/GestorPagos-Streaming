@@ -47,6 +47,7 @@
                             "apeM": u.apeM or "",
                             "telefono": u.telefono,
                             "correo": u.correo or "",
+                            "perfil_social": u.perfil_social or "", 
                             "plataformas": u.plataformas | map(attribute='id') | list,
                             "correos_plataforma": correos_data
                         } | tojson | safe }})'>

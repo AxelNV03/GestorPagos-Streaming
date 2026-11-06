@@ -63,7 +63,8 @@ class UsuarioService:
             apeP=datos.get('apeP').upper(),
             apeM=datos.get('apeM').upper(),
             telefono=datos.get('telefono'),
-            correo=datos.get('correo').lower()
+            correo=datos.get('correo').lower(),
+            perfil_social = datos.get('perfil_social').lower()
         )
         db.session.add(nuevo_u)
         db.session.flush()
@@ -81,6 +82,7 @@ class UsuarioService:
         u.apeM = datos.get('apeM').upper()
         u.telefono = datos.get('telefono')
         u.correo = datos.get('correo').lower()
+        u.perfil_social = datos.get('perfil_social').lower()
 
         db.session.flush()        
         return u

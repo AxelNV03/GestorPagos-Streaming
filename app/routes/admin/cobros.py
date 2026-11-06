@@ -35,7 +35,7 @@ def generar_cargo_extra():
     except Exception as e:
         flash(f'Error al generar el cobro: {str(e)}', 'danger') 
 
-    return redirect_back('admin.comprobantes')
+    return redirect_back('admin.cobros')
     # return redirect(url_for('admin.cobros')) # Regresa al panel
 # ===================================================================================================
 @admin_bp.route('/cobros/eliminar/<int:cobro_id>', methods=['POST'])
@@ -46,7 +46,7 @@ def eliminar_cobro(cobro_id):
     except Exception as e:
         flash(f'Error al eliminar el cobro: {str(e)}', 'danger')
     
-    return redirect_back('admin.comprobantes')
+    return redirect_back('admin.cobros')
     # return redirect(url_for('admin.cobros'))
 # ===================================================================================================
 @admin_bp.route('/cobros/editar/<int:cobro_id>', methods=['POST'])
@@ -64,6 +64,6 @@ def editar_cobro(cobro_id):
     except Exception as e:
         flash(f'Error al editar el cobro: {str(e)}', 'danger')
     
-    return redirect_back('admin.comprobantes')
+    return redirect_back('admin.cobros')
     # return redirect(url_for('admin.cobros'))
 # ===================================================================================================
