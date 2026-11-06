@@ -27,7 +27,16 @@
                 </td>
                 <td><span class="user-phone">{{ u.telefono }}</span></td>
                 <td>{{ u.correo }}</td>
-                <td>
+                <td>                
+                    <!-- Facebook btn -->
+                    <a href="{{ u.perfil_social or '#' }}" 
+                    {% if u.perfil_social %}target="_blank" rel="noopener"{% else %}onclick="return false" style="opacity: 0.4; cursor: default;"{% endif %}
+                    class="btn-action btn-facebook" 
+                    title="{% if u.perfil_social %}Abrir perfil{% else %}Sin perfil{% endif %}">
+                        <i class="bi bi-facebook"></i>
+                    </a>
+
+                    <!-- Whats btn -->
                     <a href="https://wa.me/{{ u.telefono }}" target="_blank" class="btn-action btn-whatsapp" title="Contactar por WhatsApp">
                         <i class="bi bi-whatsapp"></i>
                     </a>
