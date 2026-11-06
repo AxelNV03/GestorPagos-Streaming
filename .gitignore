@@ -33,5 +33,10 @@ storage/backups/
 
 # --- rclone config ---
 rclone.conf
+<<<<<<< HEAD
 *.pem
 .sql
+=======
+*.pem
+l.sql
+>>>>>>> origin/main
