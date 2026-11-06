@@ -23,7 +23,7 @@ def usuarios():
 def guardar_usuario():
     usuario_id = request.form.get('usuario_id')
     plataformas_user = request.form.getlist('plataformas[]')    
-    correos_plataforma = request.form.getlist('correos_plataforma[]')
+    usernames_plataforma = request.form.getlist('usernames_plataforma[]')
     ids_plataformas_user = [int(p_id) for p_id in plataformas_user if p_id.isdigit()]
     
     datos = {
@@ -34,7 +34,7 @@ def guardar_usuario():
         'correo' : request.form.get('correo'),
         'perfil_social': request.form.get('perfil_social'),
         'plataformas' : ids_plataformas_user,
-        'correos_plataforma': dict(zip(ids_plataformas_user, correos_plataforma))
+        'usernames_plataforma': dict(zip(ids_plataformas_user, usernames_plataforma))
     }
     
     try:

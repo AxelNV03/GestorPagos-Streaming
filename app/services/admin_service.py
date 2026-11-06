@@ -227,19 +227,22 @@ class AdminService:
                         if plataforma and not plataforma.tiene_cupos:
                             raise ValueError(f"La plataforma '{plataforma.nombre}' no tiene cupos disponibles")
                     PlataformaUsuarioService.vincular_plataformas_a_usuario(
-                        u.id, agregar, datos.get('correos_plataforma', {})
+                        # u.id, agregar, datos.get('correos_plataforma', {})
+                        u.id, agregar, datos.get('usernames_plataforma', {})
                     )               
                     db.session.flush()
                     AdminService.generar_cobros_en_plataformas(u.id, agregar, mes_actual, anio_actual, label)
 
                 # ✅ Actualizar correos de plataformas existentes
-                correos_dict = datos.get('correos_plataforma', {})
+                # correos_dict = datos.get('correos_plataforma', {})
+                usernames_dict = datos.get('usernames_plataforma', {})
                 for p_id in plataformas_nuevas:
                     vinculo = PlataformaUsuario.query.filter_by(
                         usuario_id=u.id, plataforma_id=p_id, activo=1
                     ).first()
-                    if vinculo and p_id in correos_dict:
-                        vinculo.correo_plataforma = correos_dict.get(p_id)
+                    if vinculo and p_id in usernames_dict:
+                        # vinculo.correo_plataforma = correos_dict.get(p_id)
+                        vinculo.username_plataforma = usernames_dict.get(p_id)
                                 
             else:
                 u = UsuarioService.nuevo_usuario(datos)
@@ -253,7 +256,8 @@ class AdminService:
                         if plataforma and not plataforma.tiene_cupos:
                             raise ValueError(f"La plataforma '{plataforma.nombre}' no tiene cupos disponibles")
                     PlataformaUsuarioService.vincular_plataformas_a_usuario(
-                        u.id, plataformas_ids, datos.get('correos_plataforma', {})
+                        # u.id, plataformas_ids, datos.get('correos_plataforma', {})
+                        u.id, plataformas_ids, datos.get('usernames_plataforma', {})
                     )
                     db.session.flush()       
                     AdminService.generar_cobros_en_plataformas(u.id, plataformas_ids, mes_actual, anio_actual, label)

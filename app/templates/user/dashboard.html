@@ -28,7 +28,8 @@
                             <img src="{{ url_for('static', filename='uploads/' ~ p.logo) }}" alt="{{ p.nombre }}" class="plataforma-chip-img">
                             <div>
                                 <span class="plataforma-chip-nombre">{{ p.nombre }}</span>
-                                <span class="plataforma-chip-correo">{{ p.correo or 'Sin correo asociado' }}</span>
+                                <!-- <span class="plataforma-chip-correo">{{ p.correo or 'Sin correo asociado' }}</span> -->
+                                <span class="plataforma-chip-correo">{{ p.username or 'Sin usuario asociado' }}</span>
                             </div>
                         </div>
                         <span class="plataforma-chip-cuota">${{ "%.2f"|format(p.cuota) }}/mes</span>

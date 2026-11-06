@@ -23,7 +23,7 @@ class PlataformaUsuarioService:
 
 # ===================================================================================================
     @staticmethod
-    def vincular_plataformas_a_usuario(usuario_id, ids_a_agregar, correos_dict=None):
+    def vincular_plataformas_a_usuario(usuario_id, ids_a_agregar, usernames_dict=None):
         """Activa relaciones existentes o crea nuevas, con correo opcional por plataforma"""
         if not ids_a_agregar:
             return
@@ -36,22 +36,27 @@ class PlataformaUsuarioService:
 
         for p_id in ids_a_agregar:
             p_id_int = int(p_id)
-            correo = correos_dict.get(p_id_int, None) if correos_dict else None
+            # correo = correos_dict.get(p_id_int, None) if correos_dict else None
+            username = usernames_dict.get(p_id_int, None) if usernames_dict else None
+
 
             vinculo_existente = mapa_vinculos.get(p_id_int)
             
             if vinculo_existente:
                 vinculo_existente.activo = 1
                 vinculo_existente.fecha_ingreso = fecha_hoy
-                if correo:
-                    vinculo_existente.correo_plataforma = correo
+                # if correo:
+                #     vinculo_existente.correo_plataforma = correo
+                if username:
+                    vinculo_existente.username_plataforma = username
             else:
                 nuevo_vinculo = PlataformaUsuario(
                     usuario_id=usuario_id,
                     plataforma_id=p_id_int,
                     activo=1,
                     fecha_ingreso=fecha_hoy,
-                    correo_plataforma=correo
+                    # correo_plataforma=correo
+                    username_plataforma=username
                 )
                 db.session.add(nuevo_vinculo)
 # ===================================================================================================    

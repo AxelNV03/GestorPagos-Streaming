@@ -57,7 +57,7 @@ function abrirModalUsuario(data = {}) {
         document.getElementById('form_apeM').value = data.apeM;
         document.getElementById('form_telefono').value = data.telefono;
         document.getElementById('form_correo').value = data.correo;
-    document.getElementById('form_perfil_social').value = data.perfil_social;
+        document.getElementById('form_perfil_social').value = data.perfil_social;
 
 
         // Plataformas
@@ -65,10 +65,17 @@ function abrirModalUsuario(data = {}) {
             const molde = document.getElementById('molde-plataforma');
 
             // Mapa de correos: { plataforma_id: correo }
-            const correosMap = {};
-            if (data.correos_plataforma) {
-                data.correos_plataforma.forEach(s => {
-                    correosMap[s.plataforma_id] = s.correo || '';
+            // const correosMap = {};
+            // if (data.correos_plataforma) {
+            //     data.correos_plataforma.forEach(s => {
+            //         correosMap[s.plataforma_id] = s.correo || '';
+            //     });
+            // }
+            
+            const usernamesMap = {};
+            if (data.usernames_plataforma) {
+                data.usernames_plataforma.forEach(s => {
+                    usernamesMap[s.plataforma_id] = s.username || '';
                 });
             }
 
@@ -79,9 +86,14 @@ function abrirModalUsuario(data = {}) {
                 select.value = platId;
                 
                 // Llenar el correo si existe
-                const inputCorreo = clon.querySelector('input[name="correos_plataforma[]"]');
-                if (inputCorreo && correosMap[platId]) {
-                    inputCorreo.value = correosMap[platId];
+                // const inputCorreo = clon.querySelector('input[name="correos_plataforma[]"]');
+                // if (inputCorreo && correosMap[platId]) {
+                //     inputCorreo.value = correosMap[platId];
+                // }
+
+                const inputUsername = clon.querySelector('input[name="usernames_plataforma[]"]');
+                if (inputUsername && usernamesMap[platId]) {
+                    inputUsername.value = usernamesMap[platId];
                 }
                 
                 contenedorPlat.appendChild(clon);
