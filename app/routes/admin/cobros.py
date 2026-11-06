@@ -13,7 +13,7 @@ def cobros():
         'query': request.args.get('query', ''),
         'plataforma_id': request.args.get('plataforma_id', ''),
         'mes': request.args.get('mes') or info_p['mes'],
-        'estado': request.args.get('estado', ''),  
+        'estado': request.args.get('estado', 'pendiente'),  
         'anio': request.args.get('anio') or info_p['anio']
     }
     return render_template('admin/cobros/index.html', **AdminService.panel_cobros(filtros))
