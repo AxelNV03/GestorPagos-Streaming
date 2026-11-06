@@ -59,27 +59,35 @@
                 </div>
 
 
-
-                <div id="panelUsuario" class="pbc-tab-panel">
-                    <div class="pbc-form-group">
-                        <label>Selecciona el Usuario</label>
-                        <select class="pbc-form-select" name="usuario_id" id="selectUsuario" onchange="mostrarPlataformasLocales(this)">
-                            <option value="" selected disabled>-- Selecciona un usuario --</option>
-                            {% for u in usuarios %}
-                                <option value="{{ u.id }}" data-plataformas='[
-                                    {% for p in u.plataformas %}
-                                        {"id": {{ p.id }}, "nombre": "{{ p.nombre }}"}{% if not loop.last %},{% endif %}
-                                    {% endfor %}
-                                ]'>
-                                    {{ u.nombres }} {{ u.apeP }}
-                                </option>
+        <div id="panelUsuario" class="pbc-tab-panel">
+            
+            <!-- Plataforma primero -->
+            <div class="pbc-form-group">
+                <label>Selecciona la Plataforma</label>
+                    <select name="plataforma_id" class="pbc-form-select" id="selectPlataformaCargo" 
+                        onchange="filtrarUsuariosCargo()" required>
+                    <option value="" selected disabled>-- Selecciona una plataforma --</option>
+                    {% for p in listaPlataformas %}
+                        <option value="{{ p.id }}" data-usuarios='[
+                            {% for s in p.usuarios_vinculados if s.activo %}
+                                {"id": {{ s.perfil_usuario.id }}, "nombre": "{{ s.perfil_usuario.nombres }} {{ s.perfil_usuario.apeP }}"}{% if not loop.last %},{% endif %}
                             {% endfor %}
-                        </select>
-                    </div>
+                        ]'>
+                            {{ p.nombre }} 
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
 
-                    <div id="divPlataformasDelUsuario" class="pbc-form-group" style="display: none; margin-top: 15px;">
-                        </div>
-                </div>
+            <!-- Usuario (oculto al inicio) -->
+            <div id="divUsuariosCargo" class="pbc-form-group" style="display: none; margin-top: 15px;">
+                <label>Selecciona el Usuario</label>
+                <select class="pbc-form-select" name="usuario_id" id="selectUsuarioCargo" required>
+                    <option value="">Seleccionar usuario...</option>
+                </select>
+            </div>
+
+        </div>
 
                 <div id="panelPlataforma" class="pbc-tab-panel" style="display: none !important;">
                     <div class="pbc-form-group">

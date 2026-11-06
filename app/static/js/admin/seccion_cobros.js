@@ -5,6 +5,8 @@
 // 1. Abrir el modal nativo
 function abrirModalCargoExtra() {
     document.getElementById('pbc-modal-cargo-extra').style.display = 'block';
+    document.getElementById('formCargoExtra').reset();
+    document.getElementById('divUsuariosCargo').style.display = 'none';
     cambiarPestana('usuario');
 }
 
@@ -12,45 +14,42 @@ function abrirModalCargoExtra() {
 function cerrarModalCargoExtra() {
     document.getElementById('pbc-modal-cargo-extra').style.display = 'none';
 }
-function mostrarPlataformasLocales(selectElement) {
-    const contenedor = document.getElementById('divPlataformasDelUsuario');
+function filtrarUsuariosCargo() {
+    const plataformaSelect = document.getElementById('selectPlataformaCargo');
+    const opcion = plataformaSelect.options[plataformaSelect.selectedIndex];
+    const divUsuarios = document.getElementById('divUsuariosCargo');
+    const usuarioSelect = document.getElementById('selectUsuarioCargo');
     const btnSubmit = document.getElementById('btnSubmitCargo');
-    const opcionSeleccionada = selectElement.options[selectElement.selectedIndex];
     
-    if (!opcionSeleccionada.value) {
-        contenedor.style.display = 'none';
-        contenedor.innerHTML = '';
-        btnSubmit.disabled = false; // Estado por defecto
+    usuarioSelect.innerHTML = '';
+    
+    if (!opcion.value) {
+        divUsuarios.style.display = 'none';
+        usuarioSelect.disabled = true;  // ← Agregar
         return;
     }
-
-    const plataformas = JSON.parse(opcionSeleccionada.getAttribute('data-plataformas') || '[]');
-    contenedor.style.display = 'block';
-
-    // 🔴 Caso A: El usuario NO tiene plataformas asociadas
-    if (plataformas.length === 0) {
-        btnSubmit.disabled = true; // 🔒 BLOQUEAMOS EL BOTÓN
-        contenedor.innerHTML = `
-            <div style="background:#fff5f5; border: 1px solid #fed7d7; padding: 12px; border-radius: 6px; color: #c53030; font-size: 0.85rem;">
-                ⚠️ <strong>Atención:</strong> Este usuario no tiene ninguna plataforma asociada. No se puede generar un cargo.
-            </div>
-        `;
-    } 
-    // 🟢 Caso B: El usuario SÍ tiene plataformas asociadas
-    else {
-        btnSubmit.disabled = false; // 🔓 DESBLOQUEAMOS EL BOTÓN
-        let options = '<option value="" selected disabled>-- Selecciona la plataforma para el cobro --</option>';
-        plataformas.forEach(p => {
-            options += `<option value="${p.id}">${p.nombre}</option>`;
-        });
-
-        contenedor.innerHTML = `
-            <label>Selecciona la plataforma asociada</label>
-            <select class="pbc-form-select" name="plataforma_id" required>
-                ${options}
-            </select>
-        `;
+    
+    const usuarios = JSON.parse(opcion.getAttribute('data-usuarios') || '[]');
+    
+    divUsuarios.style.display = 'block';
+    
+    // Plataforma sin usuarios
+    if (usuarios.length === 0) {
+        btnSubmit.disabled = true;
+        usuarioSelect.innerHTML = '<option value="">Sin usuarios en esta plataforma</option>';
+        usuarioSelect.disabled = true;
+        return;
     }
+    
+    btnSubmit.disabled = false;
+    usuarioSelect.disabled = false;
+    usuarioSelect.innerHTML = '<option value="">Seleccionar usuario...</option>';
+    usuarios.forEach(u => {
+        const opt = document.createElement('option');
+        opt.value = u.id;
+        opt.textContent = u.nombre;
+        usuarioSelect.appendChild(opt);
+    });
 }
 
 // 🔄 Aseguramos que al cambiar de pestaña el botón se resetee correctamente
@@ -61,6 +60,7 @@ function cambiarPestana(alcance) {
     const panelPlat = document.getElementById('panelPlataforma');
     const panelUser = document.getElementById('panelUsuario');
     const btnSubmit = document.getElementById('btnSubmitCargo');
+    const selectPlatPanel = document.getElementById('selectPlataforma');
 
     if (alcance === 'plataforma') {
         tabPlat.classList.add('active');
@@ -68,16 +68,33 @@ function cambiarPestana(alcance) {
         panelPlat.style.setProperty('display', 'block', 'important');
         panelUser.style.setProperty('display', 'none', 'important');
         
-        btnSubmit.disabled = false; // Al pasar a masivo por plataforma siempre se desbloquea
+        // Activar el select de plataforma del panel masivo (para que se envíe)
+        selectPlatPanel.disabled = false;
+        
+        // Resetear el panel de usuario
+        document.getElementById('divUsuariosCargo').style.display = 'none';
+        document.getElementById('selectPlataformaCargo').disabled = true;
+        document.getElementById('selectUsuarioCargo').disabled = true;
+        
+        btnSubmit.disabled = false;
     } else {
         tabUser.classList.add('active');
         tabPlat.classList.remove('active');
         panelUser.style.setProperty('display', 'block', 'important');
         panelPlat.style.setProperty('display', 'none', 'important');
         
-        // Volvemos a evaluar según el select de usuarios actual
-        const selectUser = document.getElementById('selectUsuario');
-        mostrarPlataformasLocales(selectUser);
+        // Deshabilitar el select del panel masivo (para que NO se envíe)
+        selectPlatPanel.disabled = true;
+        
+        // Resetear el panel de usuario
+        document.getElementById('divUsuariosCargo').style.display = 'none';
+        document.getElementById('selectUsuarioCargo').innerHTML = '';
+        document.getElementById('selectUsuarioCargo').disabled = true;
+        document.getElementById('selectPlataformaCargo').value = '';  // ← Agregar
+        document.getElementById('selectPlataformaCargo').disabled = false;
+
+        
+        btnSubmit.disabled = false;
     }
 }
 
