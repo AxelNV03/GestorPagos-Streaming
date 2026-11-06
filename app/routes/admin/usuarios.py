@@ -1,6 +1,7 @@
 # app/routes/admin/usuarios.py
 # ===================================================================================================
 from flask import render_template, request, redirect, url_for, flash
+from app.utils.redirects import redirect_back
 from app import db
 from . import admin_bp
 from app.utils.decorators import admin_required
@@ -41,7 +42,8 @@ def guardar_usuario():
     except Exception as e:
         flash(f'Error al guardar el usuario: {str(e)}', 'danger')       
     
-    return redirect(url_for('admin.usuarios'))
+    return redirect_back('admin.comprobantes')
+    # return redirect(url_for('admin.usuarios'))
 # ===================================================================================================
 @admin_bp.route('/usuarios/eliminar/<int:u_id>', methods=['POST'])
 @admin_required
@@ -53,7 +55,8 @@ def eliminar_usuario(u_id):
         db.session.rollback()
         flash(f"No se pudo eliminar al usuario: {str(e)}", "danger")
     
-    return redirect(url_for('admin.usuarios'))
+    return redirect_back('admin.comprobantes')
+    # return redirect(url_for('admin.usuarios'))
 # ===================================================================================================
 @admin_bp.route('/usuarios/<int:usuario_id>')
 def detalle_usuario(usuario_id):

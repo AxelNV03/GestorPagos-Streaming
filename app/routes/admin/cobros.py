@@ -2,6 +2,7 @@
 # ===================================================================================================
 from . import admin_bp
 from flask import render_template, request, redirect, url_for, flash
+from app.utils.redirects import redirect_back
 from app.services.admin_service import AdminService
 from app.services.periodo_service import PeriodoService
 # ===================================================================================================
@@ -34,7 +35,8 @@ def generar_cargo_extra():
     except Exception as e:
         flash(f'Error al generar el cobro: {str(e)}', 'danger') 
 
-    return redirect(url_for('admin.cobros')) # Regresa al panel
+    return redirect_back('admin.comprobantes')
+    # return redirect(url_for('admin.cobros')) # Regresa al panel
 # ===================================================================================================
 @admin_bp.route('/cobros/eliminar/<int:cobro_id>', methods=['POST'])
 def eliminar_cobro(cobro_id):
@@ -44,7 +46,8 @@ def eliminar_cobro(cobro_id):
     except Exception as e:
         flash(f'Error al eliminar el cobro: {str(e)}', 'danger')
     
-    return redirect(url_for('admin.cobros'))
+    return redirect_back('admin.comprobantes')
+    # return redirect(url_for('admin.cobros'))
 # ===================================================================================================
 @admin_bp.route('/cobros/editar/<int:cobro_id>', methods=['POST'])
 def editar_cobro(cobro_id):
@@ -61,5 +64,6 @@ def editar_cobro(cobro_id):
     except Exception as e:
         flash(f'Error al editar el cobro: {str(e)}', 'danger')
     
-    return redirect(url_for('admin.cobros'))
+    return redirect_back('admin.comprobantes')
+    # return redirect(url_for('admin.cobros'))
 # ===================================================================================================

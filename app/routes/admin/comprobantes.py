@@ -4,6 +4,7 @@ from . import admin_bp
 from flask import render_template, request, redirect, url_for, flash
 from app.services.admin_service import AdminService
 from app.services.periodo_service import PeriodoService
+from app.utils.redirects import redirect_back
 from flask import send_file
 from flask import current_app
 from app import db
@@ -33,7 +34,8 @@ def subir_comprobante():
     except Exception as e:
         flash(f'Error: {str(e)}', 'danger')
     
-    return redirect(url_for('admin.comprobantes'))
+    return redirect_back('admin.comprobantes')
+    # return redirect(url_for('admin.comprobantes'))
 # ===================================================================================================
 @admin_bp.route('/comprobantes/imagen/<int:comprobante_id>')
 def ver_imagen(comprobante_id):
@@ -51,8 +53,8 @@ def aprobar_comprobante(comprobante_id):
         flash('Comprobante aprobado correctamente', 'success')
     except Exception as e:
         flash(f'Error: {str(e)}', 'danger')
-
-    return redirect(url_for('admin.comprobantes'))
+    return redirect_back('admin.comprobantes')
+    # return redirect(url_for('admin.comprobantes'))
 # ===================================================================================================
 @admin_bp.route('/comprobantes/rechazar/<int:comprobante_id>', methods=['POST'])
 def rechazar_comprobante(comprobante_id):
@@ -64,5 +66,6 @@ def rechazar_comprobante(comprobante_id):
     except Exception as e:
         flash(f'Error: {str(e)}', 'danger')
 
-    return redirect(url_for('admin.comprobantes'))
+    return redirect_back('admin.comprobantes')
+    # return redirect(url_for('admin.comprobantes'))
 # ===================================================================================================
