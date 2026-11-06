@@ -13,8 +13,34 @@ from sqlalchemy import func, or_
 from sqlalchemy import or_, desc, extract, case
 from sqlalchemy.orm import joinedload
 from flask import flash
+import re
+# ===================================================================================================
+# Constante a nivel módulo
+MESES_ES = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+            'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
+
+# Constante a nivel módulo
+PATRON_MES_FINAL = re.compile(
+    r'\s*\((' + '|'.join(MESES_ES) + r')\s+\d{4}\)\s*$'
+)
 # ===================================================================================================
 class CobroService:
+    @staticmethod
+    def _es_mensualidad(motivo):
+        """Retorna True si el motivo corresponde a una mensualidad recurrente."""
+        return bool(motivo and motivo.startswith('Mensualidad'))
+# ===================================================================================================
+    @staticmethod
+    def _extraer_motivo_base(motivo):
+        """
+        Extrae el motivo sin el sufijo del mes.
+        'Mensualidad - Spotify 2da cuenta (Septiembre 2026)' 
+        → 'Mensualidad - Spotify 2da cuenta'
+        """
+        if not motivo:
+            return None
+        return PATRON_MES_FINAL.sub('', motivo).strip()
+# ===================================================================================================
     @staticmethod
     def metricas_globales_periodo(mes, anio):
         fecha_filtro = date(int(anio), int(mes), 1)
@@ -144,24 +170,27 @@ class CobroService:
             u_id = c.suscripcion.perfil_usuario.id
             v_id = c.usuario_plataforma_id
             
-            if c.motivo and c.motivo.startswith('Mensualidad'):
-                key = (u_id, v_id)
+            if CobroService._es_mensualidad(c.motivo):
+                motivo_base = CobroService._extraer_motivo_base(c.motivo)
+                key = (u_id, v_id, motivo_base)
+                
                 if key not in pendientes_por_plataforma:
                     ultimo_pagado = Cobro.query.filter(
                         Cobro.usuario_plataforma_id == v_id,
                         Cobro.estado == 'pagado',
-                        Cobro.motivo.like('Mensualidad%')
+                        Cobro.motivo.startswith(motivo_base)
                     ).order_by(Cobro.mes_anio.desc()).first()
                     
                     pendientes_por_plataforma[key] = {
                         'plataforma': c.suscripcion.plataforma.nombre,
                         'plataforma_usuario_id': v_id,
+                        'motivo_base': motivo_base,
                         'ultimo_pago': ultimo_pagado.mes_anio.strftime('%B %Y') if ultimo_pagado else None,
-                        # 'ultimo_pago': ultimo_pagado.mes_anio.strftime('%d/%m/%Y') if ultimo_pagado else None,
                         'pendientes': 0,
                         'cobros_ids': [],
                         'costo_mensual': float(c.monto_deuda)
                     }
+                
                 pendientes_por_plataforma[key]['pendientes'] += 1
                 pendientes_por_plataforma[key]['cobros_ids'].append(c.id)
             else:
@@ -170,23 +199,29 @@ class CobroService:
                     'plataforma': c.suscripcion.plataforma.nombre,
                     'concepto': c.motivo or 'Sin concepto',
                     'monto': float(c.monto_deuda),
-                    'fecha': c.mes_anio.strftime('%B %Y')  # ← NUEVO
+                    'fecha': c.mes_anio.strftime('%B %Y')
                 })
         
-        for (u_id, _), data in pendientes_por_plataforma.items():
+        for (u_id, _, _), data in pendientes_por_plataforma.items():
             resultado[u_id]['mensualidades'].append(data)
         
         return resultado
 # ===================================================================================================
-    # up_id = usuario_plataforma_id
     @staticmethod
-    def existe_cobro(up_id, fecha):
-        return db.session.query(
-            db.session.query(Cobro).filter_by(
-                usuario_plataforma_id=up_id,
-                mes_anio=fecha
-            ).exists()
-        ).scalar()
+    def existe_cobro(up_id, fecha, motivo_base=None):
+        """
+        Verifica si existe un cobro para esa plataforma+mes.
+        Si se pasa motivo_base, filtra solo ese stream.
+        """
+        query = db.session.query(Cobro).filter_by(
+            usuario_plataforma_id=up_id,
+            mes_anio=fecha
+        )
+        
+        if motivo_base:
+            query = query.filter(Cobro.motivo.startswith(motivo_base))
+        
+        return db.session.query(query.exists()).scalar()
 # ===================================================================================================
     @staticmethod
     def nuevo_cobro(datos):
@@ -244,27 +279,27 @@ class CobroService:
         ).delete(synchronize_session=False)
 # ===================================================================================================
     @staticmethod
-    def generar_pagos_futuros(plataforma_usuario_id, cantidad_meses):
-        """Genera cobros de mensualidad pendientes para los próximos N meses"""
-        
-        MESES_ES = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
-                    'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
+    def generar_pagos_futuros(plataforma_usuario_id, cantidad_meses, motivo_base):
+        """
+        Genera cobros pendientes para los próximos N meses.
+        Solo regenera el stream específico identificado por motivo_base.
+        """
+        if not CobroService._es_mensualidad(motivo_base):
+            return
         
         ultimo = Cobro.query.filter(
             Cobro.usuario_plataforma_id == plataforma_usuario_id,
-            Cobro.motivo.like('Mensualidad%')
+            Cobro.motivo.startswith(motivo_base)
         ).order_by(Cobro.mes_anio.desc()).first()
         
         if not ultimo:
             return
         
-        vinculo = ultimo.suscripcion
-        
         for i in range(1, cantidad_meses + 1):
             siguiente_mes = ultimo.mes_anio + relativedelta(months=i)
             label = f"{MESES_ES[siguiente_mes.month - 1]} {siguiente_mes.year}"
             
-            if CobroService.existe_cobro(plataforma_usuario_id, siguiente_mes):
+            if CobroService.existe_cobro(plataforma_usuario_id, siguiente_mes, motivo_base):
                 continue
             
             cobro = Cobro(
@@ -272,17 +307,17 @@ class CobroService:
                 mes_anio=siguiente_mes,
                 monto_deuda=ultimo.monto_deuda,
                 estado='pendiente',
-                motivo=f"Mensualidad - {vinculo.plataforma.nombre} ({label})"
+                motivo=f"{motivo_base} ({label})"
             )
             db.session.add(cobro)
 # ===================================================================================================
     @staticmethod
-    def cubrir_mensualidades(plataforma_usuario_id, cantidad_meses, comprobante_id):
-        """Asigna los N cobros pendientes más antiguos al comprobante y los marca como pagado"""
+    def cubrir_mensualidades(plataforma_usuario_id, cantidad_meses, comprobante_id, motivo_base):
+        """Asigna los N cobros pendientes más antiguos del stream al comprobante y los marca como pagado"""
         cobros = Cobro.query.filter(
             Cobro.usuario_plataforma_id == plataforma_usuario_id,
             Cobro.estado == 'pendiente',
-            Cobro.motivo.like('Mensualidad%')
+            Cobro.motivo.startswith(motivo_base)
         ).order_by(Cobro.mes_anio.asc()).limit(cantidad_meses).all()
         
         for cobro in cobros:

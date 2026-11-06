@@ -647,12 +647,20 @@ class AdminService:
         comentario = form_data.get('comentario', '')
         
         try:
-            for key, value in form_data.items():
-                if key.startswith('meses_') and int(value) > 0:
-                    plataforma_usuario_id = int(key.replace('meses_', ''))
-                    CobroService.generar_pagos_futuros(plataforma_usuario_id, int(value))
-                    CobroService.cubrir_mensualidades(plataforma_usuario_id, int(value), comprobante.id)
-                elif key.startswith('extra_'):
+            # Streams de mensualidad (3 arrays paralelos)
+            v_ids = form_data.getlist('stream_v_id[]')
+            bases = form_data.getlist('stream_base[]')
+            meses = form_data.getlist('stream_meses[]')
+            
+            for v_id, base, cant in zip(v_ids, bases, meses):
+                cant_int = int(cant) if cant else 0
+                if cant_int > 0 and base:
+                    CobroService.generar_pagos_futuros(int(v_id), cant_int, base)
+                    CobroService.cubrir_mensualidades(int(v_id), cant_int, comprobante.id, base)
+            
+            # Extras (checkbox)
+            for key in form_data.keys():
+                if key.startswith('extra_'):
                     cobro_id = int(key.replace('extra_', ''))
                     CobroService.asignar_extra(cobro_id, comprobante.id)
             

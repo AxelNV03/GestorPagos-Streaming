@@ -1,7 +1,9 @@
-
 // ===================================================================
 // MODAL NUEVO COMPROBANTE
 // ===================================================================
+// Mapa global de streams para el modal de revisión
+const streamsMap = {};
+
 function filtrarUsuariosPorPlataforma() {
     const plataformaSelect = document.getElementById('cpc_plataforma_select');
     const opcion = plataformaSelect.options[plataformaSelect.selectedIndex];
@@ -165,20 +167,44 @@ function cerrarModalRevision() {
 function renderMensualidadesRevision(mensualidades) {
     const div = document.getElementById('cpc_rev_mensualidades');
     
+    // Limpiar el mapa al re-renderizar
+    Object.keys(streamsMap).forEach(k => delete streamsMap[k]);
+    
     if (!mensualidades || !mensualidades.length) {
         div.innerHTML = '<div class="cpc-empty-asignaciones">Sin mensualidades pendientes</div>';
         return;
     }
     
-    div.innerHTML = mensualidades.map(m => {
+    div.innerHTML = mensualidades.map((m, idx) => {
+        // Guardar datos del stream en el mapa
+        streamsMap[idx] = {
+            v_id: m.plataforma_usuario_id,
+            base: m.motivo_base
+        };
+        
+        // Label: si el base es "Mensualidad - Spotify", mostramos "Spotify (Mensualidad)"
+        // Si es "Mensualidad - Spotify 2da cuenta", mostramos "Spotify (2da cuenta)"
+        const baseMostrar = m.motivo_base 
+            ? m.motivo_base.replace('Mensualidad - ', '') 
+            : m.plataforma;
+        
         const opciones = Array.from({length: 13}, (_, i) => 
             `<option value="${i}">${i} ${i === 1 ? 'mes' : 'meses'} - $${(m.costo_mensual * i).toFixed(2)}</option>`
         ).join('');
         
         return `
             <div class="cpc-form-group">
-                <label>${m.plataforma} <small style="font-weight:400;color:#94a3b8;">| Último: ${traducirMes(m.ultimo_pago) || 'N/A'}</small></label>
-                <select name="meses_${m.plataforma_usuario_id}" class="cpc-form-select cpc-mes-select" data-costo="${m.costo_mensual}" onchange="actualizarResumen()">
+                <label>
+                    ${baseMostrar}
+                    <small style="font-weight:400;color:#94a3b8;">
+                        | Último: ${traducirMes(m.ultimo_pago) || 'N/A'}
+                    </small>
+                </label>
+                <select 
+                    data-stream-idx="${idx}" 
+                    class="cpc-form-select cpc-mes-select" 
+                    data-costo="${m.costo_mensual}" 
+                    onchange="actualizarResumen()">
                     ${opciones}
                 </select>
             </div>
@@ -286,17 +312,37 @@ function accionComprobante(accion) {
     form.appendChild(inputComentario);
     
     // Mensualidades y extras (solo para aprobar)
+    // Mensualidades y extras (solo para aprobar)
     if (accion === 'aprobar') {
+        // Streams de mensualidad: 3 arrays paralelos
         document.querySelectorAll('.cpc-mes-select').forEach(select => {
-            if (parseInt(select.value) > 0) {
-                const input = document.createElement('input');
-                input.type = 'hidden';
-                input.name = select.name;
-                input.value = select.value;
-                form.appendChild(input);
+            const meses = parseInt(select.value) || 0;
+            if (meses > 0) {
+                const idx = select.dataset.streamIdx;
+                const stream = streamsMap[idx];
+                if (!stream) return;
+                
+                const inputVId = document.createElement('input');
+                inputVId.type = 'hidden';
+                inputVId.name = 'stream_v_id[]';
+                inputVId.value = stream.v_id;
+                form.appendChild(inputVId);
+                
+                const inputBase = document.createElement('input');
+                inputBase.type = 'hidden';
+                inputBase.name = 'stream_base[]';
+                inputBase.value = stream.base;
+                form.appendChild(inputBase);
+                
+                const inputMeses = document.createElement('input');
+                inputMeses.type = 'hidden';
+                inputMeses.name = 'stream_meses[]';
+                inputMeses.value = meses;
+                form.appendChild(inputMeses);
             }
         });
         
+        // Extras
         document.querySelectorAll('.cpc-extra-switch input:checked').forEach(checkbox => {
             const input = document.createElement('input');
             input.type = 'hidden';
@@ -305,7 +351,8 @@ function accionComprobante(accion) {
             form.appendChild(input);
         });
     }
-    
+
+
     document.body.appendChild(form);
     form.submit();
 }
