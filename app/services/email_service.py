@@ -46,7 +46,10 @@ class EmailService:
             msg['Subject'] = asunto
             msg.attach(MIMEText(mensaje_html, 'html'))
             
-            with smtplib.SMTP('smtp.gmail.com', 587) as server:
+            host = os.getenv('MAIL_HOST', 'smtp.gmail.com')
+            port = int(os.getenv('MAIL_PORT', 587))
+            
+            with smtplib.SMTP(host, port) as server:
                 server.starttls()
                 server.login(os.getenv('MAIL_USERNAME'), os.getenv('MAIL_PASSWORD'))
                 server.send_message(msg)
