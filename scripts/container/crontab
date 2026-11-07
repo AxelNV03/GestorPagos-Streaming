@@ -4,14 +4,14 @@
 # Recordatorio mensual día 1 a las 9:00 AM
 0 9 1 * * root /app/scripts/container/recordatorio_mensual.sh >> /var/log/recordatorio.log 2>&1
 
-# Alerta morosos día 3 a las 9:00 AM
-0 9 3 * * root DIA_ENV=4 /app/scripts/container/alerta_morosos.sh >> /var/log/morosos.log 2>&1
+# Alerta morosos día 4 a las 9:00 AM
+0 9 4 * * root DIA_ENV=4 /app/scripts/container/alerta_morosos.sh >> /var/log/morosos.log 2>&1
 
 # Alerta morosos día 5 a las 9:00 AM
 0 9 5 * * root DIA_ENV=5 /app/scripts/container/alerta_morosos.sh >> /var/log/morosos.log 2>&1
 
-# Alerta morosos día 5 a las 9:00 AM
-0 9 5 * * root DIA_ENV=6 /app/scripts/container/alerta_morosos.sh >> /var/log/morosos.log 2>&1
+# Alerta morosos día 6 a las 9:00 AM
+0 8 6 * * root DIA_ENV=6 /app/scripts/container/alerta_morosos.sh >> /var/log/morosos.log 2>&1
 
 # Recordatorio vencidos día 6 a las 9:00 AM
 0 9 6 * * root /app/scripts/container/recordatorio_vencido.sh >> /var/log/recordatorio.log 2>&1

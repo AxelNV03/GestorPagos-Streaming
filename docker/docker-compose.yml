@@ -41,7 +41,7 @@ services:
       - TZ=America/Mexico_City
     depends_on:
       db:
-        condition: service_started
+        condition: service_healthy
 
 volumes:
   db_data:
