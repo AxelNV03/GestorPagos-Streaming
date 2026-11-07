@@ -21,27 +21,26 @@ services:
       start_period: 30s
 
   app:
-    build: .
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
     container_name: pagos_app
-    restart: unless-stopped  # <--- Añade esto aquí también
+    restart: unless-stopped
     volumes:
-      # - .:/app
-      # - ./storage:/app/storage
       - /etc/localtime:/etc/localtime:ro
-      # - /etc/timezone:/etc/timezone:ro
-      # - /etc/timezone:/etc/timezone:ro
-      - ./rclone.conf:/root/.config/rclone/rclone.conf:ro
-      - .:/app:Z
-      - ./storage:/app/storage:Z
-      - ./fullchain.pem:/app/fullchain.pem:ro
-      - ./privkey.pem:/app/privkey.pem:ro
+      - ..:/app:Z
+      - ../storage:/app/storage:Z
+      # Los .pem solo se usan si quieres SSL directo en Flask (no necesario con Cloudflare Tunnel).
+      # Si los tienes, descomenta apuntando a archivos reales:
+      - ../fullchain.pem:/app/fullchain.pem:ro
+      - ../privkey.pem:/app/privkey.pem:ro
     ports:
       - "5000:5000"
-    env_file: .env
+    env_file: ../.env
     environment:
       - TZ=America/Mexico_City
     depends_on:
-      db: # Versión extendida para evitar el error de conexión que vimos antes
+      db:
         condition: service_started
 
 volumes:

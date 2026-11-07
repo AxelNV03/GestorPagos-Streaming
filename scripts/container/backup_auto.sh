@@ -1,5 +1,5 @@
 #!/bin/bash
-# /app/backup_auto.sh
+# /app/scripts/container/backup_auto.sh
 
 TIMESTAMP=$(date +%Y%m%d_%H%M%S)
 BACKUP_DIR="/app/storage/backups"

@@ -1,0 +1,14 @@
+__pycache__/
+*.py[cod]
+*$py.class
+.git/
+.gitignore
+.env
+*.pem
+storage/
+scripts/host/
+.vscode/
+.idea/
+.DS_Store
+*.log
+README.md
